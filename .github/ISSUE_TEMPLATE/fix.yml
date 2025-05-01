@@ -1,0 +1,16 @@
+name: "🐛 Fix"
+description: "버그 수정"
+labels: ["🐛Fix"]
+body:
+  - type: textarea
+    attributes:
+      label: 📄 수정 이유
+      description: 수정이 필요한 이유에 대해 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: ✅ 작업할 내용
+      description: 할 일을 체크박스 형태로 작성해주세요.
+    validations:
+      required: true
