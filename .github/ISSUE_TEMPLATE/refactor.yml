@@ -1,0 +1,16 @@
+name: "♻️ Refactor"
+description: "리팩토링"
+labels: ["♻️Refactor"]
+body:
+  - type: textarea
+    attributes:
+      label: 📄 리팩토링 목적
+      description: 리팩토링을 통해 개선하고자 하는 것을 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: ✅ 작업할 내용
+      description: 할 일을 체크박스 형태로 작성해주세요.
+    validations:
+      required: true

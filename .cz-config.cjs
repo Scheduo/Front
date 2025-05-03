@@ -26,7 +26,7 @@ module.exports = {
 	messages: {
 		type: "커밋할 타입을 선택하세요",
 		scope: "",
-		subject: "커밋 메시지를 입력하세요(필수):\n",
+		subject: "커밋 메시지를 입력하세요(필수):",
 		body: '변경에 대한 자세한 설명을 작성하세요 (선택사항). "|"로 줄바꿈이 가능합니다:\n',
 		footer: "",
 		confirmCommit: "이대로 커밋할까요?",
