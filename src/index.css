@@ -1,10 +1,30 @@
 @import "tailwindcss";
 
+/* 스포카 한 산스 네오 폰트 설정 */
+@font-face {
+	font-family: "Spoqa Han Sans Neo";
+	src: url("./assets/fonts/SpoqaHanSansNeo-Medium.woff2") format("woff2");
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Spoqa Han Sans Neo";
+	src: url("./assets/fonts/SpoqaHanSansNeo-Bold.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
 html {
 	font-size: 62.5%; /* 1rem = 10px 설정 */
 }
 
 @theme {
+	/* 기본 폰트 설정 */
+	--font-family-base: "Spoqa Han Sans Neo", system-ui, sans-serif;
+
 	/* grayscale */
 	--color-grayscale-white: #ffffff;
 	--color-grayscale-100: #f1f5f9;
@@ -35,16 +55,58 @@ html {
 	--color-category-purple: #c299ff;
 	--color-category-pink: #ff99c2;
 	--color-category-gray: #b3b3b3;
+}
 
-	/* 타이포그래피 */
-	/* Bold(700) 타입 */
-	--font-bold-l: 700 2.4rem / auto sans-serif;
-	--font-bold-m: 700 1.6rem / auto sans-serif;
-	--font-bold-r: 700 1.4rem / auto sans-serif;
-	--font-bold-s: 700 1.2rem / auto sans-serif;
+/* 타이포그래피 커스텀 유틸리티 */
+@utility text-bold-l {
+	font-weight: 700;
+	font-size: 2.4rem;
+	line-height: auto;
+	font-family: var(--font-family-base);
+}
 
-	/* Medium(500) 타입 */
-	--font-medium-m: 500 1.6rem / 2.2rem sans-serif;
-	--font-medium-r: 500 1.4rem / 2.2rem sans-serif;
-	--font-medium-s: 500 1.2rem / auto sans-serif;
+@utility text-bold-m {
+	font-weight: 700;
+	font-size: 1.6rem;
+	line-height: auto;
+	font-family: var(--font-family-base);
+}
+
+@utility text-bold-r {
+	font-weight: 700;
+	font-size: 1.4rem;
+	line-height: auto;
+	font-family: var(--font-family-base);
+}
+
+@utility text-bold-s {
+	font-weight: 700;
+	font-size: 1.2rem;
+	line-height: auto;
+	font-family: var(--font-family-base);
+}
+
+@utility text-medium-m {
+	font-weight: 500;
+	font-size: 1.6rem;
+	line-height: 2.2rem;
+	font-family: var(--font-family-base);
+}
+
+@utility text-medium-r {
+	font-weight: 500;
+	font-size: 1.4rem;
+	line-height: 2.2rem;
+	font-family: var(--font-family-base);
+}
+
+@utility text-medium-s {
+	font-weight: 500;
+	font-size: 1.2rem;
+	line-height: auto;
+	font-family: var(--font-family-base);
+}
+
+body {
+	font-family: var(--font-family-base);
 }
