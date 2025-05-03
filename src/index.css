@@ -35,4 +35,16 @@ html {
 	--color-category-purple: #c299ff;
 	--color-category-pink: #ff99c2;
 	--color-category-gray: #b3b3b3;
+
+	/* 타이포그래피 */
+	/* Bold(700) 타입 */
+	--font-bold-l: 700 2.4rem / auto sans-serif;
+	--font-bold-m: 700 1.6rem / auto sans-serif;
+	--font-bold-r: 700 1.4rem / auto sans-serif;
+	--font-bold-s: 700 1.2rem / auto sans-serif;
+
+	/* Medium(500) 타입 */
+	--font-medium-m: 500 1.6rem / 2.2rem sans-serif;
+	--font-medium-r: 500 1.4rem / 2.2rem sans-serif;
+	--font-medium-s: 500 1.2rem / auto sans-serif;
 }
