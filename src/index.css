@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+	font-size: 62.5%; /* 1rem = 10px 설정 */
+}
+
 @theme {
 	/* grayscale */
 	--color-grayscale-white: #ffffff;
