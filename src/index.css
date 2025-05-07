@@ -63,49 +63,49 @@ body {
 /* 타이포그래피 커스텀 유틸리티 */
 @utility text-bold-l {
 	font-weight: 700;
-	font-size: 2.4rem;
+	font-size: 1.5rem;
 	line-height: auto;
 	font-family: var(--font-family-base);
 }
 
 @utility text-bold-m {
 	font-weight: 700;
-	font-size: 1.6rem;
+	font-size: 1rem;
 	line-height: auto;
 	font-family: var(--font-family-base);
 }
 
 @utility text-bold-r {
 	font-weight: 700;
-	font-size: 1.4rem;
+	font-size: 0.875rem;
 	line-height: auto;
 	font-family: var(--font-family-base);
 }
 
 @utility text-bold-s {
 	font-weight: 700;
-	font-size: 1.2rem;
+	font-size: 0.75rem;
 	line-height: auto;
 	font-family: var(--font-family-base);
 }
 
 @utility text-medium-m {
 	font-weight: 500;
-	font-size: 1.6rem;
+	font-size: 1rem;
 	line-height: 2.2rem;
 	font-family: var(--font-family-base);
 }
 
 @utility text-medium-r {
 	font-weight: 500;
-	font-size: 1.4rem;
+	font-size: 0.875rem;
 	line-height: 2.2rem;
 	font-family: var(--font-family-base);
 }
 
 @utility text-medium-s {
 	font-weight: 500;
-	font-size: 1.2rem;
+	font-size: 0.75rem;
 	line-height: auto;
 	font-family: var(--font-family-base);
 }
