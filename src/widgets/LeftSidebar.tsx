@@ -61,11 +61,11 @@ export function LeftSidebar() {
 					)}
 				</div>
 
-				<div className="mt-2 ml-6 space-y-2">
+				<div className="mt-2 space-y-3">
 					{calendarList.map((calendar: CalendarInfo) => (
 						<div
 							key={calendar.calendarId}
-							className="my-3 flex h-8 flex-1 cursor-pointer items-center justify-between rounded-md p-3 hover:bg-grayscale-200"
+							className="flex h-9 flex-1 cursor-pointer items-center justify-between rounded-md px-3 hover:bg-grayscale-200"
 							onMouseEnter={() => setHoveredCalendarId(calendar.calendarId)}
 							onMouseLeave={() => setHoveredCalendarId(-1)}
 						>
