@@ -5,7 +5,7 @@ import { useState } from "react";
 const calendarList = [
 	{
 		calendarId: 1,
-		title: "Personal Calendarddddddddd",
+		title: "Personal Calendarddddddddddd",
 	},
 	{
 		calendarId: 2,
@@ -14,13 +14,15 @@ const calendarList = [
 ];
 
 export function LeftSidebar() {
-	const [isCalendarHovered, setIsCalendarHovered] = useState(false);
+	const [isCalendarHeaderHovered, setIsCalendarHeaderHovered] =
+		useState<boolean>(false);
+	const [hoveredCalendarId, setHoveredCalendarId] = useState<number>(-1);
 
 	const handleAddCalendar = () => {
 		console.log("캘린더 생성");
 	};
-	const handleEditCalendar = () => {
-		console.log("캘린더 수정");
+	const handleEditCalendar = (calendarId: number) => {
+		console.log("캘린더 수정", calendarId);
 	};
 	const handleOpenSetting = () => {
 		console.log("설정창 오픈");
@@ -35,32 +37,22 @@ export function LeftSidebar() {
 			<div className="h-10 flex-1 px-2">
 				<div
 					className="flex items-center justify-between rounded-lg bg-primary-light p-3 text-primary-main"
-					onMouseEnter={() => setIsCalendarHovered(true)}
-					onMouseLeave={() => setIsCalendarHovered(false)}
+					onMouseEnter={() => setIsCalendarHeaderHovered(true)}
+					onMouseLeave={() => setIsCalendarHeaderHovered(false)}
 				>
 					<div className="flex items-center gap-2">
 						<Calendar size={18} />
 						<span>Calendar</span>
 					</div>
-					{isCalendarHovered && (
-						<div className="flex space-x-1">
-							<Button
-								size="icon"
-								variant="ghost"
-								className="hover:bg-transparent"
-								onClick={handleEditCalendar}
-							>
-								<PenSquare size={16} className="text-grayscale-500" />
-							</Button>
-							<Button
-								size="icon"
-								variant="ghost"
-								className="hover:bg-transparent"
-								onClick={handleAddCalendar}
-							>
-								<Plus size={16} className="text-grayscale-500" />
-							</Button>
-						</div>
+					{isCalendarHeaderHovered && (
+						<Button
+							size="icon"
+							variant="ghost"
+							className="hover:bg-transparent"
+							onClick={handleAddCalendar}
+						>
+							<Plus size={16} className="text-grayscale-500" />
+						</Button>
 					)}
 				</div>
 
@@ -68,21 +60,36 @@ export function LeftSidebar() {
 					{calendarList.map((calendar) => (
 						<div
 							key={calendar.calendarId}
-							className="my-3 flex h-8 flex-1 cursor-pointer items-center rounded-md p-3 hover:bg-grayscale-200"
+							className="my-3 flex h-8 flex-1 cursor-pointer items-center justify-between rounded-md p-3 hover:bg-grayscale-200"
+							onMouseEnter={() => setHoveredCalendarId(calendar.calendarId)}
+							onMouseLeave={() => setHoveredCalendarId(-1)}
 						>
 							<span className="truncate text-grayscale-500 text-medium-m">
 								{calendar.title}
 							</span>
+							{hoveredCalendarId === calendar.calendarId && (
+								<Button
+									size="icon"
+									variant="ghost"
+									className="hover:bg-transparent"
+									onClick={() => handleEditCalendar(calendar.calendarId)}
+								>
+									<PenSquare size={16} className="text-grayscale-500" />
+								</Button>
+							)}
 						</div>
 					))}
 				</div>
 			</div>
 
-			{/* User info and settings section */}
 			<div className="flex items-center justify-between p-4">
 				<div className="flex flex-col items-start justify-center gap-2">
-					<span className="font-medium text-grayscale-700 text-sm">홍길동</span>
-					<span className="text-grayscale-700 text-xs">abcd@gmail.com</span>
+					<span className="font-medium text-bold-m text-grayscale-700">
+						홍길동
+					</span>
+					<span className="text-grayscale-700 text-medium-s">
+						abcd@gmail.com
+					</span>
 				</div>
 				<Button size="icon" variant="ghost" onClick={handleOpenSetting}>
 					<Settings size={18} className="text-grayscale-700" />
