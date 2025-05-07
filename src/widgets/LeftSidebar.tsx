@@ -2,6 +2,11 @@ import { Button } from "@/shared/ui/button";
 import { Calendar, PenSquare, Plus, Settings } from "lucide-react";
 import { useState } from "react";
 
+type CalendarInfo = {
+	calendarId: number;
+	title: string;
+};
+
 const calendarList = [
 	{
 		calendarId: 1,
@@ -57,7 +62,7 @@ export function LeftSidebar() {
 				</div>
 
 				<div className="mt-2 ml-6 space-y-2">
-					{calendarList.map((calendar) => (
+					{calendarList.map((calendar: CalendarInfo) => (
 						<div
 							key={calendar.calendarId}
 							className="my-3 flex h-8 flex-1 cursor-pointer items-center justify-between rounded-md p-3 hover:bg-grayscale-200"
