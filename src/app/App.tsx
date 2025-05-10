@@ -1,11 +1,11 @@
 import { LeftSidebar } from "@/widgets";
 
 function App() {
-	return (
-		<>
-			<LeftSidebar />
-		</>
-	);
+  return (
+    <>
+      <LeftSidebar />
+    </>
+  );
 }
 
 export default App;
