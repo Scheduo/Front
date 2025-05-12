@@ -127,14 +127,14 @@ export const Calendar = () => {
             <button
               type="button"
               key={`${date.getTime()}-${index}`}
-              className={`relative flex h-32 w-32 flex-col items-start justify-start overflow-hidden border border-grayscale-200 p-2 transition-colors hover:cursor-pointer ${
+              className={`relative flex h-32 w-32 flex-col items-start justify-start overflow-hidden border border-grayscale-200 py-2 transition-colors hover:cursor-pointer ${
                 isCurrentMonth ? "hover:bg-grayscale-100" : "text-grayscale-400"
               } ${isSelected ? "z-10 bg-grayscale-200 ring-2 ring-primary-main" : "z-0"}`}
               onClick={() => setSelectedDate(date)}
               aria-label={`${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`}
             >
               <div
-                className={`mb-1 flex h-6 w-6 items-center justify-start font-medium text-medium-m ${
+                className={`mb-1 flex h-6 w-6 items-center justify-start px-2 font-medium text-medium-m ${
                   isCurrentMonth ? "text-grayscale-black" : "text-grayscale-400"
                 }`}
               >
@@ -143,16 +143,28 @@ export const Calendar = () => {
 
               {/* 일정 표시 */}
               {isCurrentMonth && (
-                <div className="h-20 w-full space-y-0.5 overflow-hidden">
-                  {events.slice(0, 3).map((event) => (
-                    <div
-                      key={event.id}
-                      className={`h-5 p-1 text-medium-s ${event.color} flex w-full items-center justify-center overflow-hidden rounded-sm text-grayscale-white`}
-                      title={event.title}
-                    >
-                      <div className="overflow-hidden text-ellipsis whitespace-nowrap">{event.title}</div>
-                    </div>
-                  ))}
+                <div className="h-20 w-full space-y-0.5 overflow-visible">
+                  {events.slice(0, 3).map((event) => {
+                    const isStart = isSameDay(event.startDate, date);
+                    const isEnd = isSameDay(event.endDate, date);
+                    const isMiddle = !isStart && !isEnd;
+
+                    return (
+                      <div
+                        key={event.id}
+                        className={`h-5 text-medium-s ${event.color} flex items-center justify-center overflow-hidden ${
+                          isStart ? "ml-2 rounded-l-sm" : ""
+                        } ${isEnd ? "mr-2 rounded-r-sm" : ""} ${
+                          isMiddle ? "rounded-none" : ""
+                        } relative z-10 text-grayscale-white`}
+                        title={event.title}
+                      >
+                        {isStart && (
+                          <div className="overflow-hidden text-ellipsis whitespace-nowrap">{event.title}</div>
+                        )}
+                      </div>
+                    );
+                  })}
                   {events.length > 3 && (
                     <div className="flex h-4 items-center justify-center text-center text-grayscale-500 text-xs">
                       +{events.length - 3}
