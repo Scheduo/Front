@@ -112,18 +112,20 @@ export const Calendar = () => {
 
   return (
     <div className="max-w-4xl rounded-lg bg-white">
-      <div className="flex h-14 items-center justify-between border-b">
-        <Button onClick={goToPreviousMonth} variant="ghost" size="icon" className="p-2">
-          <ChevronLeft className="h-6 w-6" />
-        </Button>
+      <div className="flex h-14 items-center justify-center border-b">
+        <div className="flex w-70 items-center justify-between gap-2">
+          <Button onClick={goToPreviousMonth} variant="ghost" size="icon" className="p-2">
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
 
-        <h2 className="font-semibold text-bold-l">
-          {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
-        </h2>
+          <h2 className="font-semibold text-bold-l">
+            {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
+          </h2>
 
-        <Button onClick={goToNextMonth} variant="ghost" size="icon" className="p-2">
-          <ChevronRight className="h-6 w-6" />
-        </Button>
+          <Button onClick={goToNextMonth} variant="ghost" size="icon" className="p-2">
+            <ChevronRight className="h-6 w-6" />
+          </Button>
+        </div>
       </div>
 
       <div className=" grid grid-cols-7">
