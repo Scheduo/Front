@@ -1,6 +1,6 @@
 import type { Event } from "./index";
 
-export const sampleEvents: Event[] = [
+export const CurrentMonthEvents: Event[] = [
   {
     id: "1",
     title: "프로젝트 마감일",
@@ -56,5 +56,20 @@ export const sampleEvents: Event[] = [
     startDate: new Date(2025, 4, 25),
     endDate: new Date(2025, 4, 25),
     color: "bg-category-amber",
+  },
+
+  {
+    id: "9",
+    title: "스케줄 2",
+    startDate: new Date(2025, 4, 22),
+    endDate: new Date(2025, 4, 22),
+    color: "bg-category-amber",
+  },
+  {
+    id: "10",
+    title: "스케줄",
+    startDate: new Date(2025, 4, 21),
+    endDate: new Date(2025, 4, 23),
+    color: "bg-category-pink",
   },
 ];
