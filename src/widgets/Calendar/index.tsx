@@ -1,6 +1,7 @@
 import { Button } from "@/shared/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
+import { DAY_NAMES } from "./consts";
 import { CurrentMonthEvents } from "./sampleData";
 
 export type Event = {
@@ -14,8 +15,6 @@ export type Event = {
 export const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-
-  const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
 
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
@@ -129,7 +128,7 @@ export const Calendar = () => {
       </div>
 
       <div className=" grid grid-cols-7">
-        {dayNames.map((day, index) => (
+        {DAY_NAMES.map((day, index) => (
           <div
             key={day}
             className={`p-2 text-center font-medium ${
