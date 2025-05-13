@@ -12,6 +12,19 @@ export type Event = {
   color: string;
 };
 
+type EventMatrix = {
+  [date: string]: (Event | null)[];
+};
+
+/**
+ * 월간 달력 컴포넌트
+ * - 이벤트 표시
+ * - 월 이동 가능
+ * - 날짜 선택 기능
+ *
+ * @returns JSX.Element
+ */
+
 export const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -55,7 +68,7 @@ export const Calendar = () => {
   }, [currentDate]);
 
   const eventMatrix = useMemo(() => {
-    const matrix: { [date: string]: (Event | null)[] } = {};
+    const matrix: EventMatrix = {};
     const allEvents = CurrentMonthEvents;
     const allDates = calendarDays.map(({ date }) => new Date(date.getFullYear(), date.getMonth(), date.getDate()));
 
