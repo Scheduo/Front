@@ -17,15 +17,13 @@ type EventMatrix = {
 };
 
 /**
- * 월간 달력 컴포넌트
- * - 이벤트 표시
- * - 월 이동 가능
- * - 날짜 선택 기능
+ * 월간 달력 컴포넌트입니다.
+ * 이벤트 표시, 월 이동, 날짜 선택 기능을 제공합니다.
  *
- * @returns JSX.Element
+ * @returns React.ReactElement
  */
 
-export const Calendar = () => {
+export const Calendar = (): React.ReactElement => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
