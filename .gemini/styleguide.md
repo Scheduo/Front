@@ -114,7 +114,12 @@ interface User {
 
 ### 7. 컴포넌트 선언 (Component Declaration)
 
-React 컴포넌트는 화살표 함수 (=>) 를 사용하여 선언하는 것을 권장합니다. props의 타입은 TypeScript 인터페이스나 type alias를 사용하여 명시합니다. React.FC는 암시적인 children prop 및 제네릭 타입 추론의 어려움 등으로 인해 사용을 지양합니다.
+- React 컴포넌트는 화살표 함수 (=>) 를 사용하여 선언하는 것을 권장합니다.
+- props의 타입은 TypeScript 인터페이스나 type alias를 사용하여 명시합니다.
+- `React.FC`는 암시적인 children prop 및 제네릭 타입 추론의 어려움 등으로 인해 사용을 지양합니다.
+- **리턴 타입 명시:**
+  - `React.ReactElement`를 사용 (React 18+ 권장)
+  - `JSX.Element`는 TypeScript 구성에 따라 인식되지 않을 수 있으므로 지양
 
 ```typescript
 import { useState, useEffect } from "react"; // React Hooks 직접 import
@@ -203,13 +208,26 @@ export default MyComponent;
     @theme {
       --font-display: "Satoshi", "sans-serif";
       --breakpoint-3xl: 1920px;
-      --color-primary-500: oklch(0.8 0.15 50);
+      --color-primary-main: oklch(0.8 0.15 50);
+      --color-notification-strong: oklch(0.9 0.12 25);
+      --color-grayscale-black: oklch(0.2 0 0);
       --spacing: 0.25rem;
       /* ... */
     }
     ```
 
-  - **CSS 변수 활용:** `@theme` 내에 정의된 디자인 토큰은 CSS 변수 형태로 자동 생성되어 CSS 내에서 `var(--token-name)`과 같이 참조하여 사용할 수 있습니다.
+  - **자동 유틸리티 클래스 생성:** `@theme` 내에 정의된 디자인 토큰은 자동으로 Tailwind 유틸리티 클래스로 변환됩니다.
+
+    ```typescript
+    // @theme에서 --color-primary-main을 정의하면 자동으로 생성됨
+    <button className="text-primary-main bg-primary-main">버튼</button>
+
+    // 잘못된 사용 (v4에서는 불필요)
+    <button className="text-[--color-primary-main]">버튼</button>
+    ```
+
+  - **CSS 변수 직접 사용 금지:** `text-[--color-primary-main]` 형태로 CSS 변수를 직접 참조하지 마세요. 대신 `@theme`에서 정의한 토큰 이름을 그대로 사용한 유틸리티 클래스를 활용하세요. (예: `text-primary-main`)
+
   - **동적 유틸리티 값 및 Variants:** Tailwind CSS v4.0은 많은 유틸리티와 Variants에서 임의의 값을 별도의 설정 없이 바로 사용할 수 있도록 개선되었습니다. 예를 들어, `grid-cols-15`, `opacity-75 data-current:opacity-100`, `mt-8` 등 다양한 값을 즉시 적용할 수 있습니다.
 
 - **shadcn/ui:** UI 컴포넌트는 shadcn/ui를 기반으로 하며, 필요한 경우 **Tailwind CSS v4.0의 CSS-first 설정 방식** 및 컴포넌트 자체를 커스터마이징하여 사용합니다. shadcn/ui 컴포넌트의 스타일 변수를 `@theme` 내에서 재정의하거나, 필요한 커스텀 스타일을 추가합니다.
