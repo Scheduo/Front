@@ -121,7 +121,7 @@ export const Calendar = (): React.ReactElement => {
   };
 
   return (
-    <div className="max-w-4xl rounded-lg bg-white">
+    <div className="flex-1 rounded-lg bg-white">
       <div className="flex h-14 items-center justify-center border-b">
         <div className="flex w-70 items-center justify-between gap-2">
           <Button onClick={goToPreviousMonth} variant="ghost" size="icon" className="p-2">

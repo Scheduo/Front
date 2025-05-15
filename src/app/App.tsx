@@ -1,10 +1,11 @@
-import { Calendar, LeftSidebar } from "@/widgets";
+import { Calendar, LeftSidebar, RightSidebar } from "@/widgets";
 
 function App() {
   return (
-    <div className="flex flex-row">
+    <div className="flex h-screen w-screen flex-row">
       <LeftSidebar />
       <Calendar />
+      <RightSidebar />
     </div>
   );
 }
