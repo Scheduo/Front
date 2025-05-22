@@ -1,5 +1,4 @@
-import { Button } from "@/shared/ui/button";
-import { ScrollArea } from "@/shared/ui/scroll-area";
+import { Button, ScrollArea } from "@/shared/ui";
 import { Clock, Plus, Share2 } from "lucide-react";
 import type React from "react";
 import { defaultSchedules } from "./sampleData";

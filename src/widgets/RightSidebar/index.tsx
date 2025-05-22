@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/ui/Button";
 import { Bell, Search } from "lucide-react";
 import type React from "react";
 import { DailySchedule } from "./DailySchedule";

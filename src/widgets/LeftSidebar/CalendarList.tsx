@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/ui";
 import { PenSquare } from "lucide-react";
 import { useState } from "react";
 import type { CalendarInfo } from "./types";
