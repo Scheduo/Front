@@ -1,7 +1,6 @@
 import { Button, ScrollArea } from "@/shared/ui";
 import { Clock, Plus, Share2 } from "lucide-react";
 import type React from "react";
-import { defaultSchedules } from "./sampleData";
 import type { ScheduleItem } from "./types";
 
 interface DailyScheduleProps {
@@ -25,8 +24,6 @@ export const DailySchedule = ({
     return `${month}월 ${day}일`;
   };
 
-  const displaySchedules = schedules.length > 0 ? schedules : defaultSchedules;
-
   return (
     <>
       <div className="h-20 p-6">
@@ -36,33 +33,37 @@ export const DailySchedule = ({
 
       <ScrollArea className="w-full flex-1 px-1">
         <div className="mx-auto w-76 space-y-3 pb-6">
-          {displaySchedules.map((schedule) => (
-            <button
-              type="button"
-              key={schedule.id}
-              className="group w-full cursor-pointer rounded-lg border border-grayscale-100 p-4 shadow transition-colors hover:bg-grayscale-100"
-              onClick={() => onEditSchedule?.(schedule.id)}
-            >
-              <div className="flex w-full flex-col items-start justify-between">
-                <div className="flex w-full items-center justify-between gap-2">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="mb-2 w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-left text-grayscale-black">
-                      {schedule.title}
-                    </h3>
+          {schedules.length > 0 ? (
+            schedules.map((schedule) => (
+              <button
+                type="button"
+                key={schedule.id}
+                className="group w-full cursor-pointer rounded-lg border border-grayscale-100 p-4 shadow transition-colors hover:bg-grayscale-100"
+                onClick={() => onEditSchedule?.(schedule.id)}
+              >
+                <div className="flex w-full flex-col items-start justify-between">
+                  <div className="flex w-full items-center justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="mb-2 w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-left text-grayscale-black">
+                        {schedule.title}
+                      </h3>
+                    </div>
+                    <div className="flex flex-shrink-0 items-center gap-1">
+                      <Clock className="h-4 w-4 text-grayscale-500" />
+                      <div className="text-grayscale-500 text-medium-s">{schedule.time}</div>
+                    </div>
                   </div>
-                  <div className="flex flex-shrink-0 items-center gap-1">
-                    <Clock className="h-4 w-4 text-grayscale-500" />
-                    <div className="text-grayscale-500 text-medium-s">{schedule.time}</div>
-                  </div>
-                </div>
 
-                <div className="flex w-full items-center justify-between text-grayscale-500 text-medium-s">
-                  <div className="truncate">{schedule.location}</div>
-                  <div>{schedule.typeName}</div>
+                  <div className="flex w-full items-center justify-between text-grayscale-500 text-medium-s">
+                    <div className="truncate">{schedule.location}</div>
+                    <div>{schedule.typeName}</div>
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))}
+              </button>
+            ))
+          ) : (
+            <div className="mt-5 flex items-center justify-center text-grayscale-500">오늘 일정이 없습니다.</div>
+          )}
         </div>
       </ScrollArea>
 
