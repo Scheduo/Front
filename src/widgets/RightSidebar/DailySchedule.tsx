@@ -4,20 +4,40 @@ import type React from "react";
 import type { ScheduleItem } from "./types";
 
 interface DailyScheduleProps {
+  /** 표시할 날짜. 기본값은 오늘 날짜 */
   selectedDate?: Date;
+  /** 해당 날짜의 일정 목록 */
   schedules?: ScheduleItem[];
+  /** 일정 추가 버튼 클릭 시 실행될 콜백 함수 */
   onAddSchedule?: () => void;
+  /** 일정 항목 클릭 시 실행될 콜백 함수 */
   onEditSchedule?: (id: number) => void;
-  children?: React.ReactNode;
 }
+
+/**
+ * 선택된 날짜의 일정 목록을 세로로 나열하여 보여주는 컴포넌트입니다.
+ * 각 일정 항목에는 제목, 시간, 장소, 소속 캘린더 정보가 표시됩니다.
+ *
+ * 헤더에는 날짜가 표시되고, 하단에는 일정 추가와 공유 버튼이 배치되어 있습니다.
+ *
+ * @param selectedDate - 표시할 날짜 (기본값: 오늘)
+ * @param schedules - 해당 날짜의 일정 목록 (기본값: 빈 배열)
+ * @param onAddSchedule - 일정 추가 버튼 클릭 시 실행될 콜백
+ * @param onEditSchedule - 일정 항목 클릭 시 실행될 콜백 (일정 ID 전달)
+ */
 
 export const DailySchedule = ({
   selectedDate = new Date(),
   schedules = [],
   onAddSchedule,
   onEditSchedule,
-  children,
 }: DailyScheduleProps): React.ReactElement => {
+  /**
+   * 날짜를 "월일" 형식으로 포맷합니다.
+   *
+   * @param date - 포맷할 날짜 객체
+   * @returns "3월 15일" 형식의 문자열
+   */
   const formatDate = (date: Date) => {
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -28,7 +48,6 @@ export const DailySchedule = ({
     <>
       <div className="h-20 p-6">
         <h2 className="mb-4 text-bold-l text-grayscale-black">{formatDate(selectedDate)}</h2>
-        {children && <div className="mb-4">{children}</div>}
       </div>
 
       <ScrollArea className="w-full flex-1 px-1">

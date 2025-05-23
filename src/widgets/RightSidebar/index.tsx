@@ -6,6 +6,14 @@ import { DailySchedule } from "./DailySchedule";
 
 type RightSidebarViewType = "daily" | "share" | "create" | "edit" | "search" | "notification";
 
+/**
+ * 애플리케이션 우측에 위치하는 사이드바 컴포넌트입니다.
+ * 일정 관리와 관련된 다양한 뷰를 내부 상태에 따라 동적으로 렌더링합니다.
+ *
+ * 헤더 영역의 검색과 알림 버튼을 통해 해당 기능으로 뷰를 전환할 수 있으며,
+ * 메인 콘텐츠 영역에서는 일정 조회, 생성, 수정, 공유, 검색, 알림 등의 기능을 제공합니다.
+ */
+
 export const RightSidebar = (): React.ReactElement => {
   const [currentView, setCurrentView] = useState<RightSidebarViewType>("daily");
 
