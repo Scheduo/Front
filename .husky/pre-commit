@@ -1,7 +1,7 @@
 echo "lint 검사 및 format 수행 중..."
 
 # Biome 실행
-pnpm check
+pnpm lint-staged
 if [ $? -ne 0 ]; then
   echo "Biome 에러 발생!"
   exit 1

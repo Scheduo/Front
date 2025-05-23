@@ -11,7 +11,8 @@
     "check": "biome check --write .",
     "preview": "vite preview",
     "commit": "cz",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "@radix-ui/react-scroll-area": "^1.2.8",
@@ -34,6 +35,7 @@
     "commitizen": "^4.3.1",
     "cz-customizable": "^7.4.0",
     "husky": "^9.1.7",
+    "lint-staged": "^16.0.0",
     "tw-animate-css": "^1.2.9",
     "typescript": "~5.7.2",
     "vite": "^6.3.1"
@@ -45,5 +47,8 @@
     "cz-customizable": {
       "config": ".cz-config.cjs"
     }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css}": ["biome check --write"]
   }
 }
