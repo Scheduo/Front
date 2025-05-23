@@ -7,7 +7,7 @@ interface DailyScheduleProps {
   selectedDate?: Date;
   schedules?: ScheduleItem[];
   onAddSchedule?: () => void;
-  onEditSchedule?: (id: string) => void;
+  onEditSchedule?: (id: number) => void;
   children?: React.ReactNode;
 }
 
@@ -37,7 +37,7 @@ export const DailySchedule = ({
             schedules.map((schedule) => (
               <button
                 type="button"
-                aria-label={`일정: ${schedule.title}, 시간: ${schedule.time}`}
+                aria-label={`일정: ${schedule.title}`}
                 key={schedule.id}
                 className="group w-full cursor-pointer rounded-lg border border-grayscale-100 p-4 shadow transition-colors hover:bg-grayscale-100"
                 onClick={() => onEditSchedule?.(schedule.id)}
@@ -51,13 +51,15 @@ export const DailySchedule = ({
                     </div>
                     <div className="flex flex-shrink-0 items-center gap-1">
                       <Clock className="h-4 w-4 text-grayscale-500" />
-                      <div className="text-grayscale-500 text-medium-s">{schedule.time}</div>
+                      <div className="text-grayscale-500 text-medium-s">
+                        {schedule.isAllDAy ? "하루 종일" : `${schedule.startTime}~${schedule.endTime}`}
+                      </div>
                     </div>
                   </div>
 
                   <div className="flex w-full items-center justify-between text-grayscale-500 text-medium-s">
                     <div className="truncate">{schedule.location}</div>
-                    <div>{schedule.typeName}</div>
+                    <div>{schedule.calendar.name}</div>
                   </div>
                 </div>
               </button>
