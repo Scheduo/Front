@@ -37,6 +37,7 @@ export const DailySchedule = ({
             schedules.map((schedule) => (
               <button
                 type="button"
+                aria-label={`일정: ${schedule.title}, 시간: ${schedule.time}`}
                 key={schedule.id}
                 className="group w-full cursor-pointer rounded-lg border border-grayscale-100 p-4 shadow transition-colors hover:bg-grayscale-100"
                 onClick={() => onEditSchedule?.(schedule.id)}
