@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/ui";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import { DAY_NAMES } from "./consts";
@@ -121,7 +121,7 @@ export const Calendar = (): React.ReactElement => {
   };
 
   return (
-    <div className="max-w-4xl rounded-lg bg-white">
+    <div className="flex flex-1 flex-col pb-20">
       <div className="flex h-14 items-center justify-center border-b">
         <div className="flex w-70 items-center justify-between gap-2">
           <Button onClick={goToPreviousMonth} variant="ghost" size="icon" className="p-2">
@@ -138,7 +138,7 @@ export const Calendar = (): React.ReactElement => {
         </div>
       </div>
 
-      <div className=" grid grid-cols-7">
+      <div className="grid grid-cols-7">
         {DAY_NAMES.map((day, index) => (
           <div
             key={day}
@@ -151,7 +151,7 @@ export const Calendar = (): React.ReactElement => {
         ))}
       </div>
 
-      <div className="grid grid-cols-7">
+      <div className="grid flex-1 grid-cols-7 grid-rows-6">
         {calendarDays.map(({ date, isCurrentMonth }, index) => {
           const isSelected = isSelectedDate(date);
           const dayKey = date.toDateString();
@@ -167,7 +167,7 @@ export const Calendar = (): React.ReactElement => {
             <button
               type="button"
               key={`${date.getTime()}-${index}`}
-              className={`relative flex h-32 w-32 flex-col items-start justify-start overflow-hidden border border-grayscale-200 transition-colors hover:cursor-pointer ${
+              className={`flex flex-col items-start justify-start overflow-hidden border border-grayscale-200 transition-colors hover:cursor-pointer ${
                 isCurrentMonth ? "hover:bg-grayscale-100" : "text-grayscale-400"
               } ${isSelected ? "z-10 bg-grayscale-200 ring-2 ring-primary-main" : "z-0"}`}
               onClick={() => setSelectedDate(date)}
@@ -182,7 +182,7 @@ export const Calendar = (): React.ReactElement => {
               </div>
 
               {isCurrentMonth && (
-                <div className="flex h-20 w-full flex-col gap-1 overflow-visible">
+                <div className="flex w-full flex-1 flex-col gap-1 overflow-visible">
                   {dayEvents.slice(0, 3).map((event, eventIndex) => {
                     const key = event ? event.id : prevEventIds[eventIndex] || `empty-${index}-${eventIndex}`;
                     if (!event) {
@@ -199,7 +199,7 @@ export const Calendar = (): React.ReactElement => {
                           isStart ? "ml-1 rounded-l-sm" : ""
                         } ${isEnd ? " mr-1 rounded-r-sm" : ""} ${
                           isMiddle ? "rounded-none" : ""
-                        } relative z-10 text-grayscale-white`}
+                        } z-10 text-grayscale-white`}
                         title={event.title}
                       >
                         {isStart && (
