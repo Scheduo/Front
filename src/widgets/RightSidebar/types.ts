@@ -41,7 +41,9 @@ export type ScheduleItem = {
   /** 일정 종료 시간 (예: "15:30", "오후 3시 30분") */
   endTime: string;
   /** 하루종일 일정 여부 */
-  isAllDAy: boolean;
+  isAllDay: boolean;
   /** 일정이 속한 캘린더 정보 */
   calendar: Calendar;
 };
+
+export type RightSidebarViewType = "daily" | "share" | "create" | "edit" | "search" | "notification";

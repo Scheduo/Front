@@ -4,7 +4,7 @@ import type React from "react";
 import { useState } from "react";
 import { DailySchedule } from "./DailySchedule";
 
-type RightSidebarViewType = "daily" | "share" | "create" | "edit" | "search" | "notification";
+export type RightSidebarViewType = "daily" | "share" | "create" | "edit" | "search" | "notification";
 
 /**
  * 애플리케이션 우측에 위치하는 사이드바 컴포넌트입니다.
@@ -20,7 +20,7 @@ export const RightSidebar = (): React.ReactElement => {
   const renderContent = () => {
     switch (currentView) {
       case "daily":
-        return <DailySchedule />;
+        return <DailySchedule onSetView={setCurrentView} />;
       case "share":
         return <div>일정 공유</div>;
       case "create":
@@ -32,7 +32,7 @@ export const RightSidebar = (): React.ReactElement => {
       case "notification":
         return <div>알림</div>;
       default:
-        return <DailySchedule />;
+        return <DailySchedule onSetView={setCurrentView} />;
     }
   };
 
