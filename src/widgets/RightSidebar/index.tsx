@@ -3,8 +3,8 @@ import { Bell, Search } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { DailySchedule } from "./DailySchedule";
-
-export type RightSidebarViewType = "daily" | "share" | "create" | "edit" | "search" | "notification";
+import { ShareSchedule } from "./ShareSchedule";
+import type { RightSidebarViewType } from "./types";
 
 /**
  * 애플리케이션 우측에 위치하는 사이드바 컴포넌트입니다.
@@ -22,7 +22,7 @@ export const RightSidebar = (): React.ReactElement => {
       case "daily":
         return <DailySchedule onSetView={setCurrentView} />;
       case "share":
-        return <div>일정 공유</div>;
+        return <ShareSchedule onSetView={setCurrentView} />;
       case "create":
         return <div>일정 생성</div>;
       case "edit":
