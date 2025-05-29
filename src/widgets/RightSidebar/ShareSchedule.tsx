@@ -222,11 +222,11 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps): React.ReactEle
 
       <div className="p-6">
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => onSetView("daily")} className="flex-1">
-            취소
-          </Button>
           <Button className="flex-1" disabled={!startDate}>
             확인
+          </Button>
+          <Button variant="outline" onClick={() => onSetView("daily")} className="flex-1">
+            취소
           </Button>
         </div>
       </div>
