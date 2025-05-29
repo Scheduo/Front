@@ -1,10 +1,11 @@
 import { cn } from "@/shared/lib/utils";
 import { Button, Calendar, Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@/shared/ui";
 import { format } from "date-fns";
-import { CalendarIcon, Check, ChevronDown } from "lucide-react";
+import { CalendarIcon, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import type React from "react";
 import type { CalendarType, RightSidebarViewType, ShareScheduleItemType } from "./types";
+import { ToggleCheckButton } from "./ui";
 import { ShareScheduleItem } from "./ui/ShareScheduleItem";
 
 interface ShareScheduleProps {
@@ -201,24 +202,11 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps): React.ReactEle
           <div className="space-y-3">
             <div className="flex items-center justify-end">
               <span className="mr-1 text-gray-500 text-xs">모두 선택</span>
-              <Button
-                type="button"
-                size="icon"
-                variant="ghost"
-                onClick={toggleAllSchedules}
-                className={`flex size-6 items-center justify-center transition-colors ${
-                  isAllSelected ? "text-primary-main" : "text-grayscale-400"
-                }`}
-                aria-label={isAllSelected ? "모든 일정 선택 해제" : "모든 일정 선택"}
-              >
-                {isAllSelected ? (
-                  <div className="flex size-4 items-center justify-center rounded border-1 border-primary-main bg-primary-main">
-                    <Check className="h-4 w-4 text-white" />
-                  </div>
-                ) : (
-                  <div className="size-4 rounded border-2 border-grayscale-400 bg-white" />
-                )}
-              </Button>
+              <ToggleCheckButton
+                isSelected={isAllSelected}
+                onToggle={toggleAllSchedules}
+                ariaLabel={isAllSelected ? "모든 일정 선택 해제" : "모든 일정 선택"}
+              />
             </div>
             {schedules.map((schedule) => (
               <ShareScheduleItem
