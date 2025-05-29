@@ -72,7 +72,7 @@ export const DailySchedule = ({
 
                   <div className="flex w-full items-center justify-between text-grayscale-500 text-medium-s">
                     <div className="truncate">{schedule.location}</div>
-                    <div>{schedule.calendar.name}</div>
+                    <div>{schedule.calendar.title}</div>
                   </div>
                 </div>
               </button>
