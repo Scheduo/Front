@@ -25,6 +25,8 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps): React.ReactEle
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>();
   const [selectedCalendar, setSelectedCalendar] = useState("");
+  const [isStartCalendarOpen, setIsStartCalendarOpen] = useState(false);
+  const [isEndCalendarOpen, setIsEndCalendarOpen] = useState(false);
   const [selectedSchedules, setSelectedSchedules] = useState<Set<string>>(new Set());
   const [calendars, setCalendars] = useState<CalendarType[]>([
     {
@@ -114,6 +116,16 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps): React.ReactEle
     }
   };
 
+  const handleStartDateSelect = (date: Date | undefined) => {
+    setStartDate(date);
+    setIsStartCalendarOpen(false);
+  };
+
+  const handleEndDateSelect = (date: Date | undefined) => {
+    setEndDate(date);
+    setIsEndCalendarOpen(false);
+  };
+
   const isAllSelected = schedules.every((schedule) =>
     selectedSchedules.has(getScheduleKey(schedule.id, schedule.date)),
   );
@@ -153,7 +165,7 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps): React.ReactEle
           {/* 날짜 선택 */}
           <section>
             <h3 className="text-grayscale-700 text-medium-m">시작 날짜</h3>
-            <Popover>
+            <Popover open={isStartCalendarOpen} onOpenChange={setIsStartCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -167,12 +179,12 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps): React.ReactEle
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <Calendar mode="single" selected={startDate} onSelect={setStartDate} initialFocus />
+                <Calendar mode="single" selected={startDate} onSelect={handleStartDateSelect} initialFocus />
               </PopoverContent>
             </Popover>
 
             <h3 className="text-grayscale-700 text-medium-m">종료 날짜</h3>
-            <Popover>
+            <Popover open={isEndCalendarOpen} onOpenChange={setIsEndCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button
                   type="button"
@@ -190,7 +202,7 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps): React.ReactEle
                 <Calendar
                   mode="single"
                   selected={endDate}
-                  onSelect={setEndDate}
+                  onSelect={handleEndDateSelect}
                   initialFocus
                   disabled={(date) => (startDate ? date < startDate : false)}
                 />
