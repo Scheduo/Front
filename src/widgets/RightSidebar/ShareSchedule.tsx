@@ -228,7 +228,7 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps): React.ReactEle
 
       <div className="p-6">
         <div className="flex gap-2">
-          <Button className="flex-1" disabled={!startDate}>
+          <Button className="flex-1" disabled={!startDate || selectedSchedules.size === 0}>
             확인
           </Button>
           <Button variant="outline" onClick={() => onSetView("daily")} className="flex-1">
