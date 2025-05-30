@@ -3,7 +3,6 @@ import { Button, Calendar, Popover, PopoverContent, PopoverTrigger, ScrollArea }
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown } from "lucide-react";
 import { useState } from "react";
-import type React from "react";
 import type { CalendarType, RightSidebarViewType, ShareScheduleItemType } from "./types";
 import { ToggleCheckButton } from "./ui";
 import { ShareScheduleItem } from "./ui/ShareScheduleItem";
@@ -85,11 +84,6 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps): React.ReactEle
 
   const getScheduleKey = (scheduleId: number, date: string): string => {
     return `${scheduleId}|${date}`;
-  };
-
-  const parseScheduleKey = (key: string): { scheduleId: number; date: string } => {
-    const [scheduleId, date] = key.split("|");
-    return { scheduleId: Number.parseInt(scheduleId), date };
   };
 
   const toggleScheduleSelection = (scheduleId: number, date: string): void => {
