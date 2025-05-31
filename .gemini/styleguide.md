@@ -74,7 +74,7 @@
 
 #### TSDoc 작성 대상:
 
-- React 컴포넌트 (props 설명은 변수 이름만으로도 추론 가능한 경우에는 포함하지 않음, @returns는 작성하지 않음)
+- 복잡한 React 컴포넌트 (복잡한 props는 설명 포함, @returns는 작성하지 않음)
 - 복잡한 비즈니스 로직을 담은 함수나 훅
 - 공개 API로 사용되는 유틸리티 함수
 - 외부 라이브러리 통합이나 복잡한 설정이 필요한 경우
@@ -82,6 +82,8 @@
 
 #### TSDoc 작성하지 않는 대상:
 
+- 간단한 React 컴포넌트 (이름과 코드만으로 목적이 명확한 경우)
+- 내부 전용 컴포넌트 (동일 세그먼트 내에서만 사용되는 컴포넌트)
 - 간단한 TypeScript 인터페이스나 타입 (이미 타입으로 의미가 명확함)
 - 간단한 헬퍼 함수
 - 자명한 getter/setter 함수
@@ -93,70 +95,12 @@
 - **필요한 경우에만 상세 정보 추가**: @param, @returns, @example 등은 복잡하거나 이해가 어려운 경우에만 사용합니다.
 - **명확하고 간결한 문장:** 완전한 문장으로 작성하고, 첫 글자는 대문자로 시작하며 적절한 구두점을 사용합니다.
 
-```typescript
-/**
- * 일정 생성 모달 컴포넌트입니다.
- * 사용자가 새로운 일정을 생성하거나 기존 일정을 수정할 수 있습니다.
- */
-const ScheduleModal = ({
-  isOpen,
-  onClose,
-  initialSchedule,
-}: ScheduleModalProps) => {
-  // 간단한 내부 함수에는 주석 불필요
-  const formatDate = (date: Date) => date.toISOString().split("T")[0];
+#### TSDoc 작성 우선순위:
 
-  return (
-    <Modal open={isOpen} onClose={onClose}>
-      {/* JSX 내용 */}
-    </Modal>
-  );
-};
-
-/**
- * 일정 데이터를 캘린더 뷰에 맞게 변환합니다.
- * 반복 일정의 경우 지정된 기간 내 모든 인스턴스를 생성합니다.
- *
- * @param schedules 원본 일정 데이터 배열
- * @param startDate 표시할 캘린더 시작 날짜
- * @param endDate 표시할 캘린더 종료 날짜
- * @returns 캘린더 렌더링에 최적화된 일정 객체 배열
- */
-function transformSchedulesForCalendar(
-  schedules: Schedule[],
-  startDate: Date,
-  endDate: Date
-): CalendarEvent[] {
-  // 복잡한 변환 로직
-}
-
-/**
- * 시간대를 고려한 일정 시간 포맷팅을 수행합니다.
- */
-function formatScheduleTime(date: Date, timezone: string): string {
-  return new Intl.DateTimeFormat("ko-KR", {
-    timeZone: timezone,
-  }).format(date);
-}
-
-// 간단한 인터페이스는 TSDoc 불필요
-interface Schedule {
-  id: string;
-  title: string;
-  startTime: Date;
-  endTime: Date;
-}
-
-// 복잡한 설정 객체만 설명 추가
-interface CalendarConfig {
-  /** 캘린더 뷰 타입 (월간/주간/일간) */
-  viewType: "month" | "week" | "day";
-  /** 시간대 설정 (IANA 시간대 문자열) */
-  timezone: string;
-  /** 반복 일정 생성 시 최대 기간 (개월) */
-  maxRecurrenceMonths: number;
-}
-```
+- **높음:** FSD 공개 API로 노출되는 함수/컴포넌트, 주요 비즈니스 로직, 재사용성이 높은 유틸리티
+- **중간:** 복잡한 컴포넌트, 커스텀 훅, 도메인 특화 함수
+- **낮음:** 간단한 UI 컴포넌트, 내부 헬퍼 함수
+- **FSD 공개 API로 노출되는 주요 함수와 컴포넌트에 우선 적용하는 것이 효율적입니다.**
 
 ### 6. 타입 명시 (Type Hints)
 
