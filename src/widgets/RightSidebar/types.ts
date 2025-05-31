@@ -16,13 +16,11 @@ export type Participant = {
  * 캘린더 정보를 정의하는 타입입니다.
  * 일정이 속한 캘린더의 기본 정보와 참여자 목록을 나타냅니다.
  */
-export type Calendar = {
+export type CalendarType = {
   /** 캘린더의 고유 식별자 */
-  id: number;
+  calendarId: number;
   /** 캘린더의 이름 (예: "개인일정", "업무일정") */
-  name: string;
-  /** 캘린더에 참여하는 멤버들의 목록 */
-  participants: Participant[];
+  title: string;
 };
 
 /**
@@ -41,7 +39,17 @@ export type ScheduleItem = {
   /** 일정 종료 시간 (예: "15:30", "오후 3시 30분") */
   endTime: string;
   /** 하루종일 일정 여부 */
-  isAllDAy: boolean;
+  isAllDay: boolean;
   /** 일정이 속한 캘린더 정보 */
-  calendar: Calendar;
+  calendar: CalendarType;
 };
+
+export interface ShareScheduleItemType {
+  id: number;
+  title: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+}
+
+export type RightSidebarViewType = "daily" | "share" | "create" | "edit" | "search" | "notification";

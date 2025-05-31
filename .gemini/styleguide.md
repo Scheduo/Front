@@ -68,41 +68,92 @@
 
 ### 5. 주석 및 TSDoc (Comments and TSDoc)
 
-- 모든 React 컴포넌트, 복잡한 함수, 공개 API 모듈에는 **TSDoc** 스타일의 주석을 작성합니다.
-- **첫 줄:** 객체의 목적을 간결하게 요약합니다.
-- **자세한 설명:** 필요한 경우 매개변수(`@param`), 반환 값(`@returns`), 제네릭 타입 매개변수(`@typeParam`), 상속된 문서(`@inheritDoc`) 및 컴포넌트의 주요 동작 방식에 대한 설명을 포함합니다.
+#### TSDoc 작성 대상:
+
+- React 컴포넌트 (props 설명 포함, @returns는 제외)
+- 복잡한 비즈니스 로직을 담은 함수나 훅
+- 공개 API로 사용되는 유틸리티 함수
+- 외부 라이브러리 통합이나 복잡한 설정이 필요한 경우
+- 도메인 특화된 로직이나 알고리즘
+
+#### TSDoc 작성하지 않는 대상:
+
+- 간단한 TypeScript 인터페이스나 타입 (이미 타입으로 의미가 명확함)
+- 간단한 헬퍼 함수
+- 자명한 getter/setter 함수
+
+#### 작성 원칙:
+
 - **코드의 "왜"를 설명:** 단순한 코드의 동작보다는 해당 코드가 작성된 이유나 배경을 설명하는 데 중점을 둡니다.
+- **필요한 경우에만 상세 정보 추가**: @param, @returns, @example 등은 복잡하거나 이해가 어려운 경우에만 사용합니다.
 - **명확하고 간결한 문장:** 완전한 문장으로 작성하고, 첫 글자는 대문자로 시작하며 적절한 구두점을 사용합니다.
 
 ```typescript
 /**
- * 지정된 사용자의 프로필 정보를 비동기적으로 가져옵니다.
- * Tanstack Query를 사용하여 데이터를 캐싱하고 관리합니다.
+ * 일정 생성 모달 컴포넌트입니다.
+ * 사용자가 새로운 일정을 생성하거나 기존 일정을 수정할 수 있습니다.
  *
- * @param userId 가져올 사용자의 고유 ID
- * @returns 사용자 정보 객체를 포함하는 Query 결과 객체.
- * 데이터 로딩 중, 성공, 실패 상태를 포함합니다.
- * @example
- * const { data: userProfile, isLoading } = useUserProfileQuery('user123');
+ * @param isOpen 모달 열림/닫힘 상태
+ * @param onClose 모달 닫기 콜백 함수
+ * @param initialSchedule 수정할 기존 일정 데이터 (새 일정 생성 시 undefined)
  */
-function useUserProfileQuery(userId: string) {
-  // ...
+const ScheduleModal = ({
+  isOpen,
+  onClose,
+  initialSchedule,
+}: ScheduleModalProps) => {
+  // 간단한 내부 함수에는 주석 불필요
+  const formatDate = (date: Date) => date.toISOString().split("T")[0];
+
+  return (
+    <Modal open={isOpen} onClose={onClose}>
+      {/* JSX 내용 */}
+    </Modal>
+  );
+};
+
+/**
+ * 일정 데이터를 캘린더 뷰에 맞게 변환합니다.
+ * 반복 일정의 경우 지정된 기간 내 모든 인스턴스를 생성합니다.
+ *
+ * @param schedules 원본 일정 데이터 배열
+ * @param startDate 표시할 캘린더 시작 날짜
+ * @param endDate 표시할 캘린더 종료 날짜
+ * @returns 캘린더 렌더링에 최적화된 일정 객체 배열
+ */
+function transformSchedulesForCalendar(
+  schedules: Schedule[],
+  startDate: Date,
+  endDate: Date
+): CalendarEvent[] {
+  // 복잡한 변환 로직
 }
 
 /**
- * @typeParam T - 처리할 데이터의 타입
- * @param data - 처리할 데이터 배열
- * @returns 각 요소를 대문자로 변환한 새로운 배열
+ * 시간대를 고려한 일정 시간 포맷팅을 수행합니다.
  */
-function toUpperArray<T extends string>(data: T[]): string[] {
-  return data.map((item) => item.toUpperCase());
+function formatScheduleTime(date: Date, timezone: string): string {
+  return new Intl.DateTimeFormat("ko-KR", {
+    timeZone: timezone,
+  }).format(date);
 }
 
-interface User {
-  /** 사용자의 고유 식별자 */
+// 간단한 인터페이스는 TSDoc 불필요
+interface Schedule {
   id: string;
-  name: string;
-  email: string;
+  title: string;
+  startTime: Date;
+  endTime: Date;
+}
+
+// 복잡한 설정 객체만 설명 추가
+interface CalendarConfig {
+  /** 캘린더 뷰 타입 (월간/주간/일간) */
+  viewType: "month" | "week" | "day";
+  /** 시간대 설정 (IANA 시간대 문자열) */
+  timezone: string;
+  /** 반복 일정 생성 시 최대 기간 (개월) */
+  maxRecurrenceMonths: number;
 }
 ```
 
@@ -122,36 +173,72 @@ interface User {
   - `JSX.Element`는 TypeScript 구성에 따라 인식되지 않을 수 있으므로 지양
 
 ```typescript
-import { useState, useEffect } from "react"; // React Hooks 직접 import
-
-interface MyComponentProps {
-  message: string;
-}
-
 /**
- * 메시지를 표시하는 간단한 컴포넌트입니다.
- * @param message 표시할 메시지 문자열
- * @returns 메시지를 담은 React 엘리먼트
+ * 일정 생성 모달 컴포넌트입니다.
+ * 사용자가 새로운 일정을 생성하거나 기존 일정을 수정할 수 있습니다.
+ *
+ * @param isOpen 모달 열림/닫힘 상태
+ * @param onClose 모달 닫기 콜백 함수
+ * @param initialSchedule 수정할 기존 일정 데이터 (새 일정 생성 시 undefined)
  */
-const MyComponent = ({ message }: MyComponentProps): React.ReactElement => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    console.log("Component mounted");
-    return () => {
-      console.log("Component unmounted");
-    };
-  }, []);
+const ScheduleModal = ({
+  isOpen,
+  onClose,
+  initialSchedule,
+}: ScheduleModalProps) => {
+  // 간단한 내부 함수에는 주석 불필요
+  const formatDate = (date: Date) => date.toISOString().split("T")[0];
 
   return (
-    <div>
-      <p>{message}</p>
-      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
-    </div>
+    <Modal open={isOpen} onClose={onClose}>
+      {/* JSX 내용 */}
+    </Modal>
   );
 };
 
-export default MyComponent;
+/**
+ * 일정 데이터를 캘린더 뷰에 맞게 변환합니다.
+ * 반복 일정의 경우 지정된 기간 내 모든 인스턴스를 생성합니다.
+ *
+ * @param schedules 원본 일정 데이터 배열
+ * @param startDate 표시할 캘린더 시작 날짜
+ * @param endDate 표시할 캘린더 종료 날짜
+ * @returns 캘린더 렌더링에 최적화된 일정 객체 배열
+ */
+function transformSchedulesForCalendar(
+  schedules: Schedule[],
+  startDate: Date,
+  endDate: Date
+): CalendarEvent[] {
+  // 복잡한 변환 로직
+}
+
+/**
+ * 시간대를 고려한 일정 시간 포맷팅을 수행합니다.
+ */
+function formatScheduleTime(date: Date, timezone: string): string {
+  return new Intl.DateTimeFormat("ko-KR", {
+    timeZone: timezone,
+  }).format(date);
+}
+
+// 간단한 인터페이스는 TSDoc 불필요
+interface Schedule {
+  id: string;
+  title: string;
+  startTime: Date;
+  endTime: Date;
+}
+
+// 복잡한 설정 객체만 설명 추가
+interface CalendarConfig {
+  /** 캘린더 뷰 타입 (월간/주간/일간) */
+  viewType: "month" | "week" | "day";
+  /** 시간대 설정 (IANA 시간대 문자열) */
+  timezone: string;
+  /** 반복 일정 생성 시 최대 기간 (개월) */
+  maxRecurrenceMonths: number;
+}
 ```
 
 ### 8. 폴더 구조 (Folder Structure - Feature-Sliced Design)
