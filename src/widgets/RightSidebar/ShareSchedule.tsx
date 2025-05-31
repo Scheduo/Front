@@ -20,7 +20,7 @@ interface ShareScheduleProps {
  *
  * @param onSetView - 뷰를 변경하기 위한 콜백 함수
  */
-export const ShareSchedule = ({ onSetView }: ShareScheduleProps): React.ReactElement => {
+export const ShareSchedule = ({ onSetView }: ShareScheduleProps) => {
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>();
   const [selectedCalendar, setSelectedCalendar] = useState("");

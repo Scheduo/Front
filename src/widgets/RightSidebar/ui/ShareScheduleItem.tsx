@@ -15,11 +15,7 @@ interface ShareScheduleItemProps {
  * @param isSelected 현재 일정의 선택 상태
  * @param toggleScheduleSelection 일정 선택 상태를 변경하는 함수
  */
-export const ShareScheduleItem = ({
-  schedule,
-  isSelected,
-  toggleScheduleSelection,
-}: ShareScheduleItemProps): React.ReactElement => {
+export const ShareScheduleItem = ({ schedule, isSelected, toggleScheduleSelection }: ShareScheduleItemProps) => {
   return (
     <div key={schedule.id} className="rounded-lg border border-grayscale-300 px-4 py-2">
       <div className="flex items-center justify-between">

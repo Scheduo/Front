@@ -7,7 +7,7 @@
 
 ## 리뷰 언어 정책
 
-- ✅ 한글 사용: 모든 코멘트, 제안, 설명은 한글로 작성
+- ✅ 한글 사용: 모든 요약, 코멘트, 제안, 설명은 한글로 작성
 - ❌ 영어 사용 금지: 리뷰 시 영어 사용은 절대 불허
 - 📝 예외 상황: 영어 기술 용어는 허용하되, 설명은 반드시 한글로 작성
 
@@ -34,19 +34,22 @@
 
 ### 3. 모듈 가져오기 (Imports)
 
-- **그룹화하여 가져오기:**
-  1.  React 및 라이브러리 기본 `import` (예: `import React from 'react';`)
-  2.  Third-party 라이브러리 `import` (예: `import { useQuery } from '@tanstack/react-query';`)
-  3.  FSD 아키텍처에 따른 내부 모듈 `import` (절대 경로 또는 alias 사용 권장)
-      - `pages`
-      - `widgets`
-      - `features`
-      - `entities`
-      - `shared/ui`, `shared/lib`, `shared/api` 등
-  4.  상대 경로 `import` (동일 모듈 내 파일, 스타일 시트, 이미지 등)
-- **절대 경로 사용 권장:** `tsconfig.json`의 `baseUrl` 및 `paths` 설정을 활용하여 명확한 절대 경로를 사용합니다. (예: `@/shared/ui/Button`)
-- **그룹 내 알파벳 순 정렬:** Biome이 자동으로 정렬하도록 설정합니다.
-- **React import 방식 (React 19)**: `useState`, `useEffect`, `createContext` 등 필요한 React Hooks를 직접 import합니다. `React` 객체 자체를 사용하는 경우 (예: `React.createElement` 또는 레거시 클래스 컴포넌트)에만 `import React from 'react';`를 사용합니다.
+**그룹화하여 가져오기:**
+
+1.  React 및 라이브러리 기본 `import` (예: `import React from 'react';`)
+2.  Third-party 라이브러리 `import` (예: `import { useQuery } from '@tanstack/react-query';`)
+3.  FSD 아키텍처에 따른 내부 모듈 `import` (절대 경로 또는 alias 사용 권장)
+
+    - `pages`
+    - `widgets`
+    - `features`
+    - `entities`
+    - `shared/ui`, `shared/lib`, `shared/api` 등
+
+4.  상대 경로 `import` (동일 모듈 내 파일, 스타일 시트, 이미지 등)
+    - **절대 경로 사용 권장:** `tsconfig.json`의 `baseUrl` 및 `paths` 설정을 활용하여 명확한 절대 경로를 사용합니다. (예: `@/shared/ui`)
+    - **그룹 내 알파벳 순 정렬:** Biome이 자동으로 정렬하도록 설정합니다.
+    - **React import 방식 (React 19)**: `useState`, `useEffect`, `createContext` 등 필요한 React Hooks를 직접 import합니다. `React` 객체 자체를 사용하는 경우 (예: `React.createElement` 또는 레거시 클래스 컴포넌트)에만 `import React from 'react';`를 사용합니다.
 
 ### 4. 네이밍 컨벤션 (Naming Conventions)
 
@@ -56,6 +59,7 @@
 - **함수 (Functions):** `camelCase` (예: `calculateTotal()`, `processUserData()`)
 - **React 컴포넌트 (React Components):** `PascalCase` (예: `UserProfile`, `OrderForm`)
   - 파일 이름도 컴포넌트 이름과 동일하게 `PascalCase.tsx` (또는 `.jsx`)로 작성합니다. (예: `UserProfile.tsx`)
+  - **적용 제외:** shadcn/ui 컴포넌트는 kebab-case 파일명을 사용하는 라이브러리의 컨벤션을 따릅니다.
 - **타입/인터페이스 (Types/Interfaces):** `PascalCase` (예: `UserProps`, `ApiOptions`)
   - 타입과 인터페이스 이름에 T나 I 접두사를 사용하지 않는 것을 원칙으로 합니다.
   - 타입과 인터페이스의 의미를 명확하게 나타내는 명사 형태의 이름을 사용합니다.
@@ -70,7 +74,7 @@
 
 #### TSDoc 작성 대상:
 
-- React 컴포넌트 (props 설명 포함, @returns는 제외)
+- 복잡한 React 컴포넌트 (복잡한 props는 설명 포함, @returns는 작성하지 않음)
 - 복잡한 비즈니스 로직을 담은 함수나 훅
 - 공개 API로 사용되는 유틸리티 함수
 - 외부 라이브러리 통합이나 복잡한 설정이 필요한 경우
@@ -78,9 +82,12 @@
 
 #### TSDoc 작성하지 않는 대상:
 
+- 간단한 React 컴포넌트 (이름과 코드만으로 목적이 명확한 경우)
+- 내부 전용 컴포넌트 (동일 세그먼트 내에서만 사용되는 컴포넌트)
 - 간단한 TypeScript 인터페이스나 타입 (이미 타입으로 의미가 명확함)
 - 간단한 헬퍼 함수
 - 자명한 getter/setter 함수
+- shadcn/ui 컴포넌트
 
 #### 작성 원칙:
 
@@ -88,74 +95,12 @@
 - **필요한 경우에만 상세 정보 추가**: @param, @returns, @example 등은 복잡하거나 이해가 어려운 경우에만 사용합니다.
 - **명확하고 간결한 문장:** 완전한 문장으로 작성하고, 첫 글자는 대문자로 시작하며 적절한 구두점을 사용합니다.
 
-```typescript
-/**
- * 일정 생성 모달 컴포넌트입니다.
- * 사용자가 새로운 일정을 생성하거나 기존 일정을 수정할 수 있습니다.
- *
- * @param isOpen 모달 열림/닫힘 상태
- * @param onClose 모달 닫기 콜백 함수
- * @param initialSchedule 수정할 기존 일정 데이터 (새 일정 생성 시 undefined)
- */
-const ScheduleModal = ({
-  isOpen,
-  onClose,
-  initialSchedule,
-}: ScheduleModalProps) => {
-  // 간단한 내부 함수에는 주석 불필요
-  const formatDate = (date: Date) => date.toISOString().split("T")[0];
+#### TSDoc 작성 우선순위:
 
-  return (
-    <Modal open={isOpen} onClose={onClose}>
-      {/* JSX 내용 */}
-    </Modal>
-  );
-};
-
-/**
- * 일정 데이터를 캘린더 뷰에 맞게 변환합니다.
- * 반복 일정의 경우 지정된 기간 내 모든 인스턴스를 생성합니다.
- *
- * @param schedules 원본 일정 데이터 배열
- * @param startDate 표시할 캘린더 시작 날짜
- * @param endDate 표시할 캘린더 종료 날짜
- * @returns 캘린더 렌더링에 최적화된 일정 객체 배열
- */
-function transformSchedulesForCalendar(
-  schedules: Schedule[],
-  startDate: Date,
-  endDate: Date
-): CalendarEvent[] {
-  // 복잡한 변환 로직
-}
-
-/**
- * 시간대를 고려한 일정 시간 포맷팅을 수행합니다.
- */
-function formatScheduleTime(date: Date, timezone: string): string {
-  return new Intl.DateTimeFormat("ko-KR", {
-    timeZone: timezone,
-  }).format(date);
-}
-
-// 간단한 인터페이스는 TSDoc 불필요
-interface Schedule {
-  id: string;
-  title: string;
-  startTime: Date;
-  endTime: Date;
-}
-
-// 복잡한 설정 객체만 설명 추가
-interface CalendarConfig {
-  /** 캘린더 뷰 타입 (월간/주간/일간) */
-  viewType: "month" | "week" | "day";
-  /** 시간대 설정 (IANA 시간대 문자열) */
-  timezone: string;
-  /** 반복 일정 생성 시 최대 기간 (개월) */
-  maxRecurrenceMonths: number;
-}
-```
+- **높음:** FSD 공개 API로 노출되는 함수/컴포넌트, 주요 비즈니스 로직, 재사용성이 높은 유틸리티
+- **중간:** 복잡한 컴포넌트, 커스텀 훅, 도메인 특화 함수
+- **낮음:** 간단한 UI 컴포넌트, 내부 헬퍼 함수
+- **FSD 공개 API로 노출되는 주요 함수와 컴포넌트에 우선 적용하는 것이 효율적입니다.**
 
 ### 6. 타입 명시 (Type Hints)
 
@@ -168,18 +113,11 @@ interface CalendarConfig {
 - React 컴포넌트는 화살표 함수 (=>) 를 사용하여 선언하는 것을 권장합니다.
 - props의 타입은 TypeScript 인터페이스나 type alias를 사용하여 명시합니다.
 - `React.FC`는 암시적인 children prop 및 제네릭 타입 추론의 어려움 등으로 인해 사용을 지양합니다.
-- **리턴 타입 명시:**
-  - `React.ReactElement`를 사용 (React 18+ 권장)
-  - `JSX.Element`는 TypeScript 구성에 따라 인식되지 않을 수 있으므로 지양
 
 ```typescript
 /**
  * 일정 생성 모달 컴포넌트입니다.
  * 사용자가 새로운 일정을 생성하거나 기존 일정을 수정할 수 있습니다.
- *
- * @param isOpen 모달 열림/닫힘 상태
- * @param onClose 모달 닫기 콜백 함수
- * @param initialSchedule 수정할 기존 일정 데이터 (새 일정 생성 시 undefined)
  */
 const ScheduleModal = ({
   isOpen,
@@ -262,7 +200,6 @@ interface CalendarConfig {
   - 각 Slice (`feature`, `entity` 등)와 Segment는 공개 API를 가집니다.
   - 공개 API는 해당 폴더의 `index.ts` 파일을 의미하며, 이 파일을 통해 외부로 필요한 기능만 명시적으로 export합니다.
   - 규칙:
-    - `app` Slice와 Segment는 공개 API (`index.ts` 파일)에 정의된 Slice 기능과 컴포넌트만 사용해야 합니다.
     - 공개 API에 정의되지 않은 Slice 또는 Segment의 내부 부분은 격리된 것으로 간주되며, 해당 Slice 또는 Segment 내부에서만 접근할 수 있습니다.
     - 주의: 컴포넌트 파일 (`*.tsx`, `*.jsx`) 자체에서는 외부로 직접 `export default` 하는 것을 지양하고, 필요한 경우 해당 컴포넌트를 공개 API (`index.ts`)를 통해 export해야 합니다.
   - 목적:
@@ -318,8 +255,7 @@ interface CalendarConfig {
   - **동적 유틸리티 값 및 Variants:** Tailwind CSS v4.0은 많은 유틸리티와 Variants에서 임의의 값을 별도의 설정 없이 바로 사용할 수 있도록 개선되었습니다. 예를 들어, `grid-cols-15`, `opacity-75 data-current:opacity-100`, `mt-8` 등 다양한 값을 즉시 적용할 수 있습니다.
 
 - **shadcn/ui:** UI 컴포넌트는 shadcn/ui를 기반으로 하며, 필요한 경우 **Tailwind CSS v4.0의 CSS-first 설정 방식** 및 컴포넌트 자체를 커스터마이징하여 사용합니다. shadcn/ui 컴포넌트의 스타일 변수를 `@theme` 내에서 재정의하거나, 필요한 커스텀 스타일을 추가합니다.
-- **커스텀 CSS 최소화:** 불가피하게 커스텀 CSS가 필요한 경우, 해당 컴포넌트와 가장 가까운 곳에 위치시키거나 FSD의 `shared/ui/styles` 또는 `app/styles` 폴더 내에 용도에 맞게 작성합니다.
-  - CSS Module 사용을 고려할 수 있습니다.
+
 - Biome은 Tailwind CSS 클래스 순서를 자동으로 정렬하도록 설정할 수 있습니다.
 
 ## 11. 접근성(A11y)
@@ -359,7 +295,6 @@ Scheduo는 WCAG 2.1 AA 수준을 준수하여 포용적인 사용자 경험을 �
 - **상태 업데이트 최적화:**
   - 상태 업데이트는 최소한으로 사용 (불필요한 리렌더링 방지)
   - 관련 상태는 단일 객체로 관리 (`useState` 여러 개 대신 하나의 객체 사용)
-  - `useTransition`/`useDeferredValue`: React 18에서 무거운 UI 업데이트 시 사용
 
 ### 코드 분할 및 지연 로딩
 
@@ -417,30 +352,22 @@ Scheduo는 WCAG 2.1 AA 수준을 준수하여 포용적인 사용자 경험을 �
 ## 예시 코드 (React Component with TypeScript & JSDoc)
 
 ```typescript
-// src/features/user-profile/ui/UserProfileCard.tsx
-import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"; // shadcn/ui 컴포넌트 예시
-import type { User } from "@/entities/user/model/types"; // FSD 엔티티 타입 예시
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui";
+import type { User } from "@/entities/user/model/types";
 
 interface UserProfileCardProps {
-  /** 표시할 사용자 정보 객체 */
   user: User;
-  /** 카드에 적용할 추가적인 Tailwind CSS 클래스 */
   className?: string;
 }
 
 /**
  * 사용자 프로필 정보를 카드 형태로 표시하는 컴포넌트입니다.
  * 아바타, 사용자 이름, 이메일 정보를 보여줍니다.
- *
- * @param user - 표시할 사용자 정보 객체
- * @param className - 카드 컨테이너에 적용될 추가 Tailwind CSS 클래스
- * @returns 사용자 프로필 카드 JSX 요소
  */
-function UserProfileCard({
+export const UserProfileCard = ({
   user,
   className = "",
-}: UserProfileCardProps): React.ReactElement {
+}: UserProfileCardProps) => {
   if (!user) {
     return <p className="text-red-500">사용자 정보를 불러올 수 없습니다.</p>;
   }
@@ -448,9 +375,9 @@ function UserProfileCard({
   return (
     <div
       className={`rounded-lg border bg-card text-card-foreground shadow-sm p-6 ${className}`}
-      data-testid={`user-profile-card-${user.id}`}
     >
       <div className="flex items-center space-x-4">
+        {/* shadcn/ui 컴포넌트 사용 시 해당 라이브러리 방식 그대로 사용 */}
         <Avatar>
           <AvatarImage src={user.avatarUrl} alt={`${user.name}의 아바타`} />
           <AvatarFallback>
@@ -462,12 +389,7 @@ function UserProfileCard({
           <p className="text-sm text-muted-foreground">{user.email}</p>
         </div>
       </div>
-      {user.bio && (
-        <p className="mt-4 text-sm text-muted-foreground">{user.bio}</p>
-      )}
     </div>
   );
-}
-
-export default UserProfileCard;
+};
 ```

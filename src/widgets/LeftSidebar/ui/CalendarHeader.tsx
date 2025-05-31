@@ -2,7 +2,7 @@ import { Button } from "@/shared/ui";
 import { Calendar, Plus } from "lucide-react";
 import { useState } from "react";
 
-function CalendarHeader() {
+export const CalendarHeader = () => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const handleAddCalendar = () => {
@@ -26,6 +26,4 @@ function CalendarHeader() {
       )}
     </div>
   );
-}
-
-export default CalendarHeader;
+};

@@ -1,7 +1,11 @@
 import { Button } from "@/shared/ui";
 import { PenSquare } from "lucide-react";
 import { useState } from "react";
-import type { CalendarInfo } from "./types";
+
+type CalendarInfo = {
+  calendarId: number;
+  title: string;
+};
 
 const calendarList = [
   {
@@ -14,7 +18,7 @@ const calendarList = [
   },
 ];
 
-function CalendarList() {
+export const CalendarList = () => {
   const [hoveredCalendarId, setHoveredCalendarId] = useState<number>(-1);
 
   const handleEditCalendar = (calendarId: number) => {
@@ -45,6 +49,4 @@ function CalendarList() {
       ))}
     </div>
   );
-}
-
-export default CalendarList;
+};

@@ -4,11 +4,8 @@ import type { ScheduleItem } from "./types";
 import type { RightSidebarViewType } from "./types";
 
 interface DailyScheduleProps {
-  /** 표시할 날짜. 기본값은 오늘 날짜 */
   selectedDate?: Date;
-  /** 해당 날짜의 일정 목록 */
   schedules?: ScheduleItem[];
-  /** 우측 사이드바의 뷰를 변경하기 위한 함수 */
   onSetView: (viewType: RightSidebarViewType) => void;
 }
 
@@ -22,17 +19,7 @@ interface DailyScheduleProps {
  * @param schedules - 해당 날짜의 일정 목록 (기본값: 빈 배열)
  * @param onSetView - 뷰 변경을 위한 콜백 함수
  */
-export const DailySchedule = ({
-  selectedDate = new Date(),
-  schedules = [],
-  onSetView,
-}: DailyScheduleProps): React.ReactElement => {
-  /**
-   * 날짜를 "월일" 형식으로 포맷합니다.
-   *
-   * @param date - 포맷할 날짜 객체
-   * @returns "3월 15일" 형식의 문자열
-   */
+export const DailySchedule = ({ selectedDate = new Date(), schedules = [], onSetView }: DailyScheduleProps) => {
   const formatDate = (date: Date): string => {
     const month = date.getMonth() + 1;
     const day = date.getDate();

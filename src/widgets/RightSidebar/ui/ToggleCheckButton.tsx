@@ -2,13 +2,9 @@ import { Button } from "@/shared/ui";
 import { Check } from "lucide-react";
 
 interface ToggleCheckButtonProps {
-  /** 선택된 상태 여부 */
   isSelected: boolean;
-  /** 클릭 시 호출될 함수 */
   onToggle: () => void;
-  /** 접근성을 위한 aria-label */
   ariaLabel: string;
-  /** 버튼에 적용할 추가적인 Tailwind CSS 클래스 */
   className?: string;
 }
 
@@ -21,12 +17,7 @@ interface ToggleCheckButtonProps {
  * @param ariaLabel - 스크린 리더용 접근성 레이블
  * @param className - 버튼에 적용할 추가 CSS 클래스
  */
-export const ToggleCheckButton = ({
-  isSelected,
-  onToggle,
-  ariaLabel,
-  className = "",
-}: ToggleCheckButtonProps): React.ReactElement => {
+export const ToggleCheckButton = ({ isSelected, onToggle, ariaLabel, className = "" }: ToggleCheckButtonProps) => {
   return (
     <Button
       type="button"
