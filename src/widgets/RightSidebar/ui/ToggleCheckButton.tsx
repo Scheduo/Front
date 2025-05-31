@@ -21,12 +21,7 @@ interface ToggleCheckButtonProps {
  * @param ariaLabel - 스크린 리더용 접근성 레이블
  * @param className - 버튼에 적용할 추가 CSS 클래스
  */
-export const ToggleCheckButton = ({
-  isSelected,
-  onToggle,
-  ariaLabel,
-  className = "",
-}: ToggleCheckButtonProps): React.ReactElement => {
+export const ToggleCheckButton = ({ isSelected, onToggle, ariaLabel, className = "" }: ToggleCheckButtonProps) => {
   return (
     <Button
       type="button"

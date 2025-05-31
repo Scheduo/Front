@@ -22,11 +22,7 @@ interface DailyScheduleProps {
  * @param schedules - 해당 날짜의 일정 목록 (기본값: 빈 배열)
  * @param onSetView - 뷰 변경을 위한 콜백 함수
  */
-export const DailySchedule = ({
-  selectedDate = new Date(),
-  schedules = [],
-  onSetView,
-}: DailyScheduleProps): React.ReactElement => {
+export const DailySchedule = ({ selectedDate = new Date(), schedules = [], onSetView }: DailyScheduleProps) => {
   /**
    * 날짜를 "월일" 형식으로 포맷합니다.
    *

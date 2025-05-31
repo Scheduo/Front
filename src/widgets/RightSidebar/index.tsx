@@ -13,7 +13,7 @@ import type { RightSidebarViewType } from "./types";
  * 메인 콘텐츠 영역에서는 일정 조회, 생성, 수정, 공유, 검색, 알림 등의 기능을 제공합니다.
  */
 
-export const RightSidebar = (): React.ReactElement => {
+export const RightSidebar = () => {
   const [currentView, setCurrentView] = useState<RightSidebarViewType>("daily");
 
   const renderContent = () => {
