@@ -1,7 +1,7 @@
 import { Button } from "@/shared/ui";
 import { Settings } from "lucide-react";
 
-function UserInfo() {
+export const UserInfo = () => {
   const handleOpenSetting = () => {
     console.log("설정창 오픈");
   };
@@ -17,6 +17,4 @@ function UserInfo() {
       </Button>
     </div>
   );
-}
-
-export default UserInfo;
+};
