@@ -1,5 +1,5 @@
-export { Badge } from "./Badge";
-export { Button } from "./Button";
-export { ScrollArea } from "./ScrollArea";
-export * from "./Calendar";
-export * from "./Popover";
+export { Badge } from "./badge";
+export { Button } from "./button";
+export { ScrollArea, ScrollBar } from "./scroll-area";
+export { Calendar } from "./calendar";
+export * from "./popover";
