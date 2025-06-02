@@ -32,7 +32,7 @@ export const TimePicker = ({ value = "", onChange }: TimePickerProps) => {
           <SelectTrigger className="w-full">
             <SelectValue>{displayHours}시</SelectValue>
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-64">
             {hourOptions.map((hour) => (
               <SelectItem key={hour} value={hour}>
                 {hour}시
@@ -47,7 +47,7 @@ export const TimePicker = ({ value = "", onChange }: TimePickerProps) => {
           <SelectTrigger className="w-full">
             <SelectValue>{displayMinutes}분</SelectValue>
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-64">
             {minuteOptions.map((minute) => (
               <SelectItem key={minute} value={minute}>
                 {minute}분
