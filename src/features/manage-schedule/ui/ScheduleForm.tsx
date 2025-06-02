@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, isBefore, startOfDay } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -28,6 +28,7 @@ import {
   Textarea,
 } from "@/shared/ui";
 
+import { useState } from "react";
 import { NOTIFICATION_OPTIONS, RECURRENCE_OPTIONS } from "../consts";
 import type { ScheduleFormData, ScheduleRequest } from "../lib";
 import { TimePicker } from "./TimePicker";
@@ -97,6 +98,7 @@ export const ScheduleForm = ({
     onSubmit(requestData);
     console.log(requestData);
   };
+  const [openDatePicker, setOpenDatePicker] = useState<string | null>(null);
 
   return (
     <div className="flex h-full flex-col">
@@ -142,7 +144,10 @@ export const ScheduleForm = ({
                 <FormItem className="mx-3">
                   <FormLabel className="text-grayscale-700 text-medium-m">시작 날짜</FormLabel>
                   <FormControl>
-                    <Popover>
+                    <Popover
+                      open={openDatePicker === "startDate"}
+                      onOpenChange={(open) => setOpenDatePicker(open ? "startDate" : null)}
+                    >
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
@@ -164,6 +169,7 @@ export const ScheduleForm = ({
                           onSelect={(date) => {
                             if (date) {
                               field.onChange(format(date, "yyyy-MM-dd"));
+                              setOpenDatePicker(null);
                             }
                           }}
                           locale={ko}
@@ -199,43 +205,53 @@ export const ScheduleForm = ({
               control={form.control}
               name="endDate"
               rules={{ required: "종료 날짜는 필수입니다" }}
-              render={({ field }) => (
-                <FormItem className="mx-3">
-                  <FormLabel className="text-grayscale-700 text-medium-m">종료 날짜</FormLabel>
-                  <FormControl>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !field.value && "text-muted-foreground",
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value
-                            ? format(new Date(field.value), "yyyy/MM/dd", { locale: ko })
-                            : "종료 날짜를 선택하세요"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value ? new Date(field.value) : undefined}
-                          onSelect={(date) => {
-                            if (date) {
-                              field.onChange(format(date, "yyyy-MM-dd"));
+              render={({ field }) => {
+                const startDate = form.watch("startDate");
+                return (
+                  <FormItem className="mx-3">
+                    <FormLabel className="text-grayscale-700 text-medium-m">종료 날짜</FormLabel>
+                    <FormControl>
+                      <Popover
+                        open={openDatePicker === "endDate"}
+                        onOpenChange={(open) => setOpenDatePicker(open ? "endDate" : null)}
+                      >
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value
+                              ? format(new Date(field.value), "yyyy/MM/dd", { locale: ko })
+                              : "종료 날짜를 선택하세요"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value ? new Date(field.value) : undefined}
+                            onSelect={(date) => {
+                              if (date) {
+                                field.onChange(format(date, "yyyy-MM-dd"));
+                                setOpenDatePicker(null);
+                              }
+                            }}
+                            disabled={(date) =>
+                              startDate ? isBefore(startOfDay(date), startOfDay(new Date(startDate))) : false
                             }
-                          }}
-                          locale={ko}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
-                  <FormMessage className="text-medium-s text-notification-strong" />
-                </FormItem>
-              )}
+                            locale={ko}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </FormControl>
+                    <FormMessage className="text-medium-s text-notification-strong" />
+                  </FormItem>
+                );
+              }}
             />
 
             {/* 종료 시간 */}
@@ -389,43 +405,53 @@ export const ScheduleForm = ({
                   rules={{
                     required: hasRecurrence ? "반복 종료일은 필수입니다" : false,
                   }}
-                  render={({ field }) => (
-                    <FormItem className="mx-3">
-                      <FormLabel className="text-grayscale-700 text-medium-m">반복 종료일</FormLabel>
-                      <FormControl>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full justify-start text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {field.value
-                                ? format(new Date(field.value), "yyyy년 MM월 dd일", { locale: ko })
-                                : "반복 종료일을 선택하세요"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value ? new Date(field.value) : undefined}
-                              onSelect={(date) => {
-                                if (date) {
-                                  field.onChange(format(date, "yyyy-MM-dd"));
+                  render={({ field }) => {
+                    const startDate = form.watch("startDate");
+                    return (
+                      <FormItem className="mx-3">
+                        <FormLabel className="text-grayscale-700 text-medium-m">반복 종료일</FormLabel>
+                        <FormControl>
+                          <Popover
+                            open={openDatePicker === "recurrenceEndDate"}
+                            onOpenChange={(open) => setOpenDatePicker(open ? "recurrenceEndDate" : null)}
+                          >
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal",
+                                  !field.value && "text-muted-foreground",
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {field.value
+                                  ? format(new Date(field.value), "yyyy년 MM월 dd일", { locale: ko })
+                                  : "반복 종료일을 선택하세요"}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value ? new Date(field.value) : undefined}
+                                onSelect={(date) => {
+                                  if (date) {
+                                    field.onChange(format(date, "yyyy-MM-dd"));
+                                    setOpenDatePicker(null);
+                                  }
+                                }}
+                                disabled={(date) =>
+                                  startDate ? isBefore(startOfDay(date), startOfDay(new Date(startDate))) : false
                                 }
-                              }}
-                              locale={ko}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </FormControl>
-                      <FormMessage className="text-medium-s text-notification-strong" />
-                    </FormItem>
-                  )}
+                                locale={ko}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </FormControl>
+                        <FormMessage className="text-medium-s text-notification-strong" />
+                      </FormItem>
+                    );
+                  }}
                 />
               </>
             )}
