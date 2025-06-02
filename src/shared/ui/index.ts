@@ -7,3 +7,5 @@ export * from "./select";
 export * from "./switch";
 export { ButtonGroup } from "./ButtonGroup";
 export * from "./form";
+export { Input } from "./input";
+export { Textarea } from "./textarea";

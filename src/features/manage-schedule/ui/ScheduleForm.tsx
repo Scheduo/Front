@@ -14,6 +14,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  Input,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -24,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
   Switch,
+  Textarea,
 } from "@/shared/ui";
 
 import { NOTIFICATION_OPTIONS, RECURRENCE_OPTIONS } from "../consts";
@@ -102,7 +104,7 @@ export const ScheduleForm = ({
 
   return (
     <div className="flex h-full flex-col">
-      <ScrollArea className="min-h-0 flex-1 px-3 py-2">
+      <ScrollArea className="min-h-0 flex-1">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-3">
             {/* 일정 제목 */}
@@ -111,14 +113,10 @@ export const ScheduleForm = ({
               name="title"
               rules={{ required: "일정 제목은 필수입니다" }}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-3">
                   <FormLabel className="text-grayscale-700 text-medium-m">일정 제목</FormLabel>
                   <FormControl>
-                    <input
-                      placeholder="일정 제목을 입력하세요"
-                      className="w-full rounded-md border border-grayscale-400 px-3 py-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-main"
-                      {...field}
-                    />
+                    <Input placeholder="일정 제목을 입력하세요" {...field} />
                   </FormControl>
                   <FormMessage className="text-medium-s text-notification-strong" />
                 </FormItem>
@@ -130,7 +128,7 @@ export const ScheduleForm = ({
               control={form.control}
               name="isAllDay"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between">
+                <FormItem className="mx-3 flex items-center justify-between">
                   <FormLabel className="text-grayscale-700 text-medium-m">하루 종일</FormLabel>
                   <FormControl>
                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -145,7 +143,7 @@ export const ScheduleForm = ({
               name="startDate"
               rules={{ required: "시작 날짜는 필수입니다" }}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-3">
                   <FormLabel className="text-grayscale-700 text-medium-m">시작 날짜</FormLabel>
                   <FormControl>
                     <Popover>
@@ -189,7 +187,7 @@ export const ScheduleForm = ({
                 control={form.control}
                 name="startTime"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="mx-3">
                     <FormLabel className="sr-only">시작 시간</FormLabel>
                     <FormControl>
                       <TimePicker value={field.value} onChange={field.onChange} />
@@ -206,7 +204,7 @@ export const ScheduleForm = ({
               name="endDate"
               rules={{ required: "종료 날짜는 필수입니다" }}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-3">
                   <FormLabel className="text-grayscale-700 text-medium-m">종료 날짜</FormLabel>
                   <FormControl>
                     <Popover>
@@ -250,7 +248,7 @@ export const ScheduleForm = ({
                 control={form.control}
                 name="endTime"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="mx-3">
                     <FormLabel className="sr-only">종료 시간</FormLabel>
                     <FormControl>
                       <TimePicker value={field.value} onChange={field.onChange} />
@@ -266,14 +264,10 @@ export const ScheduleForm = ({
               control={form.control}
               name="location"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-3">
                   <FormLabel className="text-grayscale-700 text-medium-m">장소</FormLabel>
                   <FormControl>
-                    <input
-                      placeholder="장소를 입력하세요"
-                      className="w-full rounded-md border border-grayscale-400 px-3 py-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-main"
-                      {...field}
-                    />
+                    <Input placeholder="장소를 입력하세요" {...field} />
                   </FormControl>
                   <FormMessage className="text-medium-s text-notification-strong" />
                 </FormItem>
@@ -285,14 +279,10 @@ export const ScheduleForm = ({
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-3">
                   <FormLabel className="text-grayscale-700 text-medium-m">카테고리</FormLabel>
                   <FormControl>
-                    <input
-                      placeholder="업무, 취미, 약속 등"
-                      className="w-full rounded-md border border-grayscale-400 px-3 py-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-main"
-                      {...field}
-                    />
+                    <Input placeholder="업무, 취미, 약속 등" {...field} />
                   </FormControl>
                   <FormMessage className="text-medium-s text-notification-strong" />
                 </FormItem>
@@ -304,15 +294,10 @@ export const ScheduleForm = ({
               control={form.control}
               name="memo"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-3">
                   <FormLabel className="text-grayscale-700 text-medium-m">메모</FormLabel>
                   <FormControl>
-                    <textarea
-                      placeholder="메모를 입력하세요"
-                      rows={3}
-                      className="w-full resize-none rounded-md border border-grayscale-400 px-3 py-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-main"
-                      {...field}
-                    />
+                    <Textarea placeholder="메모를 입력하세요" {...field} />
                   </FormControl>
                   <FormMessage className="text-medium-s text-notification-strong" />
                 </FormItem>
@@ -324,7 +309,7 @@ export const ScheduleForm = ({
               control={form.control}
               name="hasNotification"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between">
+                <FormItem className="mx-3 flex items-center justify-between">
                   <FormLabel className="text-grayscale-700 text-medium-m">알림</FormLabel>
                   <FormControl>
                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -335,7 +320,7 @@ export const ScheduleForm = ({
 
             {/* 알림 시간 선택 */}
             {hasNotification && (
-              <div className="flex flex-wrap gap-2">
+              <div className="mx-3 flex flex-wrap gap-2">
                 {NOTIFICATION_OPTIONS.map((option) => (
                   <button
                     key={option.value}
@@ -358,7 +343,7 @@ export const ScheduleForm = ({
               control={form.control}
               name="hasRecurrence"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between">
+                <FormItem className="mx-3 flex items-center justify-between">
                   <FormLabel className="text-grayscale-700 text-medium-m">일정 반복</FormLabel>
                   <FormControl>
                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -374,7 +359,7 @@ export const ScheduleForm = ({
                   control={form.control}
                   name="recurrenceRule"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="mx-3">
                       <FormControl>
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger className="w-full">
@@ -402,7 +387,7 @@ export const ScheduleForm = ({
                     required: hasRecurrence ? "반복 종료일은 필수입니다" : false,
                   }}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="mx-3">
                       <FormLabel className="text-grayscale-700 text-medium-m">반복 종료일</FormLabel>
                       <FormControl>
                         <Popover>
@@ -441,9 +426,6 @@ export const ScheduleForm = ({
                 />
               </>
             )}
-
-            {/* 하단 여백을 위한 빈 공간 */}
-            <div className="h-4" />
           </form>
         </Form>
       </ScrollArea>
