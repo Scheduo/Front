@@ -1,6 +1,7 @@
 import { Button } from "@/shared/ui";
 import { Bell, Search } from "lucide-react";
 import { useState } from "react";
+import { CreateSchedule } from "./CreateSchedule";
 import { DailySchedule } from "./DailySchedule";
 import { ShareSchedule } from "./ShareSchedule";
 import type { RightSidebarViewType } from "./types";
@@ -23,7 +24,7 @@ export const RightSidebar = () => {
       case "share":
         return <ShareSchedule onSetView={setCurrentView} />;
       case "create":
-        return <div>일정 생성</div>;
+        return <CreateSchedule />;
       case "edit":
         return <div>일정 수정</div>;
       case "search":
@@ -57,8 +58,7 @@ export const RightSidebar = () => {
           <Bell className="h-4 w-4" />
         </Button>
       </div>
-
-      {renderContent()}
+      <div className="h-[calc(100%-3rem)]">{renderContent()}</div>
     </div>
   );
 };

@@ -27,8 +27,8 @@ export const DailySchedule = ({ selectedDate = new Date(), schedules = [], onSet
   };
 
   return (
-    <>
-      <div className="h-20 p-6">
+    <div className="flex h-full flex-col">
+      <div className="flex h-20 p-6">
         <h2 className="mb-4 text-bold-l text-grayscale-black">{formatDate(selectedDate)}</h2>
       </div>
 
@@ -70,7 +70,7 @@ export const DailySchedule = ({ selectedDate = new Date(), schedules = [], onSet
         </div>
       </ScrollArea>
 
-      <div className="p-6">
+      <div className="h-16 p-6">
         <div className="flex gap-2">
           <Button onClick={() => onSetView("create")} className="flex-1">
             <Plus className="mr-2 h-4 w-4" />
@@ -82,6 +82,6 @@ export const DailySchedule = ({ selectedDate = new Date(), schedules = [], onSet
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
