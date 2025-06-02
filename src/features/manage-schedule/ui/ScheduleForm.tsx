@@ -29,7 +29,7 @@ import {
 } from "@/shared/ui";
 
 import { NOTIFICATION_OPTIONS, RECURRENCE_OPTIONS } from "../consts";
-import type { NotificationTime, ScheduleFormData, ScheduleRequest } from "../lib";
+import type { ScheduleFormData, ScheduleRequest } from "../lib";
 import { TimePicker } from "./TimePicker";
 
 interface ScheduleFormProps {
@@ -73,11 +73,6 @@ export const ScheduleForm = ({
   const isAllDay = form.watch("isAllDay");
   const hasNotification = form.watch("hasNotification");
   const hasRecurrence = form.watch("hasRecurrence");
-  const selectedNotificationTime = form.watch("notificationTime");
-
-  const handleNotificationTimeSelect = (time: NotificationTime) => {
-    form.setValue("notificationTime", time);
-  };
 
   const onFormSubmit = (data: ScheduleFormData) => {
     const requestData: ScheduleRequest = {
@@ -100,6 +95,7 @@ export const ScheduleForm = ({
     };
 
     onSubmit(requestData);
+    console.log(requestData);
   };
 
   return (
@@ -113,12 +109,12 @@ export const ScheduleForm = ({
               name="title"
               rules={{ required: "일정 제목은 필수입니다" }}
               render={({ field }) => (
-                <FormItem className="mx-3">
+                <FormItem className="relative mx-3">
                   <FormLabel className="text-grayscale-700 text-medium-m">일정 제목</FormLabel>
                   <FormControl>
                     <Input placeholder="일정 제목을 입력하세요" {...field} />
                   </FormControl>
-                  <FormMessage className="text-medium-s text-notification-strong" />
+                  <FormMessage className="absolute top-0 right-0 text-medium-s text-notification-strong" />
                 </FormItem>
               )}
             />
@@ -320,22 +316,29 @@ export const ScheduleForm = ({
 
             {/* 알림 시간 선택 */}
             {hasNotification && (
-              <div className="mx-3 flex flex-wrap gap-2">
-                {NOTIFICATION_OPTIONS.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => handleNotificationTimeSelect(option.value)}
-                    className={`rounded-md border px-3 py-1 text-xs transition-colors ${
-                      selectedNotificationTime === option.value
-                        ? "border-blue-600 bg-blue-600 text-white"
-                        : "border-grayscale-400 bg-white text-grayscale-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
+              <FormField
+                control={form.control}
+                name="notificationTime"
+                render={({ field }) => (
+                  <FormItem className="mx-3">
+                    <FormControl>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {NOTIFICATION_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage className="text-medium-s text-notification-strong" />
+                  </FormItem>
+                )}
+              />
             )}
 
             {/* 일정 반복 */}
