@@ -15,9 +15,13 @@
     "lint-staged": "lint-staged"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
+    "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-scroll-area": "^1.2.8",
+    "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.0",
+    "@radix-ui/react-switch": "^1.2.5",
     "@tailwindcss/vite": "^4.1.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -26,8 +30,10 @@
     "react": "^19.0.0",
     "react-day-picker": "8.10.1",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.57.0",
     "tailwind-merge": "^3.2.0",
-    "tailwindcss": "^4.1.4"
+    "tailwindcss": "^4.1.4",
+    "zod": "^3.25.48"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

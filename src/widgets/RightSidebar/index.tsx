@@ -1,7 +1,7 @@
+import { CreateSchedule } from "@/features/manage-schedule";
 import { Button } from "@/shared/ui";
 import { Bell, Search } from "lucide-react";
 import { useState } from "react";
-import { CreateSchedule } from "./CreateSchedule";
 import { DailySchedule } from "./DailySchedule";
 import { ShareSchedule } from "./ShareSchedule";
 import type { RightSidebarViewType } from "./types";
@@ -24,7 +24,7 @@ export const RightSidebar = () => {
       case "share":
         return <ShareSchedule onSetView={setCurrentView} />;
       case "create":
-        return <CreateSchedule />;
+        return <CreateSchedule onCancel={() => setCurrentView("daily")} />;
       case "edit":
         return <div>일정 수정</div>;
       case "search":
