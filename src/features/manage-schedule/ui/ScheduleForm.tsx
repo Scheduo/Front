@@ -14,7 +14,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
   Input,
   Popover,
   PopoverContent,
@@ -101,6 +100,11 @@ export const ScheduleForm = ({
 
   const [openDatePicker, setOpenDatePicker] = useState<string | null>(null);
 
+  // 에러 상태 확인 함수
+  const hasError = (fieldName: keyof ScheduleFormData) => {
+    return !!form.formState.errors[fieldName];
+  };
+
   return (
     <div className="flex h-full flex-col">
       <ScrollArea className="min-h-0 flex-1">
@@ -112,12 +116,25 @@ export const ScheduleForm = ({
               name="title"
               rules={{ required: "일정 제목은 필수입니다" }}
               render={({ field }) => (
-                <FormItem className="relative mx-3">
-                  <FormLabel className="text-grayscale-700 text-medium-m">일정 제목</FormLabel>
+                <FormItem className="mx-3">
+                  <FormLabel
+                    className={cn(
+                      "text-medium-m",
+                      hasError("title") ? "text-notification-strong" : "text-grayscale-700",
+                    )}
+                  >
+                    일정 제목
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="일정 제목을 입력하세요" {...field} />
+                    <Input
+                      placeholder="일정 제목을 입력하세요"
+                      {...field}
+                      className={cn(
+                        hasError("title") &&
+                          "border-[2px] border-[2px] border-notification-strong focus:border-notification-strong focus:ring-notification-strong",
+                      )}
+                    />
                   </FormControl>
-                  <FormMessage className="absolute top-0 right-0 text-medium-s text-notification-strong" />
                 </FormItem>
               )}
             />
@@ -143,7 +160,14 @@ export const ScheduleForm = ({
               rules={{ required: "시작 날짜는 필수입니다" }}
               render={({ field }) => (
                 <FormItem className="mx-3">
-                  <FormLabel className="text-grayscale-700 text-medium-m">시작 날짜</FormLabel>
+                  <FormLabel
+                    className={cn(
+                      "text-medium-m",
+                      hasError("startDate") ? "text-notification-strong" : "text-grayscale-700",
+                    )}
+                  >
+                    시작 날짜
+                  </FormLabel>
                   <FormControl>
                     <Popover
                       open={openDatePicker === "startDate"}
@@ -155,6 +179,7 @@ export const ScheduleForm = ({
                           className={cn(
                             "w-full justify-start text-left font-normal",
                             !field.value && "text-muted-foreground",
+                            hasError("startDate") && "border-[2px] border-notification-strong text-notification-strong",
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -179,7 +204,6 @@ export const ScheduleForm = ({
                       </PopoverContent>
                     </Popover>
                   </FormControl>
-                  <FormMessage className="text-medium-s text-notification-strong" />
                 </FormItem>
               )}
             />
@@ -196,7 +220,6 @@ export const ScheduleForm = ({
                     <FormControl>
                       <TimePicker value={field.value} onChange={field.onChange} />
                     </FormControl>
-                    <FormMessage className="text-medium-s text-notification-strong" />
                   </FormItem>
                 )}
               />
@@ -211,7 +234,14 @@ export const ScheduleForm = ({
                 const startDate = form.watch("startDate");
                 return (
                   <FormItem className="mx-3">
-                    <FormLabel className="text-grayscale-700 text-medium-m">종료 날짜</FormLabel>
+                    <FormLabel
+                      className={cn(
+                        "text-medium-m",
+                        hasError("endDate") ? "text-notification-strong" : "text-grayscale-700",
+                      )}
+                    >
+                      종료 날짜
+                    </FormLabel>
                     <FormControl>
                       <Popover
                         open={openDatePicker === "endDate"}
@@ -223,6 +253,7 @@ export const ScheduleForm = ({
                             className={cn(
                               "w-full justify-start text-left font-normal",
                               !field.value && "text-muted-foreground",
+                              hasError("endDate") && "border-[2px] border-notification-strong text-notification-strong",
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -250,7 +281,6 @@ export const ScheduleForm = ({
                         </PopoverContent>
                       </Popover>
                     </FormControl>
-                    <FormMessage className="text-medium-s text-notification-strong" />
                   </FormItem>
                 );
               }}
@@ -268,7 +298,6 @@ export const ScheduleForm = ({
                     <FormControl>
                       <TimePicker value={field.value} onChange={field.onChange} />
                     </FormControl>
-                    <FormMessage className="text-medium-s text-notification-strong" />
                   </FormItem>
                 )}
               />
@@ -284,7 +313,6 @@ export const ScheduleForm = ({
                   <FormControl>
                     <Input placeholder="장소를 입력하세요" {...field} />
                   </FormControl>
-                  <FormMessage className="text-medium-s text-notification-strong" />
                 </FormItem>
               )}
             />
@@ -299,7 +327,6 @@ export const ScheduleForm = ({
                   <FormControl>
                     <Input placeholder="업무, 취미, 약속 등" {...field} />
                   </FormControl>
-                  <FormMessage className="text-medium-s text-notification-strong" />
                 </FormItem>
               )}
             />
@@ -314,7 +341,6 @@ export const ScheduleForm = ({
                   <FormControl>
                     <Textarea placeholder="메모를 입력하세요" {...field} />
                   </FormControl>
-                  <FormMessage className="text-medium-s text-notification-strong" />
                 </FormItem>
               )}
             />
@@ -354,7 +380,6 @@ export const ScheduleForm = ({
                         </SelectContent>
                       </Select>
                     </FormControl>
-                    <FormMessage className="text-medium-s text-notification-strong" />
                   </FormItem>
                 )}
               />
@@ -396,7 +421,6 @@ export const ScheduleForm = ({
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      <FormMessage className="text-medium-s text-notification-strong" />
                     </FormItem>
                   )}
                 />
@@ -412,7 +436,14 @@ export const ScheduleForm = ({
                     const startDate = form.watch("startDate");
                     return (
                       <FormItem className="mx-3">
-                        <FormLabel className="text-grayscale-700 text-medium-m">반복 종료일</FormLabel>
+                        <FormLabel
+                          className={cn(
+                            "text-medium-m",
+                            hasError("recurrenceEndDate") ? "text-notification-strong" : "text-grayscale-700",
+                          )}
+                        >
+                          반복 종료일
+                        </FormLabel>
                         <FormControl>
                           <Popover
                             open={openDatePicker === "recurrenceEndDate"}
@@ -424,6 +455,8 @@ export const ScheduleForm = ({
                                 className={cn(
                                   "w-full justify-start text-left font-normal",
                                   !field.value && "text-muted-foreground",
+                                  hasError("recurrenceEndDate") &&
+                                    "border-[2px] border-notification-strong text-notification-strong",
                                 )}
                               >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
@@ -451,7 +484,6 @@ export const ScheduleForm = ({
                             </PopoverContent>
                           </Popover>
                         </FormControl>
-                        <FormMessage className="text-medium-s text-notification-strong" />
                       </FormItem>
                     );
                   }}
