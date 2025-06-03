@@ -1,2 +1,2 @@
 export { CreateSchedule } from "./CreateSchedule";
-export { ModifySchedule } from "./ModifySchedule";
+export { EditSchedule } from "./EditSchedule";

@@ -1,2 +1,2 @@
-export { ScheduleApi } from "./api";
+export * from "./api";
 export * from "./model";

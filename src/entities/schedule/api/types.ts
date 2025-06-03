@@ -1,3 +1,3 @@
 import type { Schedule } from "../model";
 
-export type CreateScheduleRequest = Omit<Schedule, "id" | "calendar">;
+export type InputScheduleRequest = Omit<Schedule, "id" | "calendar">;
