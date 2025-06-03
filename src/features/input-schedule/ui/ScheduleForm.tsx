@@ -30,7 +30,7 @@ import {
 
 import type { InputScheduleRequest, Schedule } from "@/entities/schedule";
 import { NOTIFICATION_OPTIONS, RECURRENCE_OPTIONS } from "../consts";
-import type { ScheduleFormData } from "../model";
+import type { ScheduleFormData } from "../lib";
 import { TimePicker } from "./TimePicker";
 
 interface ScheduleFormProps {

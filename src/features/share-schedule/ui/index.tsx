@@ -5,7 +5,7 @@ import { Button, ButtonGroup, Calendar, Popover, PopoverContent, PopoverTrigger,
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown } from "lucide-react";
 import { useState } from "react";
-import type { ShareScheduleItemType } from "../model";
+import type { ShareScheduleItemType } from "../lib";
 import { ShareScheduleItem } from "./ShareScheduleItem";
 import { ToggleCheckButton } from "./ToggleCheckButton";
 
