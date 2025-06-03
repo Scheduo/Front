@@ -132,7 +132,7 @@ export const ScheduleForm = ({
                       {...field}
                       className={cn(
                         hasError("title") &&
-                          "border-[2px] border-[2px] border-notification-strong focus:border-notification-strong focus:ring-notification-strong",
+                          "border-[2px] border-notification-strong focus:border-notification-strong focus:ring-notification-strong",
                       )}
                     />
                   </FormControl>
