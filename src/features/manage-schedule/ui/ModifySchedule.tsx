@@ -3,14 +3,13 @@ import type { ScheduleRequest } from "../lib";
 import { ScheduleForm } from "./ScheduleForm";
 
 interface ModifyScheduleProps {
-  onSubmit?: (data: ScheduleRequest) => void;
   onCancel: () => void;
 }
 
 /**
  * 일정을 수정하는 사이드바 컴포넌트입니다.
  */
-export const ModifySchedule = ({ onSubmit, onCancel }: ModifyScheduleProps) => {
+export const ModifySchedule = ({ onCancel }: ModifyScheduleProps) => {
   const [initialData, setInitialData] = useState<ScheduleRequest | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,7 +52,7 @@ export const ModifySchedule = ({ onSubmit, onCancel }: ModifyScheduleProps) => {
   return (
     <div className="flex h-full flex-col">
       <div className="flex-shrink-0 px-6 py-4">
-        <h2 className="text-bold-l text-grayscale-black">새 일정 추가</h2>
+        <h2 className="text-bold-l text-grayscale-black">일정 편집</h2>
       </div>
 
       <div className="min-h-0 flex-1">

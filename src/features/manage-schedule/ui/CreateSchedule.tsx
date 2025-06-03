@@ -3,14 +3,13 @@ import type { ScheduleRequest } from "../lib";
 import { ScheduleForm } from "./ScheduleForm";
 
 interface CreateScheduleProps {
-  onSubmit?: (data: ScheduleRequest) => void;
   onCancel: () => void;
 }
 
 /**
  * 새로운 일정을 생성하는 사이드바 컴포넌트입니다.
  */
-export const CreateSchedule = ({ onSubmit, onCancel }: CreateScheduleProps) => {
+export const CreateSchedule = ({ onCancel }: CreateScheduleProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (data: ScheduleRequest) => {
