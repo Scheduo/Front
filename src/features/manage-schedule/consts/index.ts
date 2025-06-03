@@ -1,4 +1,4 @@
-import type { NotificationTime, RecurrenceRule } from "../lib";
+import type { NotificationTime, RecurrenceRule } from "@/entities/schedule";
 
 export const NOTIFICATION_OPTIONS = [
   { label: "5분 전", value: "FIVE_MINUTES_BEFORE" as NotificationTime },

@@ -28,8 +28,8 @@ import {
   Textarea,
 } from "@/shared/ui";
 
+import type { ScheduleFormData, ScheduleRequest } from "@/entities/schedule";
 import { NOTIFICATION_OPTIONS, RECURRENCE_OPTIONS } from "../consts";
-import type { ScheduleFormData, ScheduleRequest } from "../lib";
 import { TimePicker } from "./TimePicker";
 
 interface ScheduleFormProps {
