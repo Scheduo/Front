@@ -1,1 +1,1 @@
-export * from "./ScheduleFormTypes";
+export * from "./scheduleFormTypes";

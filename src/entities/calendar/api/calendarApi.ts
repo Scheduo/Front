@@ -7,6 +7,6 @@ export const calendarApi = {
 
   getCalendarList: async () => {},
 
-  accceptInvite: async () => {},
+  acceptInvite: async () => {},
   rejectInvite: async () => {},
 };
