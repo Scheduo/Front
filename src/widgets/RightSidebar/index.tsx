@@ -1,4 +1,5 @@
 import { CreateSchedule } from "@/features/manage-schedule";
+import { ModifySchedule } from "@/features/manage-schedule/ui";
 import { Button } from "@/shared/ui";
 import { Bell, Search } from "lucide-react";
 import { useState } from "react";
@@ -26,7 +27,7 @@ export const RightSidebar = () => {
       case "create":
         return <CreateSchedule onCancel={() => setCurrentView("daily")} />;
       case "edit":
-        return <div>일정 수정</div>;
+        return <ModifySchedule onCancel={() => setCurrentView("daily")} />;
       case "search":
         return <div>일정 검색</div>;
       case "notification":
