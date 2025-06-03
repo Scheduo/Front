@@ -1,5 +1,5 @@
 import { cn } from "@/shared/lib/utils";
-import { Button, Calendar, Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@/shared/ui";
+import { Button, ButtonGroup, Calendar, Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@/shared/ui";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown } from "lucide-react";
 import { useState } from "react";
@@ -125,7 +125,7 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps) => {
   );
 
   return (
-    <div className="flex h-[calc(100%-3rem)] flex-col">
+    <div className="flex h-full flex-col">
       <div className="h-20 p-6">
         <h2 className="mb-4 text-bold-l text-grayscale-black">일정 공유하기</h2>
       </div>
@@ -226,16 +226,11 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps) => {
         </div>
       </ScrollArea>
 
-      <div className="p-6">
-        <div className="flex gap-2">
-          <Button className="flex-1" disabled={!startDate || selectedSchedules.size === 0}>
-            확인
-          </Button>
-          <Button variant="outline" onClick={() => onSetView("daily")} className="flex-1">
-            취소
-          </Button>
-        </div>
-      </div>
+      <ButtonGroup
+        onLeftClick={() => console.log("일정 공유 완료!")}
+        leftDisabled={!startDate || selectedSchedules.size === 0}
+        onRightClick={() => onSetView("daily")}
+      />
     </div>
   );
 };

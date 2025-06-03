@@ -1,3 +1,5 @@
+import { CreateSchedule } from "@/features/manage-schedule";
+import { ModifySchedule } from "@/features/manage-schedule/ui";
 import { Button } from "@/shared/ui";
 import { Bell, Search } from "lucide-react";
 import { useState } from "react";
@@ -23,9 +25,9 @@ export const RightSidebar = () => {
       case "share":
         return <ShareSchedule onSetView={setCurrentView} />;
       case "create":
-        return <div>일정 생성</div>;
+        return <CreateSchedule onCancel={() => setCurrentView("daily")} />;
       case "edit":
-        return <div>일정 수정</div>;
+        return <ModifySchedule onCancel={() => setCurrentView("daily")} />;
       case "search":
         return <div>일정 검색</div>;
       case "notification":
@@ -57,8 +59,7 @@ export const RightSidebar = () => {
           <Bell className="h-4 w-4" />
         </Button>
       </div>
-
-      {renderContent()}
+      <div className="h-[calc(100%-3rem)]">{renderContent()}</div>
     </div>
   );
 };

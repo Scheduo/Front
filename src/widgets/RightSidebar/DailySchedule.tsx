@@ -1,4 +1,4 @@
-import { Button, ScrollArea } from "@/shared/ui";
+import { ButtonGroup, ScrollArea } from "@/shared/ui";
 import { Clock, Plus, Share2 } from "lucide-react";
 import type { ScheduleItem } from "./types";
 import type { RightSidebarViewType } from "./types";
@@ -27,8 +27,8 @@ export const DailySchedule = ({ selectedDate = new Date(), schedules = [], onSet
   };
 
   return (
-    <>
-      <div className="h-20 p-6">
+    <div className="flex h-full flex-col">
+      <div className="flex h-20 p-6">
         <h2 className="mb-4 text-bold-l text-grayscale-black">{formatDate(selectedDate)}</h2>
       </div>
 
@@ -70,18 +70,14 @@ export const DailySchedule = ({ selectedDate = new Date(), schedules = [], onSet
         </div>
       </ScrollArea>
 
-      <div className="p-6">
-        <div className="flex gap-2">
-          <Button onClick={() => onSetView("create")} className="flex-1">
-            <Plus className="mr-2 h-4 w-4" />
-            일정 추가
-          </Button>
-          <Button variant="outline" onClick={() => onSetView("share")} className="flex-1">
-            <Share2 className="mr-2 h-4 w-4" />
-            일정 공유
-          </Button>
-        </div>
-      </div>
-    </>
+      <ButtonGroup
+        leftIcon={Plus}
+        leftText="일정 추가"
+        onLeftClick={() => onSetView("create")}
+        rightIcon={Share2}
+        rightText="일정 공유"
+        onRightClick={() => onSetView("share")}
+      />
+    </div>
   );
 };
