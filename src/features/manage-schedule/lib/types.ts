@@ -8,14 +8,19 @@ export interface ScheduleRequest {
   location: string;
   category: string;
   memo: string;
-  notificationTime: NotificationTime | null;
+  notificationTime: NotificationTime;
   recurrence: {
     recurrenceRule: RecurrenceRule;
     recurrenceEndDate: string;
   } | null;
 }
 
-export type NotificationTime = "ONE_DAY_BEFORE" | "ONE_HOUR_BEFORE" | "THIRTY_MINUTES_BEFORE" | "FIVE_MINUTES_BEFORE";
+export type NotificationTime =
+  | "NONE"
+  | "ONE_DAY_BEFORE"
+  | "ONE_HOUR_BEFORE"
+  | "THIRTY_MINUTES_BEFORE"
+  | "FIVE_MINUTES_BEFORE";
 
 export type RecurrenceRule = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
 

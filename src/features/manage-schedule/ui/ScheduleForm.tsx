@@ -1,6 +1,7 @@
 import { format, isBefore, startOfDay } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { cn } from "@/shared/lib/utils";
@@ -28,13 +29,12 @@ import {
   Textarea,
 } from "@/shared/ui";
 
-import { useState } from "react";
 import { NOTIFICATION_OPTIONS, RECURRENCE_OPTIONS } from "../consts";
 import type { ScheduleFormData, ScheduleRequest } from "../lib";
 import { TimePicker } from "./TimePicker";
 
 interface ScheduleFormProps {
-  initialData?: Partial<ScheduleFormData>;
+  initialData?: Partial<ScheduleRequest>;
   onSubmit: (data: ScheduleRequest) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
@@ -54,20 +54,20 @@ export const ScheduleForm = ({
 }: ScheduleFormProps) => {
   const form = useForm<ScheduleFormData>({
     defaultValues: {
-      title: initialData?.title || "",
-      isAllDay: initialData?.isAllDay || false,
-      startDate: initialData?.startDate || "",
-      startTime: initialData?.startTime || "",
-      endDate: initialData?.endDate || "",
-      endTime: initialData?.endTime || "",
-      location: initialData?.location || "",
-      category: initialData?.category || "",
-      memo: initialData?.memo || "",
-      hasNotification: initialData?.hasNotification || false,
-      notificationTime: initialData?.notificationTime || "FIVE_MINUTES_BEFORE",
-      hasRecurrence: initialData?.hasRecurrence || false,
-      recurrenceRule: initialData?.recurrenceRule || "DAILY",
-      recurrenceEndDate: initialData?.recurrenceEndDate || "",
+      title: initialData?.title ?? "",
+      isAllDay: initialData?.isAllDay ?? false,
+      startDate: initialData?.startDate ?? "",
+      startTime: initialData?.startTime ?? "",
+      endDate: initialData?.endDate ?? "",
+      endTime: initialData?.endTime ?? "",
+      location: initialData?.location ?? "",
+      category: initialData?.category ?? "",
+      memo: initialData?.memo ?? "",
+      hasNotification: initialData?.notificationTime !== "NONE" && initialData?.notificationTime !== undefined,
+      notificationTime: initialData?.notificationTime ?? "FIVE_MINUTES_BEFORE",
+      hasRecurrence: initialData?.recurrence !== null && initialData?.recurrence !== undefined,
+      recurrenceRule: initialData?.recurrence?.recurrenceRule ?? "DAILY",
+      recurrenceEndDate: initialData?.recurrence?.recurrenceEndDate ?? "",
     },
   });
 
@@ -86,7 +86,7 @@ export const ScheduleForm = ({
       location: data.location,
       category: data.category,
       memo: data.memo,
-      notificationTime: data.hasNotification ? data.notificationTime : null,
+      notificationTime: data.hasNotification ? data.notificationTime : "NONE",
       recurrence: data.hasRecurrence
         ? {
             recurrenceRule: data.recurrenceRule,
@@ -98,6 +98,7 @@ export const ScheduleForm = ({
     onSubmit(requestData);
     console.log(requestData);
   };
+
   const [openDatePicker, setOpenDatePicker] = useState<string | null>(null);
 
   return (
@@ -188,6 +189,7 @@ export const ScheduleForm = ({
               <FormField
                 control={form.control}
                 name="startTime"
+                rules={{ required: !isAllDay ? "시작 시간은 필수입니다" : false }}
                 render={({ field }) => (
                   <FormItem className="mx-3">
                     <FormLabel className="sr-only">시작 시간</FormLabel>
@@ -259,6 +261,7 @@ export const ScheduleForm = ({
               <FormField
                 control={form.control}
                 name="endTime"
+                rules={{ required: !isAllDay ? "종료 시간은 필수입니다" : false }}
                 render={({ field }) => (
                   <FormItem className="mx-3">
                     <FormLabel className="sr-only">종료 시간</FormLabel>
@@ -343,7 +346,7 @@ export const ScheduleForm = ({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {NOTIFICATION_OPTIONS.map((option) => (
+                          {NOTIFICATION_OPTIONS.filter((option) => option.value !== "NONE").map((option) => (
                             <SelectItem key={option.value} value={option.value}>
                               {option.label}
                             </SelectItem>
