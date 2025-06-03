@@ -1,11 +1,10 @@
-import { CreateSchedule } from "@/features/manage-schedule";
-import { ModifySchedule } from "@/features/manage-schedule/ui";
+import { CreateSchedule, EditSchedule } from "@/features/input-schedule";
+import { ShareSchedule } from "@/features/share-schedule";
+import { DailySchedule } from "@/features/view-daily-schedule";
+import type { RightSidebarViewType } from "@/shared/model";
 import { Button } from "@/shared/ui";
 import { Bell, Search } from "lucide-react";
 import { useState } from "react";
-import { DailySchedule } from "./DailySchedule";
-import { ShareSchedule } from "./ShareSchedule";
-import type { RightSidebarViewType } from "./types";
 
 /**
  * 애플리케이션 우측에 위치하는 사이드바 컴포넌트입니다.
@@ -27,7 +26,7 @@ export const RightSidebar = () => {
       case "create":
         return <CreateSchedule onCancel={() => setCurrentView("daily")} />;
       case "edit":
-        return <ModifySchedule onCancel={() => setCurrentView("daily")} />;
+        return <EditSchedule onCancel={() => setCurrentView("daily")} />;
       case "search":
         return <div>일정 검색</div>;
       case "notification":

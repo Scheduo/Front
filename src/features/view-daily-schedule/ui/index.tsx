@@ -1,7 +1,7 @@
+import type { RightSidebarViewType } from "@/shared/model";
 import { ButtonGroup, ScrollArea } from "@/shared/ui";
 import { Clock, Plus, Share2 } from "lucide-react";
-import type { ScheduleItem } from "./types";
-import type { RightSidebarViewType } from "./types";
+import type { ScheduleItem } from "../model";
 
 interface DailyScheduleProps {
   selectedDate?: Date;
@@ -59,7 +59,7 @@ export const DailySchedule = ({ selectedDate = new Date(), schedules = [], onSet
 
                   <div className="flex w-full items-center justify-between text-grayscale-500 text-medium-s">
                     <div className="truncate">{schedule.location}</div>
-                    <div>{schedule.calendar.title}</div>
+                    <div>{schedule.calendar.name}</div>
                   </div>
                 </div>
               </button>
