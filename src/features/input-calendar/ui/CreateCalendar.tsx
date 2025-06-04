@@ -6,20 +6,23 @@ import { CalendarFormDialog } from "./CalendarFormDialog";
 export const CreateCalendar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleSubmit = async () => {
+    console.log("제출");
+    setIsOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsOpen(false);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button size="icon" variant="ghost" className="hover:bg-transparent" onClick={() => setIsOpen(true)}>
-          <Plus size={16} className="text-grayscale-400" />
+          <Plus size={24} className="text-grayscale-400" />
         </Button>
       </DialogTrigger>
-      <CalendarFormDialog
-        mode="create"
-        onSubmit={async (data) => {
-          console.log(data);
-        }}
-        onCancel={() => setIsOpen(false)}
-      />
+      <CalendarFormDialog mode="create" onSubmit={handleSubmit} onCancel={handleCancel} />
     </Dialog>
   );
 };
