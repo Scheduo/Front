@@ -1,13 +1,9 @@
-import { Button } from "@/shared/ui";
-import { Calendar, Plus } from "lucide-react";
+import { CreateCalendar } from "@/features/input-calendar";
+import { Calendar } from "lucide-react";
 import { useState } from "react";
 
 export const CalendarHeader = () => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
-
-  const handleAddCalendar = () => {
-    console.log("캘린더 생성");
-  };
 
   return (
     <div
@@ -19,11 +15,7 @@ export const CalendarHeader = () => {
         <Calendar size={18} />
         <span>Calendar</span>
       </div>
-      {isHovered && (
-        <Button size="icon" variant="ghost" className="hover:bg-transparent" onClick={handleAddCalendar}>
-          <Plus size={16} className="text-grayscale-500" />
-        </Button>
-      )}
+      {isHovered && <CreateCalendar />}
     </div>
   );
 };

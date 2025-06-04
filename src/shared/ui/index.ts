@@ -9,3 +9,4 @@ export { ButtonGroup } from "./ButtonGroup";
 export * from "./form";
 export { Input } from "./input";
 export { Textarea } from "./textarea";
+export * from "./dialog";
