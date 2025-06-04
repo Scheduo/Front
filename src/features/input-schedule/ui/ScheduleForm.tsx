@@ -28,13 +28,14 @@ import {
   Textarea,
 } from "@/shared/ui";
 
+import type { InputScheduleRequest, Schedule } from "@/entities/schedule";
 import { NOTIFICATION_OPTIONS, RECURRENCE_OPTIONS } from "../consts";
-import type { ScheduleFormData, ScheduleRequest } from "../lib";
+import type { ScheduleFormData } from "../lib";
 import { TimePicker } from "./TimePicker";
 
 interface ScheduleFormProps {
-  initialData?: Partial<ScheduleRequest>;
-  onSubmit: (data: ScheduleRequest) => void;
+  initialData?: Partial<Schedule>;
+  onSubmit: (data: InputScheduleRequest) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
   submitButtonText?: string;
@@ -75,7 +76,7 @@ export const ScheduleForm = ({
   const hasRecurrence = form.watch("hasRecurrence");
 
   const onFormSubmit = (data: ScheduleFormData) => {
-    const requestData: ScheduleRequest = {
+    const requestData: InputScheduleRequest = {
       title: data.title,
       isAllDay: data.isAllDay,
       startDate: data.startDate,
@@ -131,7 +132,7 @@ export const ScheduleForm = ({
                       {...field}
                       className={cn(
                         hasError("title") &&
-                          "border-[2px] border-[2px] border-notification-strong focus:border-notification-strong focus:ring-notification-strong",
+                          "border-[2px] border-notification-strong focus:border-notification-strong focus:ring-notification-strong",
                       )}
                     />
                   </FormControl>

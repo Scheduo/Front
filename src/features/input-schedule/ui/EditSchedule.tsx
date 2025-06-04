@@ -1,16 +1,16 @@
+import type { InputScheduleRequest } from "@/entities/schedule";
 import { useEffect, useState } from "react";
-import type { ScheduleRequest } from "../lib";
 import { ScheduleForm } from "./ScheduleForm";
 
-interface ModifyScheduleProps {
+interface EditScheduleProps {
   onCancel: () => void;
 }
 
 /**
  * 일정을 수정하는 사이드바 컴포넌트입니다.
  */
-export const ModifySchedule = ({ onCancel }: ModifyScheduleProps) => {
-  const [initialData, setInitialData] = useState<ScheduleRequest | undefined>(undefined);
+export const EditSchedule = ({ onCancel }: EditScheduleProps) => {
+  const [initialData, setInitialData] = useState<InputScheduleRequest | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -18,7 +18,7 @@ export const ModifySchedule = ({ onCancel }: ModifyScheduleProps) => {
     const loadInitialData = async () => {
       try {
         setIsLoading(true);
-        const data: ScheduleRequest = {
+        const data: InputScheduleRequest = {
           title: "테스트 제목",
           isAllDay: false,
           startDate: "2025-06-03",
@@ -45,7 +45,7 @@ export const ModifySchedule = ({ onCancel }: ModifyScheduleProps) => {
     loadInitialData();
   }, []);
 
-  const handleSubmit = async (data: ScheduleRequest) => {
+  const handleSubmit = async (data: InputScheduleRequest) => {
     console.log(data, "수정 제출");
   };
 

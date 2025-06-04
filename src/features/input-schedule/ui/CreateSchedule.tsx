@@ -1,5 +1,5 @@
+import type { InputScheduleRequest } from "@/entities/schedule";
 import { useState } from "react";
-import type { ScheduleRequest } from "../lib";
 import { ScheduleForm } from "./ScheduleForm";
 
 interface CreateScheduleProps {
@@ -12,7 +12,7 @@ interface CreateScheduleProps {
 export const CreateSchedule = ({ onCancel }: CreateScheduleProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (data: ScheduleRequest) => {
+  const handleSubmit = async (data: InputScheduleRequest) => {
     console.log(data, "제출");
   };
 

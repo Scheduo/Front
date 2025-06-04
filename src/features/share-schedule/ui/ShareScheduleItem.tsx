@@ -1,4 +1,4 @@
-import type { ShareScheduleItemType } from "../types";
+import type { ShareScheduleItemType } from "../lib";
 import { ToggleCheckButton } from "./ToggleCheckButton";
 
 interface ShareScheduleItemProps {

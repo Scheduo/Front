@@ -1,11 +1,13 @@
+import type { ScheduleCalendar } from "@/entities/calendar";
 import { cn } from "@/shared/lib/utils";
+import type { RightSidebarViewType } from "@/shared/model";
 import { Button, ButtonGroup, Calendar, Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@/shared/ui";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown } from "lucide-react";
 import { useState } from "react";
-import type { CalendarType, RightSidebarViewType, ShareScheduleItemType } from "./types";
-import { ToggleCheckButton } from "./ui";
-import { ShareScheduleItem } from "./ui/ShareScheduleItem";
+import type { ShareScheduleItemType } from "../lib";
+import { ShareScheduleItem } from "./ShareScheduleItem";
+import { ToggleCheckButton } from "./ToggleCheckButton";
 
 interface ShareScheduleProps {
   onSetView: (viewType: RightSidebarViewType) => void;
@@ -27,14 +29,14 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps) => {
   const [isStartCalendarOpen, setIsStartCalendarOpen] = useState(false);
   const [isEndCalendarOpen, setIsEndCalendarOpen] = useState(false);
   const [selectedSchedules, setSelectedSchedules] = useState<Set<string>>(new Set());
-  const [calendars, setCalendars] = useState<CalendarType[]>([
+  const [calendars, setCalendars] = useState<ScheduleCalendar[]>([
     {
-      calendarId: 1,
-      title: "개인 캘린더",
+      id: 1,
+      name: "개인 캘린더",
     },
     {
-      calendarId: 2,
-      title: "Scheduo 캘린더",
+      id: 2,
+      name: "Scheduo 캘린더",
     },
   ]);
   const [schedules] = useState<ShareScheduleItemType[]>([
@@ -130,8 +132,8 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps) => {
         <h2 className="mb-4 text-bold-l text-grayscale-black">일정 공유하기</h2>
       </div>
 
-      <ScrollArea className="w-full flex-1 overflow-y-auto px-1">
-        <div className="mx-auto w-76 space-y-6 pb-6">
+      <ScrollArea className="w-full flex-1 overflow-y-auto">
+        <div className="mx-3 space-y-6 pb-6">
           {/* 공유할 캘린더 선택 */}
           <section>
             <h3 className="text-grayscale-700 text-medium-m">공유할 캘린더 선택</h3>
@@ -146,8 +148,8 @@ export const ShareSchedule = ({ onSetView }: ShareScheduleProps) => {
               >
                 {calendars.map((calendar) => {
                   return (
-                    <option key={calendar.calendarId} value={calendar.title}>
-                      {calendar.title}
+                    <option key={calendar.id} value={calendar.name}>
+                      {calendar.name}
                     </option>
                   );
                 })}
