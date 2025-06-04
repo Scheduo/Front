@@ -105,7 +105,7 @@ export const CalendarFormDialog = ({ mode, initialData, onSubmit, onCancel, onDe
   };
 
   return (
-    <DialogContent className="max-h-[90vh] max-w-md overflow-hidden">
+    <DialogContent className="max-h-[90vh] max-w-md overflow-hidden" aria-describedby={undefined}>
       <DialogHeader>
         <DialogTitle>{mode === "create" ? "캘린더 생성" : "캘린더 편집"}</DialogTitle>
       </DialogHeader>
@@ -139,6 +139,7 @@ export const CalendarFormDialog = ({ mode, initialData, onSubmit, onCancel, onDe
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
+                    handleInvite();
                   }
                 }}
               />
