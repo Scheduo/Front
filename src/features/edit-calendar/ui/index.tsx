@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/shared/ui";
 import { TextConfirmDialog } from "@/shared/ui/TextConfirmDialog";
+import { ConfirmDialog } from "@/shared/ui/confirmDialog";
 import { PenSquare, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -53,6 +54,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   const emailInputRef = useRef<HTMLInputElement>(null);
   const [participants, setParticipants] = useState<CalendarParticipant[]>([]);
   const [showDeleteCalendar, setShowDeleteCalendar] = useState(false);
+  const [showDeleteMember, setShowDeleteMember] = useState(false);
 
   const form = useForm<EditCalendarFormData>({
     defaultValues: {
@@ -344,16 +346,25 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                             </SelectContent>
                           </Select>
 
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemoveParticipant(participant.id)}
-                            className="text-grayscale-400 hover:bg-transparent"
-                            disabled={participant.role === "OWNER"}
+                          <ConfirmDialog
+                            isOpen={showDeleteMember}
+                            onOpenChange={setShowDeleteMember}
+                            title="멤버 삭제"
+                            description="멤버를 삭제하시겠습니까?"
+                            onConfirm={() => handleRemoveParticipant(participant.id)}
+                            variant="destructive"
                           >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setShowDeleteMember(true)}
+                              className="text-grayscale-400 hover:bg-transparent"
+                              disabled={participant.role === "OWNER"}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </ConfirmDialog>
                         </div>
                       ))}
                     </div>
