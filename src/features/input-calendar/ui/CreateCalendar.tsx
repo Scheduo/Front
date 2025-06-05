@@ -22,7 +22,12 @@ export const CreateCalendar = () => {
           <Plus size={24} className="text-grayscale-400" />
         </Button>
       </DialogTrigger>
-      <CalendarFormDialog mode="create" onSubmit={handleSubmit} onCancel={handleCancel} />
+      <CalendarFormDialog
+        mode="create"
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        key={isOpen ? "open" : "close"}
+      />
     </Dialog>
   );
 };
