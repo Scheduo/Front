@@ -231,7 +231,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
           <PenSquare size={24} className="text-grayscale-400" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] min-w-[50vw] max-w-md" aria-describedby={undefined}>
+      <DialogContent className="max-h-[90vh] w-lg" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>캘린더 편집</DialogTitle>
         </DialogHeader>
@@ -249,7 +249,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
           </div>
         ) : (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-1 flex-col space-y-6">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex min-w-0 flex-col space-y-6">
               <FormField
                 control={form.control}
                 name="name"
@@ -292,7 +292,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                 )}
               />
 
-              <div className="flex min-h-0 flex-1 flex-col space-y-4">
+              <div className="flex flex-col space-y-4">
                 <FormLabel>멤버</FormLabel>
 
                 <div className="flex gap-2">
@@ -313,18 +313,25 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                 </div>
 
                 {participants.length > 0 && (
-                  <ScrollArea className="max-h-80 w-full rounded-lg border border-grayscale-400 p-3">
+                  <ScrollArea className="max-h-80 rounded-lg border border-grayscale-400 p-3">
                     <div className="space-y-1 pr-1">
-                      {participants.map((participant, index) => (
+                      {participants.map((participant) => (
                         <div key={participant.id} className="flex items-center gap-2 py-1">
-                          <div className="flex flex-1 flex-col items-start md:flex-row md:items-center md:gap-2">
-                            <div className="text-grayscale-700 text-medium-r">{participant.nickname}</div>
-                            <div className="text-grayscale-400 text-medium-s">{participant.email}</div>
+                          <div className="flex w-0 flex-1 flex-col">
+                            <div
+                              className="truncate text-grayscale-700 text-medium-r leading-7"
+                              title={participant.nickname}
+                            >
+                              {participant.nickname}
+                            </div>
+                            <div className="truncate text-grayscale-400 text-medium-s" title={participant.email}>
+                              {participant.email}
+                            </div>
                           </div>
 
                           <Select
                             value={participant.role}
-                            onValueChange={(value) => handleRoleChange(index, value as CalendarRole)}
+                            onValueChange={(value) => handleRoleChange(participant.id, value as CalendarRole)}
                             disabled={participant.role === "OWNER"}
                           >
                             <SelectTrigger className="h-8 w-28">
@@ -343,7 +350,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleRemoveParticipant(index)}
+                            onClick={() => handleRemoveParticipant(participant.id)}
                             className="text-grayscale-400 hover:bg-transparent"
                             disabled={participant.role === "OWNER"}
                           >
@@ -362,7 +369,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                 </Button>
               </div>
 
-              <DialogFooter className="flex-shrink-0">
+              <DialogFooter>
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "저장 중..." : "저장"}
                 </Button>

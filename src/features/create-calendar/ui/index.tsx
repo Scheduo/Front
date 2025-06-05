@@ -36,6 +36,7 @@ type CreateCalendarFormData = Omit<ScheduleCalendar, "id">;
 export const CreateCalendar = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<CreateCalendarFormData>({
@@ -132,13 +133,13 @@ export const CreateCalendar = () => {
           <Plus size={24} className="text-grayscale-400" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] min-w-[50vw] max-w-md" aria-describedby={undefined}>
+      <DialogContent className="max-h-[90vh] w-lg" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>캘린더 생성</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-1 flex-col space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex min-w-0 flex-1 flex-col space-y-6">
             <FormField
               control={form.control}
               name="name"
@@ -185,9 +186,9 @@ export const CreateCalendar = () => {
                   <div className="space-y-1 pr-1">
                     {fields.map((field, index) => (
                       <div key={field.id} className="flex items-center gap-2 py-1">
-                        <div className="flex flex-1 flex-col items-start md:flex-row md:items-center md:gap-2">
-                          <div className="text-grayscale-700 text-medium-r">{field.nickname}</div>
-                          <div className="text-grayscale-400 text-medium-s">{field.email}</div>
+                        <div className="flex w-0 flex-1 flex-col">
+                          <div className="truncate text-grayscale-700 text-medium-r leading-7">{field.nickname}</div>
+                          <div className="truncate text-grayscale-400 text-medium-s">{field.email}</div>
                         </div>
 
                         <Select
