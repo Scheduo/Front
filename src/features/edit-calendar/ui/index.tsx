@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui";
+import { TextConfirmDialog } from "@/shared/ui/TextConfirmDialog";
 import { PenSquare, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -51,6 +52,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   const [error, setError] = useState<string | undefined>(undefined);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const [participants, setParticipants] = useState<CalendarParticipant[]>([]);
+  const [showDeleteCalendar, setShowDeleteCalendar] = useState(false);
 
   const form = useForm<EditCalendarFormData>({
     defaultValues: {
@@ -202,10 +204,6 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
 
   const handleDelete = async () => {
     try {
-      // TODO: 삭제 확인 다이얼로그 표시
-      const confirmed = window.confirm("정말로 이 캘린더를 삭제하시겠습니까?");
-      if (!confirmed) return;
-
       // TODO: 캘린더 삭제 요청 API 호출
 
       setIsOpen(false);
@@ -364,9 +362,23 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
               </div>
 
               <div className="flex justify-end">
-                <Button type="button" variant="ghost" className="text-grayscale-400 underline" onClick={handleDelete}>
-                  캘린더 삭제
-                </Button>
+                <TextConfirmDialog
+                  isOpen={showDeleteCalendar}
+                  onOpenChange={setShowDeleteCalendar}
+                  title="캘린더 삭제"
+                  description="캘린더를 삭제하면 모든 일정이 영구적으로 삭제됩니다. 캘린더를 삭제하려면 아래에 캘린더 이름을 똑같이 입력하세요."
+                  expectedText={form.watch("name") || ""}
+                  onConfirm={handleDelete}
+                >
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="text-grayscale-400 underline"
+                    onClick={() => setShowDeleteCalendar(true)}
+                  >
+                    캘린더 삭제
+                  </Button>
+                </TextConfirmDialog>
               </div>
 
               <DialogFooter>
