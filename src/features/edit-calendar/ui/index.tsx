@@ -1,0 +1,382 @@
+import type { CalendarParticipant, CalendarRole, ScheduleCalendar } from "@/entities/calendar";
+import { ROLE_OPTIONS } from "@/shared/const";
+import { cn } from "@/shared/lib/utils";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  Input,
+  ScrollArea,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui";
+import { PenSquare, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+
+interface EditableScheduleCalendar extends ScheduleCalendar {
+  nickname: string;
+}
+
+interface EditCalendarFormData {
+  name: string;
+  nickname: string;
+}
+
+interface EditCalendarProps {
+  calendarId: number;
+}
+
+/**
+ * 기존 캘린더를 수정하는 다이얼로그 컴포넌트입니다.
+ * 캘린더 이름, 닉네임 수정과 실시간 참가자 초대/권한 변경/삭제 기능을 제공합니다.
+ */
+export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isInviting, setIsInviting] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const [participants, setParticipants] = useState<CalendarParticipant[]>([]);
+
+  const form = useForm<EditCalendarFormData>({
+    defaultValues: {
+      name: "",
+      nickname: "",
+    },
+  });
+
+  const fetchCalendarData = useCallback(async (id: number): Promise<EditableScheduleCalendar> => {
+    try {
+      // TODO: 실제 캘린더 조회 API 호출로 교체
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      return {
+        id,
+        name: "기존 캘린더 이름",
+        nickname: "내 이름",
+        participants: [
+          {
+            id: 1,
+            email: "owner@example.com",
+            nickname: "소유자",
+            role: "OWNER",
+          },
+          {
+            id: 2,
+            email: "editor@example.com",
+            nickname: "편집자",
+            role: "EDITOR",
+          },
+        ],
+      };
+    } catch (err) {
+      throw new Error("캘린더 정보를 불러오는데 실패했습니다.");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen || !calendarId) return;
+
+    const loadCalendarData = async () => {
+      setIsLoading(true);
+      setError(undefined);
+
+      try {
+        const data = await fetchCalendarData(calendarId);
+        form.reset({
+          name: data.name || "",
+          nickname: data.nickname || "",
+        });
+        setParticipants(data.participants || []);
+
+        if (emailInputRef.current) {
+          emailInputRef.current.value = "";
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCalendarData();
+  }, [calendarId, isOpen, fetchCalendarData, form]);
+
+  // TODO: 이메일로 사용자 검색 미리보기 API(디바운싱) 호출 함수
+
+  const handleInvite = async () => {
+    const emailInput = emailInputRef.current?.value.trim();
+    if (!emailInput) return;
+
+    setIsInviting(true);
+    try {
+      // TODO: 초대 API 호출
+
+      const newParticipant: CalendarParticipant = {
+        id: Date.now(),
+        email: emailInput,
+        nickname: emailInput,
+        role: "VIEWER",
+      };
+      setParticipants((prev) => [...prev, newParticipant]);
+
+      if (emailInputRef.current) {
+        emailInputRef.current.value = "";
+      }
+
+      // TODO: 성공 토스트 표시
+    } catch (error) {
+      console.error("참가자 초대 실패:", error);
+      // TODO: 에러 토스트 표시
+    } finally {
+      setIsInviting(false);
+    }
+  };
+
+  const handleRoleChange = async (participantId: number, role: CalendarRole) => {
+    try {
+      // TODO: 역할 변경 API 호출
+
+      setParticipants((prev) =>
+        prev.map((participant) => (participant.id === participantId ? { ...participant, role } : participant)),
+      );
+    } catch (error) {
+      console.error("역할 변경 실패:", error);
+      // TODO: 에러 토스트 표시
+    }
+  };
+
+  const handleRemoveParticipant = async (participantId: number) => {
+    try {
+      // TODO: 삭제 API 호출
+
+      setParticipants((prev) => prev.filter((participant) => participant.id !== participantId));
+    } catch (error) {
+      console.error("참가자 삭제 실패:", error);
+      // TODO: 에러 토스트 표시
+    }
+  };
+
+  const handleSubmit = async (data: EditCalendarFormData) => {
+    setIsSubmitting(true);
+    try {
+      const updateData = {
+        name: data.name,
+        nickname: data.nickname,
+      };
+
+      console.log(updateData);
+      // TODO: 캘린더 수정 API 호출(닉네임은 수정하지 않는다면 null을 넣거나 아예 nickname 필드 빼기)
+
+      setIsOpen(false);
+      // TODO: 성공 토스트 표시
+    } catch (error) {
+      console.error("캘린더 수정 실패:", error);
+      // TODO: 에러 토스트 표시
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    form.reset();
+    if (emailInputRef.current) {
+      emailInputRef.current.value = "";
+    }
+    setIsOpen(false);
+  };
+
+  const handleDelete = async () => {
+    try {
+      // TODO: 삭제 확인 다이얼로그 표시
+      const confirmed = window.confirm("정말로 이 캘린더를 삭제하시겠습니까?");
+      if (!confirmed) return;
+
+      // TODO: 캘린더 삭제 요청 API 호출
+
+      setIsOpen(false);
+      // TODO: 성공 토스트 표시
+    } catch (error) {
+      console.error("캘린더 삭제 실패:", error);
+      // TODO: 에러 토스트 표시
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (open) {
+      form.reset();
+      if (emailInputRef.current) emailInputRef.current.value = "";
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <Button size="icon" variant="ghost" className="hover:bg-transparent">
+          <PenSquare size={24} className="text-grayscale-400" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent
+        className="flex max-h-[90vh] min-h-[50vh] min-w-[50vw] max-w-md flex-col"
+        aria-describedby={undefined}
+      >
+        <DialogHeader>
+          <DialogTitle>캘린더 편집</DialogTitle>
+        </DialogHeader>
+
+        {isLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="text-grayscale-400 text-medium-m">로딩 중...</div>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center space-y-4 py-8">
+            <div className="text-medium-m text-notification-strong">{error}</div>
+            <Button variant="outline" onClick={() => setIsOpen(false)}>
+              닫기
+            </Button>
+          </div>
+        ) : (
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-1 flex-col space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                rules={{ required: "캘린더 이름을 입력해주세요" }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>캘린더 이름</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="캘린더 이름을 입력하세요"
+                        {...field}
+                        className={cn(
+                          form.formState.errors.name &&
+                            "border-[2px] border-notification-strong focus:border-notification-strong focus:ring-notification-strong",
+                        )}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="nickname"
+                rules={{ required: "캘린더에서 사용할 닉네임을 입력해주세요" }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>닉네임</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="캘린더에서 사용할 닉네임을 입력해주세요"
+                        {...field}
+                        className={cn(
+                          form.formState.errors.nickname &&
+                            "border-[2px] border-notification-strong focus:border-notification-strong focus:ring-notification-strong",
+                        )}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex min-h-0 flex-1 flex-col space-y-4">
+                <FormLabel>멤버</FormLabel>
+
+                <div className="flex gap-2">
+                  <Input
+                    ref={emailInputRef}
+                    placeholder="이메일을 입력하세요"
+                    className="flex-1"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleInvite();
+                      }
+                    }}
+                  />
+                  <Button type="button" onClick={handleInvite} disabled={isInviting}>
+                    {isInviting ? "초대 중..." : "Invite"}
+                  </Button>
+                </div>
+
+                {participants.length > 0 && (
+                  <ScrollArea className="h-80 w-full rounded-lg border border-grayscale-400">
+                    <div className="space-y-3 p-3 pr-1">
+                      {participants.map((participant, index) => (
+                        <div key={participant.id} className="flex items-center gap-2 py-2">
+                          <div className="flex flex-1 flex-col items-start md:flex-row md:items-center md:gap-2">
+                            <div className="text-grayscale-700 text-medium-r">{participant.nickname}</div>
+                            <div className="text-grayscale-400 text-medium-s">{participant.email}</div>
+                          </div>
+
+                          <Select
+                            value={participant.role}
+                            onValueChange={(value) => handleRoleChange(index, value as CalendarRole)}
+                            disabled={participant.role === "OWNER"}
+                          >
+                            <SelectTrigger className="h-8 w-28">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {ROLE_OPTIONS.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveParticipant(index)}
+                            className="text-grayscale-400 hover:bg-transparent"
+                            disabled={participant.role === "OWNER"}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                )}
+              </div>
+
+              <div className="flex justify-end">
+                <Button type="button" variant="ghost" className="text-grayscale-400 underline" onClick={handleDelete}>
+                  캘린더 삭제
+                </Button>
+              </div>
+
+              <DialogFooter className="flex-shrink-0">
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "저장 중..." : "저장"}
+                </Button>
+                <Button type="button" variant="outline" onClick={handleCancel}>
+                  취소
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+};

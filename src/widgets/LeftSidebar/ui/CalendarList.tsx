@@ -1,5 +1,4 @@
-import { Button } from "@/shared/ui";
-import { PenSquare } from "lucide-react";
+import { EditCalendar } from "@/features/edit-calendar";
 import { useState } from "react";
 
 type CalendarInfo = {
@@ -21,10 +20,6 @@ const calendarList = [
 export const CalendarList = () => {
   const [hoveredCalendarId, setHoveredCalendarId] = useState<number>(-1);
 
-  const handleEditCalendar = (calendarId: number) => {
-    console.log("캘린더 수정", calendarId);
-  };
-
   return (
     <div className="mt-2 space-y-3">
       {calendarList.map((calendar: CalendarInfo) => (
@@ -35,16 +30,9 @@ export const CalendarList = () => {
           onMouseLeave={() => setHoveredCalendarId(-1)}
         >
           <span className="truncate text-grayscale-500 text-medium-m">{calendar.title}</span>
-          {hoveredCalendarId === calendar.calendarId && (
-            <Button
-              size="icon"
-              variant="ghost"
-              className="hover:bg-transparent"
-              onClick={() => handleEditCalendar(calendar.calendarId)}
-            >
-              <PenSquare size={16} className="text-grayscale-500" />
-            </Button>
-          )}
+          <div className={`${hoveredCalendarId === calendar.calendarId ? "opacity-100" : "size-0 opacity-0"}`}>
+            <EditCalendar calendarId={calendar.calendarId} />
+          </div>
         </div>
       ))}
     </div>
