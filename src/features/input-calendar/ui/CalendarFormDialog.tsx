@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  ScrollArea,
   Select,
   SelectContent,
   SelectItem,
@@ -105,13 +106,13 @@ export const CalendarFormDialog = ({ mode, initialData, onSubmit, onCancel, onDe
   };
 
   return (
-    <DialogContent className="max-h-[90vh] max-w-md overflow-hidden" aria-describedby={undefined}>
+    <DialogContent className="flex max-h-[90vh] max-w-md flex-col" aria-describedby={undefined}>
       <DialogHeader>
         <DialogTitle>{mode === "create" ? "캘린더 생성" : "캘린더 편집"}</DialogTitle>
       </DialogHeader>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="flex h-full flex-col space-y-6">
           <FormField
             control={form.control}
             name="name"
@@ -127,7 +128,7 @@ export const CalendarFormDialog = ({ mode, initialData, onSubmit, onCancel, onDe
             )}
           />
 
-          <div className="space-y-4">
+          <div className="flex min-h-0 flex-1 flex-col space-y-4">
             <FormLabel>참가자</FormLabel>
 
             <div className="flex gap-2">
@@ -149,48 +150,52 @@ export const CalendarFormDialog = ({ mode, initialData, onSubmit, onCancel, onDe
             </div>
 
             {participants.length > 0 && (
-              <div className="space-y-3">
-                {participants.map((participant) => (
-                  <div key={participant.id} className="flex items-center gap-2 py-2">
-                    <div className="flex-1">
-                      <div className="font-medium text-sm">
-                        {participant.nickname}
-                        {participant.role === "OWNER" && (
-                          <span className="ml-1 text-muted-foreground text-xs">(소유자)</span>
-                        )}
+              <ScrollArea
+                className={`w-full ${participants.length <= 3 ? `h-[${participants.length * 20}px]` : "h-[216px]"}`}
+              >
+                <div className="space-y-3 pr-1">
+                  {participants.map((participant) => (
+                    <div key={participant.id} className="flex items-center gap-2 py-2">
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">
+                          {participant.nickname}
+                          {participant.role === "OWNER" && (
+                            <span className="ml-1 text-muted-foreground text-xs">(소유자)</span>
+                          )}
+                        </div>
+                        <div className="text-muted-foreground text-xs">{participant.email}</div>
                       </div>
-                      <div className="text-muted-foreground text-xs">{participant.email}</div>
+
+                      <Select
+                        value={participant.role}
+                        onValueChange={(value) => handleRoleChange(participant.id, value as CalendarRole)}
+                      >
+                        <SelectTrigger className="h-8 w-28">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ROLE_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveParticipant(participant.id)}
+                        className="text-grayscale-400 hover:bg-transparent"
+                        disabled={participant.role === "OWNER"}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
-
-                    <Select
-                      value={participant.role}
-                      onValueChange={(value) => handleRoleChange(participant.id, value as CalendarRole)}
-                    >
-                      <SelectTrigger className="h-8 w-28">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {ROLE_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemoveParticipant(participant.id)}
-                      className="text-grayscale-400 hover:bg-transparent"
-                      disabled={participant.role === "OWNER"}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </ScrollArea>
             )}
           </div>
 
@@ -203,7 +208,7 @@ export const CalendarFormDialog = ({ mode, initialData, onSubmit, onCancel, onDe
             </div>
           )}
 
-          <DialogFooter>
+          <DialogFooter className="flex-shrink-0">
             <Button type="button" variant="outline" onClick={handleCancel}>
               취소
             </Button>
