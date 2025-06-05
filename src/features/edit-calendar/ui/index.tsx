@@ -231,10 +231,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
           <PenSquare size={24} className="text-grayscale-400" />
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="flex max-h-[90vh] min-h-[50vh] min-w-[50vw] max-w-md flex-col"
-        aria-describedby={undefined}
-      >
+      <DialogContent className="max-h-[90vh] min-w-[50vw] max-w-md" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>캘린더 편집</DialogTitle>
         </DialogHeader>
@@ -316,10 +313,10 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                 </div>
 
                 {participants.length > 0 && (
-                  <ScrollArea className="h-80 w-full rounded-lg border border-grayscale-400">
-                    <div className="space-y-3 p-3 pr-1">
+                  <ScrollArea className="max-h-80 w-full rounded-lg border border-grayscale-400 p-3">
+                    <div className="space-y-1 pr-1">
                       {participants.map((participant, index) => (
-                        <div key={participant.id} className="flex items-center gap-2 py-2">
+                        <div key={participant.id} className="flex items-center gap-2 py-1">
                           <div className="flex flex-1 flex-col items-start md:flex-row md:items-center md:gap-2">
                             <div className="text-grayscale-700 text-medium-r">{participant.nickname}</div>
                             <div className="text-grayscale-400 text-medium-s">{participant.email}</div>
