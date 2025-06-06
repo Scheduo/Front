@@ -36,7 +36,6 @@ type CreateCalendarFormData = Omit<ScheduleCalendar, "id">;
 export const CreateCalendar = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<CreateCalendarFormData>({

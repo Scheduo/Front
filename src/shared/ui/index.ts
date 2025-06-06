@@ -10,3 +10,5 @@ export * from "./form";
 export { Input } from "./input";
 export { Textarea } from "./textarea";
 export * from "./dialog";
+export { TextConfirmDialog } from "./TextConfirmDialog";
+export { ConfirmDialog } from "./ConfirmDialog";
