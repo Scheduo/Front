@@ -15,8 +15,8 @@ export const RecentSearchKeyword = ({ recentKeywords, onSearchKeyword, onRemoveK
     <div className="space-y-2">
       <h3 className="pl-1 text-bold-m text-grayscale-black">최근 검색</h3>
       <ul>
-        {recentKeywords.map((keyword, index) => (
-          <li key={`${index}-${keyword}`} className="group px-2">
+        {recentKeywords.map((keyword) => (
+          <li key={keyword} className="group px-2">
             <div className="flex items-center justify-between rounded-md px-2 py-1">
               <button
                 type="button"
