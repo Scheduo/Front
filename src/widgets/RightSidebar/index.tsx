@@ -1,4 +1,5 @@
 import { CreateSchedule, EditSchedule } from "@/features/input-schedule";
+import { SearchSchedule } from "@/features/search-schedule";
 import { ShareSchedule } from "@/features/share-schedule";
 import { DailySchedule } from "@/features/view-daily-schedule";
 import type { RightSidebarViewType } from "@/shared/model";
@@ -28,7 +29,7 @@ export const RightSidebar = () => {
       case "edit":
         return <EditSchedule onCancel={() => setCurrentView("daily")} />;
       case "search":
-        return <div>일정 검색</div>;
+        return <SearchSchedule />;
       case "notification":
         return <div>알림</div>;
       default:
