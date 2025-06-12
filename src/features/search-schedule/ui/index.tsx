@@ -1,19 +1,26 @@
 import { Button, Input } from "@/shared/ui";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { SearchResults } from "./SearchResults";
 import { RecentSearchKeyword } from "./recentSearchKeyword";
+import type { SearchResultItem, ViewType } from "./types";
 
 /**
  * 검색을 위한 사이드바 컴포넌트입니다.
  * 검색어 입력 기능을 제공합니다.
  */
 export const SearchSchedule = () => {
+  const [viewType, setViewType] = useState<ViewType>("RECENT");
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [recentSearchKeyword, setRecentSearchKeyword] = useState<string[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const handleSearch = (keyword?: string) => {
     const query = keyword || searchInputRef.current?.value.trim() || "";
     if (query) {
+      setIsSearching(true);
+
       const filtered = recentSearchKeyword.filter((keyword) => keyword !== query);
       const updated = [query, ...filtered].slice(0, 5);
       setRecentSearchKeyword(updated);
@@ -24,6 +31,34 @@ export const SearchSchedule = () => {
         searchInputRef.current.value = keyword;
       }
     }
+
+    // TODO: 검색 API 호출
+    setTimeout(() => {
+      setSearchResults([
+        {
+          scheduleId: 12,
+          calendarId: 5,
+          calendarName: "팀 프로젝트",
+          title: "팀 회의",
+          startDate: "2025-04-01",
+          endDate: "2025-04-01",
+          startTime: "09:00",
+          endTime: "10:00",
+        },
+        {
+          scheduleId: 27,
+          calendarId: 3,
+          calendarName: "개인 캘린더",
+          title: "고객 회의",
+          startDate: "2025-04-01",
+          endDate: "2025-04-01",
+          startTime: "15:00",
+          endTime: "16:00",
+        },
+      ]);
+      setIsSearching(false);
+      setViewType("RESULT");
+    }, 500);
   };
 
   const handleRemoveKeyword = (removeKeyword: string) => {
@@ -61,11 +96,15 @@ export const SearchSchedule = () => {
         </Button>
       </div>
 
-      <RecentSearchKeyword
-        recentKeywords={recentSearchKeyword}
-        onSearchKeyword={handleSearch}
-        onRemoveKeyword={handleRemoveKeyword}
-      />
+      {viewType === "RESULT" ? (
+        <SearchResults results={searchResults} isLoading={isSearching} />
+      ) : (
+        <RecentSearchKeyword
+          recentKeywords={recentSearchKeyword}
+          onSearchKeyword={handleSearch}
+          onRemoveKeyword={handleRemoveKeyword}
+        />
+      )}
     </div>
   );
 };
