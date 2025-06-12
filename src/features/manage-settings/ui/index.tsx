@@ -44,7 +44,7 @@ export const ManageSettings = () => {
                   <Button
                     key={val.value}
                     variant="ghost"
-                    className="flex w-full justify-between"
+                    className="flex w-full justify-between text-grayscale-700 text-medium-s"
                     onClick={() => setView(val.value)}
                   >
                     <span>{val.label}</span>
