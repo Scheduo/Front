@@ -1,4 +1,5 @@
 import { CreateSchedule, EditSchedule } from "@/features/input-schedule";
+import { NotificationList } from "@/features/notification";
 import { SearchSchedule } from "@/features/search-schedule";
 import { ShareSchedule } from "@/features/share-schedule";
 import { DailySchedule } from "@/features/view-daily-schedule";
@@ -31,7 +32,7 @@ export const RightSidebar = () => {
       case "search":
         return <SearchSchedule />;
       case "notification":
-        return <div>알림</div>;
+        return <NotificationList />;
       default:
         return <DailySchedule onSetView={setCurrentView} />;
     }
