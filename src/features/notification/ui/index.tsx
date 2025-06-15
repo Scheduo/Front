@@ -40,7 +40,7 @@ export const NotificationList = () => {
       <div className="flex h-20 items-center gap-2 p-6">
         <h2 className="text-bold-l text-grayscale-black">알림</h2>
         {unreadCount > 0 && (
-          <Badge variant="destructive" className="!text-grayscale-white rounded-[99px] px-2 text-medium-s">
+          <Badge variant="destructive" className="rounded-[99px] px-2 text-grayscale-white text-medium-s">
             {unreadCount}
           </Badge>
         )}
