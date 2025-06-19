@@ -1,12 +1,11 @@
-import { Calendar, LeftSidebar, RightSidebar } from "@/widgets";
+import { BrowserRouter } from "react-router";
+import { Router } from "./routes";
 
 function App() {
   return (
-    <div className="flex h-screen w-screen flex-row">
-      <LeftSidebar />
-      <Calendar />
-      <RightSidebar />
-    </div>
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
   );
 }
 
