@@ -1,6 +1,8 @@
+import { requestLogOut } from "@/entities/auth/api";
 import { Button, Dialog, DialogContent, DialogTrigger } from "@/shared/ui";
 import { ChevronRight, Settings } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { EditProfile } from "./EditProfile";
 import { Inquiry } from "./Inquiry";
 import { TermsOfUse } from "./TermsOfUse";
@@ -16,6 +18,7 @@ const VIEW_TYPE = [
 export const ManageSettings = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<ViewType>("EDIT_PROFILE");
+  const navigate = useNavigate();
 
   const renderView = () => {
     switch (view) {
@@ -27,18 +30,25 @@ export const ManageSettings = () => {
         return <Inquiry />;
     }
   };
+
+  const handleLogOut = async () => {
+    await requestLogOut();
+    navigate("/login");
+  };
+
   return (
     <div className="flex">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Settings size={18} className="text-grayscale-700" />
+          <Settings size={18} className="cursor-pointer text-grayscale-700" />
         </DialogTrigger>
         <DialogContent className="flex h-1/2 w-1/2 gap-0 rounded-lg p-0">
-          <div className="h-full w-48 rounded-l-lg bg-grayscale-100 px-1">
+          <div className="flex h-full w-48 flex-col rounded-l-lg bg-grayscale-100 px-1">
             <header className="flex h-20 w-full items-center justify-start px-2">
               <h2 className="text-bold-l text-grayscale-black">설정</h2>
             </header>
-            <div className="flex flex-col items-start space-y-1">
+
+            <div className="flex flex-1 flex-col items-start space-y-1">
               {VIEW_TYPE.map((val) => {
                 return (
                   <Button
@@ -52,6 +62,16 @@ export const ManageSettings = () => {
                   </Button>
                 );
               })}
+            </div>
+
+            <div className="pb-4">
+              <Button
+                variant="link"
+                className="flex cursor-pointer justify-start text-grayscale-500 text-medium-s underline"
+                onClick={handleLogOut}
+              >
+                로그아웃
+              </Button>
             </div>
           </div>
 

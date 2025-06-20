@@ -34,6 +34,10 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError<ErrorResponse>) => {
     const errorData = error.response?.data;
 
+    if (error.config?.url?.includes("/auth/logout")) {
+      return Promise.reject(error);
+    }
+
     if (errorData?.code === 401) {
       const { refreshToken, setAuth, clearAuth } = useAuthStore.getState();
 
@@ -64,13 +68,7 @@ axiosInstance.interceptors.response.use(
     }
 
     if (!error.response) {
-      if (error.code === "ECONNABORTED" || error.message.includes("timeout")) {
-        toast.error("요청 시간이 초과되었습니다. 다시 시도해주세요.");
-      } else if (error.code === "ERR_NETWORK") {
-        toast.error("네트워크 연결을 확인해주세요.");
-      } else {
-        toast.error("네트워크 오류가 발생했습니다.");
-      }
+      toast.error("네트워크 오류가 발생했습니다.");
     }
 
     return Promise.reject(error);
