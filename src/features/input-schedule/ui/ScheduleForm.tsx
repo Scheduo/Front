@@ -4,7 +4,7 @@ import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/shared/lib";
 import {
   Button,
   ButtonGroup,

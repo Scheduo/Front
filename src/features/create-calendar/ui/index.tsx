@@ -1,4 +1,4 @@
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/shared/lib";
 import { Plus, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
