@@ -12,3 +12,5 @@ export { Textarea } from "./textarea";
 export * from "./dialog";
 export { TextConfirmDialog } from "./TextConfirmDialog";
 export { ConfirmDialog } from "./ConfirmDialog";
+export { Google } from "./icons/Google";
+export { Kakao } from "./icons/Kakao";

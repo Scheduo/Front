@@ -110,6 +110,34 @@ body {
   font-family: var(--font-family-base);
 }
 
+/* 로그인 페이지 애니메이션 유틸리티 */
+@utility login-bg-slide {
+  transform: var(--bg-transform, translate3d(0, 0, 0));
+  transition: transform 800ms ease-in-out;
+  will-change: transform;
+}
+
+@utility login-logo-animate {
+  transform: var(--logo-transform, translate3d(0, 20px, 0));
+  opacity: var(--logo-opacity, 0);
+  transition: transform 800ms ease-out, opacity 800ms ease-out;
+  will-change: transform, opacity;
+}
+
+@utility login-bg-slide-left {
+  --bg-transform: translate3d(-50%, 0, 0);
+}
+
+@utility login-logo-show {
+  --logo-transform: translate3d(0, 0, 0);
+  --logo-opacity: 1;
+}
+
+@utility login-logo-move {
+  --logo-transform: translate3d(-25vw, 0, 0);
+  --logo-opacity: 1;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
