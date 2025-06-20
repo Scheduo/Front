@@ -1,5 +1,6 @@
 import { Google, Kakao } from "@/shared/ui";
 import { useEffect, useState } from "react";
+import { ANIMATION_SEQUENCE } from "../consts";
 
 /**
  * 로그인 페이지 컴포넌트입니다.
@@ -10,13 +11,7 @@ export const LogIn = () => {
   const [animationStep, setAnimationStep] = useState(0);
 
   useEffect(() => {
-    const animationSequence = [
-      { step: 1, delay: 500 },
-      { step: 2, delay: 1000 },
-      { step: 3, delay: 1800 },
-    ];
-
-    const timers = animationSequence.map(({ step, delay }) => setTimeout(() => setAnimationStep(step), delay));
+    const timers = ANIMATION_SEQUENCE.map(({ step, delay }) => setTimeout(() => setAnimationStep(step), delay));
 
     return () => timers.forEach(clearTimeout);
   }, []);
