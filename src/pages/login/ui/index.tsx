@@ -1,5 +1,8 @@
+import { requestLogIn } from "@/entities/auth/api";
+import { useAuthStore } from "@/shared/stores";
 import { Google, Kakao } from "@/shared/ui";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { ANIMATION_SEQUENCE } from "../consts";
 
 /**
@@ -9,6 +12,14 @@ import { ANIMATION_SEQUENCE } from "../consts";
  */
 export const LogIn = () => {
   const [animationStep, setAnimationStep] = useState(0);
+  const { accessToken } = useAuthStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/", { replace: true });
+    }
+  }, [accessToken, navigate]);
 
   useEffect(() => {
     const timers = ANIMATION_SEQUENCE.map(({ step, delay }) => setTimeout(() => setAnimationStep(step), delay));
@@ -17,11 +28,11 @@ export const LogIn = () => {
   }, []);
 
   const handleGoogleLogin = () => {
-    console.log("Google 로그인 클릭");
+    requestLogIn("google");
   };
 
   const handleKakaoLogin = () => {
-    console.log("카카오 로그인 클릭");
+    requestLogIn("kakao");
   };
 
   return (

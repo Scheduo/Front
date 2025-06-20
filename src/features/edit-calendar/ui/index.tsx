@@ -1,6 +1,6 @@
 import type { CalendarParticipant, CalendarRole, ScheduleCalendar } from "@/entities/calendar";
 import { ROLE_OPTIONS } from "@/shared/const";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/shared/lib";
 import {
   Button,
   Dialog,

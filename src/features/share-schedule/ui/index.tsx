@@ -1,5 +1,5 @@
 import type { ScheduleCalendar } from "@/entities/calendar";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/shared/lib";
 import type { RightSidebarViewType } from "@/shared/model";
 import { Button, ButtonGroup, Calendar, Popover, PopoverContent, PopoverTrigger, ScrollArea } from "@/shared/ui";
 import { format } from "date-fns";
