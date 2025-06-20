@@ -1,6 +1,11 @@
 import { Google, Kakao } from "@/shared/ui";
 import { useEffect, useState } from "react";
 
+/**
+ * 로그인 페이지 컴포넌트입니다.
+ * 애니메이션 시퀀스를 통해 UI 요소를 동적으로 표시하며,
+ * Google 및 Kakao 소셜 로그인 기능을 제공합니다.
+ */
 export const LogIn = () => {
   const [animationStep, setAnimationStep] = useState(0);
 
