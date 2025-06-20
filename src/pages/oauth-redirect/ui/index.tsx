@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/shared/stores";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
+import { toast } from "sonner";
 
 /**
  * 소셜 로그인 리다이렉션을 처리하는 페이지입니다.
@@ -19,7 +20,7 @@ export const OAuthRedirectPage = () => {
       setAuth(accessToken, refreshToken);
       navigate("/", { replace: true });
     } else {
-      console.error("소셜 로그인 실패: 토큰을 받지 못했습니다.");
+      toast.error("소셜 로그인 실패");
       navigate("/login", { replace: true });
     }
   }, [searchParams, setAuth, navigate]);

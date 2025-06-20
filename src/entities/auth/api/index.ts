@@ -1,4 +1,5 @@
 import { axiosInstance } from "@/shared/api";
+import { devLogger } from "@/shared/lib";
 import { useAuthStore } from "@/shared/stores";
 
 export const requestLogIn = (provider: "google" | "kakao") => {
@@ -8,8 +9,10 @@ export const requestLogIn = (provider: "google" | "kakao") => {
 export const requestLogOut = () => {
   const { refreshToken, clearAuth } = useAuthStore.getState();
 
-  axiosInstance.post("/auth/logout", {
-    refreshToken,
-  });
+  axiosInstance
+    .post("/auth/logout", {
+      refreshToken,
+    })
+    .catch((error) => devLogger.error(error.message));
   clearAuth();
 };
