@@ -1,3 +1,4 @@
+import { requestLogIn } from "@/entities/auth/api";
 import { Google, Kakao } from "@/shared/ui";
 import { useEffect, useState } from "react";
 import { ANIMATION_SEQUENCE } from "../consts";
@@ -17,11 +18,11 @@ export const LogIn = () => {
   }, []);
 
   const handleGoogleLogin = () => {
-    console.log("Google 로그인 클릭");
+    requestLogIn("google");
   };
 
   const handleKakaoLogin = () => {
-    console.log("카카오 로그인 클릭");
+    requestLogIn("kakao");
   };
 
   return (
