@@ -7,7 +7,6 @@ export const Router = () => {
     <Routes>
       <Route index element={<Main />} />
       <Route path="login" element={<LogIn />} />
-      <Route path="main" element={<Main />} />
     </Routes>
   );
 };
