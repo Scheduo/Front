@@ -24,7 +24,7 @@ jobs:
           destination-repository-name: "scheduo-frontend-deploy" # fork 레포 이름
           user-email: ${{ secrets.EMAIL }}
           user-name: "GitHub Action Bot"
-          commit-message: "[Auto-sync] ${{ github.event.commits[0].message }}"
+          commit-message: "🚀 [Deploy] Scheduo/Front 레포에서 자동 동기화"
           target-branch: develop # fork 레포의 develop 브랜치로 푸시
 
       - name: Sync completion notification
