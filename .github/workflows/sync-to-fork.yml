@@ -1,0 +1,33 @@
+name: Sync to Personal Fork for Vercel Deploy
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 전체 히스토리 가져오기
+
+      - name: Push to personal fork
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.AUTH_TOKEN }}
+        with:
+          source-directory: "." # 전체 소스 코드를 그대로 복사
+          destination-github-username: "zero0205" # 개인 깃헙 아이디
+          destination-repository-name: "scheduo-frontend-deploy" # fork 레포 이름
+          user-email: ${{ secrets.EMAIL }}
+          user-name: "GitHub Action Bot"
+          commit-message: "[Auto-sync] ${{ github.event.commits[0].message }}"
+          target-branch: develop # fork 레포의 develop 브랜치로 푸시
+
+      - name: Sync completion notification
+        run: |
+          echo "✅ Successfully synced to personal fork"
+          echo "🚀 Vercel will auto-deploy from the fork repository"
