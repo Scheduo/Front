@@ -21,7 +21,7 @@ jobs:
         with:
           source-directory: "." # 전체 소스 코드를 그대로 복사
           destination-github-username: "zero0205" # 개인 깃헙 아이디
-          destination-repository-name: "scheduo-frontend-deploy" # fork 레포 이름
+          destination-repository-name: "scheduo-front-deploy" # fork 레포 이름
           user-email: ${{ secrets.EMAIL }}
           user-name: "GitHub Action Bot"
           commit-message: "🚀 [Deploy] Scheduo/Front 레포에서 자동 동기화"
