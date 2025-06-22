@@ -99,10 +99,10 @@ export const CreateCalendar = () => {
       if (emailInputRef.current) {
         emailInputRef.current.value = "";
       }
-      devLogger.log(`캘린더 생성: ${data}`);
+      devLogger.log("캘린더 생성:", data);
       setIsOpen(false);
     } catch (error) {
-      devLogger.error(`캘린더 생성 실패: ${error}`);
+      devLogger.error("캘린더 생성 실패:", error);
     } finally {
       setIsSubmitting(false);
     }

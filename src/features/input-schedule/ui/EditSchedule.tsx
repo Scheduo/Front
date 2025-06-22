@@ -49,9 +49,9 @@ export const EditSchedule = ({ onCancel }: EditScheduleProps) => {
   const handleSubmit = async (data: InputScheduleRequest) => {
     try {
       setIsSubmitting(true);
-      devLogger.log(`일정 수정: ${data}`);
+      devLogger.log("일정 수정:", data);
     } catch (error) {
-      devLogger.error(`일정 수정 실패: ${error}`);
+      devLogger.error("일정 수정 실패:", error);
     } finally {
       setIsSubmitting(false);
     }

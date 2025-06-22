@@ -16,9 +16,9 @@ export const CreateSchedule = ({ onCancel }: CreateScheduleProps) => {
   const handleSubmit = async (data: InputScheduleRequest) => {
     try {
       setIsSubmitting(true);
-      devLogger.log(`일정 생성: ${data}`);
+      devLogger.log("일정 생성:", data);
     } catch (error) {
-      devLogger.error(`일정 생성 실패: ${error}`);
+      devLogger.error("일정 생성 실패:", error);
     } finally {
       setIsSubmitting(false);
     }
