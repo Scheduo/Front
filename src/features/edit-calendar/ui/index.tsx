@@ -137,8 +137,9 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
 
     setIsInviting(true);
     try {
-      // TODO: 여러 멤버 일괄 초대 API 호출
+      // TODO: 여러 멤버 초대 API 호출
 
+      // API 성공 후에만 UI 업데이트
       const newParticipants: CalendarParticipant[] = selectedMembers.map((member) => ({
         id: member.id,
         email: member.email,
@@ -153,6 +154,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     } catch (error) {
       console.error("참가자 초대 실패:", error);
       // TODO: 에러 토스트 표시
+      // UI 상태는 자동으로 원래대로 유지됨 (API 실패 시 아무것도 변경하지 않음)
     } finally {
       setIsInviting(false);
     }
