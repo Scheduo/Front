@@ -56,7 +56,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   const [participants, setParticipants] = useState<CalendarParticipant[]>([]);
   const [showDeleteCalendar, setShowDeleteCalendar] = useState(false);
   const [showDeleteMember, setShowDeleteMember] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
 
   const form = useForm<EditCalendarFormData>({
     defaultValues: {
@@ -67,9 +67,9 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
 
   const excludeEmails = useMemo(() => {
     const participantEmails = participants.map((p) => p.email);
-    const selectedEmail = selectedMember ? [selectedMember.email] : [];
-    return [...participantEmails, ...selectedEmail];
-  }, [participants, selectedMember]);
+    const selectedEmails = selectedMembers.map((m) => m.email);
+    return [...participantEmails, ...selectedEmails];
+  }, [participants, selectedMembers]);
 
   const fetchCalendarData = useCallback(async (id: number): Promise<EditableScheduleCalendar> => {
     try {
@@ -125,22 +125,29 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   }, [calendarId, isOpen, fetchCalendarData, form]);
 
   const handleSelectMember = (member: Member) => {
-    setSelectedMember(member);
+    setSelectedMembers((prev) => [...prev, member]);
   };
 
-  const handleInvite = async () => {
-    if (!selectedMember) return;
+  const handleRemoveSelectedMember = (memberId: number) => {
+    setSelectedMembers((prev) => prev.filter((m) => m.id !== memberId));
+  };
+
+  const handleInviteAll = async () => {
+    if (selectedMembers.length === 0) return;
 
     setIsInviting(true);
     try {
-      const newParticipant: CalendarParticipant = {
-        id: selectedMember.id,
-        email: selectedMember.email,
-        nickname: selectedMember.nickname,
+      // TODO: 여러 멤버 일괄 초대 API 호출
+
+      const newParticipants: CalendarParticipant[] = selectedMembers.map((member) => ({
+        id: member.id,
+        email: member.email,
+        nickname: member.nickname,
         role: "VIEWER",
-      };
-      setParticipants((prev) => [...prev, newParticipant]);
-      setSelectedMember(null);
+      }));
+
+      setParticipants((prev) => [...prev, ...newParticipants]);
+      setSelectedMembers([]);
 
       // TODO: 성공 토스트 표시
     } catch (error) {
@@ -298,29 +305,39 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                     onSelectMember={handleSelectMember}
                     className="flex-1"
                   />
-                  <Button type="button" onClick={handleInvite} disabled={isInviting || !selectedMember}>
-                    {isInviting ? "초대 중..." : "초대"}
+                  <Button type="button" onClick={handleInviteAll} disabled={isInviting || selectedMembers.length === 0}>
+                    {isInviting ? "초대 중..." : `초대 (${selectedMembers.length})`}
                   </Button>
                 </div>
 
-                {selectedMember && (
-                  <div className="flex items-center gap-2 rounded-lg border border-primary-main/20 bg-primary-main/5 p-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-grayscale-100">
-                      <User className="h-4 w-4 text-grayscale-600" />
+                {selectedMembers.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="text-grayscale-600 text-small">선택된 멤버 ({selectedMembers.length}명)</div>
+                    <div className="max-h-40 space-y-2 overflow-y-auto">
+                      {selectedMembers.map((member) => (
+                        <div
+                          key={member.id}
+                          className="flex items-center gap-2 rounded-lg border border-primary-main/20 bg-primary-main/5 p-3"
+                        >
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-grayscale-100">
+                            <User className="h-4 w-4 text-grayscale-600" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="truncate text-grayscale-700 text-medium-r">{member.nickname}</div>
+                            <div className="truncate text-grayscale-400 text-medium-s">{member.email}</div>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveSelectedMember(member.id)}
+                            className="text-grayscale-400"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-grayscale-700 text-medium-r">{selectedMember.nickname}</div>
-                      <div className="truncate text-grayscale-400 text-medium-s">{selectedMember.email}</div>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setSelectedMember(null)}
-                      className="text-grayscale-400"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
                   </div>
                 )}
 
