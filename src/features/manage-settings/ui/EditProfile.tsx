@@ -1,13 +1,20 @@
+import { useAuthStore } from "@/shared/stores";
 import { Button, Input } from "@/shared/ui";
 import { Label } from "@/shared/ui/label";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
+interface EditProfileProps {
+  onCancel: () => void;
+}
+
 interface ProfileFormData {
   nickname: string;
 }
 
-export const EditProfile = () => {
+export const EditProfile = ({ onCancel }: EditProfileProps) => {
+  const user = useAuthStore((state) => state.user);
+
   const {
     register,
     handleSubmit,
@@ -16,17 +23,10 @@ export const EditProfile = () => {
   } = useForm<ProfileFormData>();
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      // TODO: 프로필 조회 API 호출
-      // const profile = await getUserProfile();
-      // setValue("nickname", profile.nickname);
-
-      // 임시 데이터
-      setValue("nickname", "홍길동");
-    };
-
-    fetchProfile();
-  }, [setValue]);
+    if (user) {
+      setValue("nickname", user.nickname);
+    }
+  }, [setValue, user]);
 
   const onSubmit = async (data: ProfileFormData) => {
     // TODO: 프로필 업데이트 API 호출
@@ -65,7 +65,7 @@ export const EditProfile = () => {
           <Button type="submit" disabled={isSubmitting} className="w-20">
             {isSubmitting ? "저장 중..." : "저장"}
           </Button>
-          <Button type="button" variant="outline" className="w-20">
+          <Button type="button" variant="outline" className="w-20" onClick={onCancel}>
             취소
           </Button>
         </div>
