@@ -1,4 +1,5 @@
 import type { CalendarParticipant, CalendarRole, ScheduleCalendar } from "@/entities/calendar";
+import type { Member } from "@/entities/member/model";
 import { ROLE_OPTIONS } from "@/shared/const";
 import { cn } from "@/shared/lib";
 import {
@@ -16,6 +17,7 @@ import {
   FormItem,
   FormLabel,
   Input,
+  MemberSearchInput,
   ScrollArea,
   Select,
   SelectContent,
@@ -24,8 +26,8 @@ import {
   SelectValue,
   TextConfirmDialog,
 } from "@/shared/ui";
-import { PenSquare, Trash2 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { PenSquare, Trash2, User, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface EditableScheduleCalendar extends ScheduleCalendar {
@@ -51,10 +53,10 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const emailInputRef = useRef<HTMLInputElement>(null);
   const [participants, setParticipants] = useState<CalendarParticipant[]>([]);
   const [showDeleteCalendar, setShowDeleteCalendar] = useState(false);
   const [showDeleteMember, setShowDeleteMember] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
   const form = useForm<EditCalendarFormData>({
     defaultValues: {
@@ -62,6 +64,12 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
       nickname: "",
     },
   });
+
+  const excludeEmails = useMemo(() => {
+    const participantEmails = participants.map((p) => p.email);
+    const selectedEmail = selectedMember ? [selectedMember.email] : [];
+    return [...participantEmails, ...selectedEmail];
+  }, [participants, selectedMember]);
 
   const fetchCalendarData = useCallback(async (id: number): Promise<EditableScheduleCalendar> => {
     try {
@@ -106,10 +114,6 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
           nickname: data.nickname || "",
         });
         setParticipants(data.participants || []);
-
-        if (emailInputRef.current) {
-          emailInputRef.current.value = "";
-        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.");
       } finally {
@@ -120,27 +124,23 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     loadCalendarData();
   }, [calendarId, isOpen, fetchCalendarData, form]);
 
-  // TODO: 이메일로 사용자 검색 미리보기 API(디바운싱) 호출 함수
+  const handleSelectMember = (member: Member) => {
+    setSelectedMember(member);
+  };
 
   const handleInvite = async () => {
-    const emailInput = emailInputRef.current?.value.trim();
-    if (!emailInput) return;
+    if (!selectedMember) return;
 
     setIsInviting(true);
     try {
-      // TODO: 초대 API 호출
-
       const newParticipant: CalendarParticipant = {
-        id: Date.now(),
-        email: emailInput,
-        nickname: emailInput,
+        id: selectedMember.id,
+        email: selectedMember.email,
+        nickname: selectedMember.nickname,
         role: "VIEWER",
       };
       setParticipants((prev) => [...prev, newParticipant]);
-
-      if (emailInputRef.current) {
-        emailInputRef.current.value = "";
-      }
+      setSelectedMember(null);
 
       // TODO: 성공 토스트 표시
     } catch (error) {
@@ -198,9 +198,6 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
 
   const handleCancel = () => {
     form.reset();
-    if (emailInputRef.current) {
-      emailInputRef.current.value = "";
-    }
     setIsOpen(false);
   };
 
@@ -220,7 +217,6 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     setIsOpen(open);
     if (open) {
       form.reset();
-      if (emailInputRef.current) emailInputRef.current.value = "";
     }
   };
 
@@ -296,21 +292,37 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                 <FormLabel>멤버</FormLabel>
 
                 <div className="flex gap-2">
-                  <Input
-                    ref={emailInputRef}
-                    placeholder="이메일을 입력하세요"
+                  <MemberSearchInput
+                    placeholder="이메일 또는 닉네임을 입력하여 멤버를 검색하세요"
+                    excludeEmails={excludeEmails}
+                    onSelectMember={handleSelectMember}
                     className="flex-1"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleInvite();
-                      }
-                    }}
                   />
-                  <Button type="button" onClick={handleInvite} disabled={isInviting}>
-                    {isInviting ? "초대 중..." : "Invite"}
+                  <Button type="button" onClick={handleInvite} disabled={isInviting || !selectedMember}>
+                    {isInviting ? "초대 중..." : "초대"}
                   </Button>
                 </div>
+
+                {selectedMember && (
+                  <div className="flex items-center gap-2 rounded-lg border border-primary-main/20 bg-primary-main/5 p-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-grayscale-100">
+                      <User className="h-4 w-4 text-grayscale-600" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-grayscale-700 text-medium-r">{selectedMember.nickname}</div>
+                      <div className="truncate text-grayscale-400 text-medium-s">{selectedMember.email}</div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedMember(null)}
+                      className="text-grayscale-400"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
 
                 {participants.length > 0 && (
                   <ScrollArea className="max-h-80 rounded-lg border border-grayscale-400 p-3">

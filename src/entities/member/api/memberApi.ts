@@ -12,5 +12,8 @@ export const memberApi = {
   },
   withdrawMyAccount: async () => {},
 
-  searchMembers: async () => {},
+  searchMember: async (email: string) => {
+    const result = await axiosInstance.get("/members/search", { params: { email } });
+    return result.data.data;
+  },
 };
