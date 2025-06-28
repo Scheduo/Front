@@ -1,9 +1,11 @@
 import { memberApi } from "@/entities/member/api";
+import { devLogger } from "@/shared/lib";
 import { useAuthStore } from "@/shared/stores";
 import { Button, Input } from "@/shared/ui";
 import { Label } from "@/shared/ui/label";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
 interface EditProfileProps {
@@ -35,8 +37,10 @@ export const EditProfile = ({ onCancel }: EditProfileProps) => {
       const result = await memberApi.editMyProfile(data);
       updateUser({ nickname: result.nickname });
       onCancel();
+      toast.success("프로필이 성공적으로 수정되었습니다.");
     } catch (error) {
-      console.error("프로필 수정 실패:", error);
+      devLogger.error("프로필 수정 실패:", error);
+      toast.error("프로필 수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
