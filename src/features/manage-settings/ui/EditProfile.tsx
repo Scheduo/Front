@@ -1,8 +1,10 @@
+import { memberApi } from "@/entities/member/api";
 import { useAuthStore } from "@/shared/stores";
 import { Button, Input } from "@/shared/ui";
 import { Label } from "@/shared/ui/label";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useShallow } from "zustand/shallow";
 
 interface EditProfileProps {
   onCancel: () => void;
@@ -13,7 +15,7 @@ interface ProfileFormData {
 }
 
 export const EditProfile = ({ onCancel }: EditProfileProps) => {
-  const user = useAuthStore((state) => state.user);
+  const [user, updateUser] = useAuthStore(useShallow((state) => [state.user, state.updateUser]));
 
   const {
     register,
@@ -23,14 +25,19 @@ export const EditProfile = ({ onCancel }: EditProfileProps) => {
   } = useForm<ProfileFormData>();
 
   useEffect(() => {
-    if (user) {
+    if (user?.nickname) {
       setValue("nickname", user.nickname);
     }
-  }, [setValue, user]);
+  }, [user?.nickname, setValue]);
 
   const onSubmit = async (data: ProfileFormData) => {
-    // TODO: 프로필 업데이트 API 호출
-    console.log(`${data.nickname} 변경 완료!`);
+    try {
+      const result = await memberApi.editMyProfile(data);
+      updateUser({ nickname: result.nickname });
+      onCancel();
+    } catch (error) {
+      console.error("프로필 수정 실패:", error);
+    }
   };
 
   return (
