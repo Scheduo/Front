@@ -1,5 +1,11 @@
+import { axiosInstance } from "@/shared/api";
+import type { Member } from "../model";
+
 export const memberApi = {
-  getMyProfile: async () => {},
+  getMyProfile: async (): Promise<Member> => {
+    const result = await axiosInstance.get("/members/me");
+    return result.data.data;
+  },
   editMyProfile: async () => {},
   withdrawMyAccount: async () => {},
 
