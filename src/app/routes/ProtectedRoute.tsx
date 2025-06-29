@@ -1,4 +1,4 @@
-import { useAuthGuard } from "@features/auth";
+import { useAuthStore } from "@/shared/stores";
 import { Navigate, Outlet } from "react-router";
 
 interface ProtectedRouteProps {
@@ -11,15 +11,8 @@ interface ProtectedRouteProps {
  * React Router의 Outlet을 사용하여 중첩된 라우트를 렌더링합니다.
  */
 export const ProtectedRoute = ({ requireAuth = true, redirectTo = "/login" }: ProtectedRouteProps) => {
-  const { isAuthenticated, isLoading } = useAuthGuard();
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div>로딩 중...</div>
-      </div>
-    );
-  }
+  const { accessToken } = useAuthStore();
+  const isAuthenticated = Boolean(accessToken);
 
   if (requireAuth && !isAuthenticated) {
     return <Navigate to={redirectTo} replace />;
