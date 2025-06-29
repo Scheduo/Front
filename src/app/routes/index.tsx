@@ -7,12 +7,12 @@ import { ProtectedRoute } from "./ProtectedRoute";
 export const Router = () => {
   return (
     <Routes>
-      <Route path="/" element={<ProtectedRoute requireAuth={true} />}>
-        <Route index element={<Main />} />
+      <Route element={<ProtectedRoute requireAuth={true} />}>
+        <Route path="/" element={<Main />} />
       </Route>
 
-      <Route path="/" element={<ProtectedRoute requireAuth={false} />}>
-        <Route path="login" element={<LogIn />} />
+      <Route element={<ProtectedRoute requireAuth={false} />}>
+        <Route path="/login" element={<LogIn />} />
       </Route>
 
       <Route path="/oauth2/redirect" element={<OAuthRedirectPage />} />
