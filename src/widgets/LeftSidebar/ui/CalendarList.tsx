@@ -10,7 +10,7 @@ export const CalendarList = () => {
     const fetchCalendars = async () => {
       try {
         const response = await calendarApi.getCalendarList();
-        setCalendars(response.calendars.map((c) => ({ id: c.id, title: c.title })));
+        setCalendars(response.calendars);
       } catch (error) {
         console.error("Failed to fetch calendars:", error);
       }
@@ -23,14 +23,14 @@ export const CalendarList = () => {
     <div className="mt-2 space-y-3">
       {calendars.map((calendar) => (
         <div
-          key={calendar.id}
+          key={calendar.calendarId}
           className="flex h-9 flex-1 cursor-pointer items-center justify-between rounded-md px-3 hover:bg-grayscale-200"
-          onMouseEnter={() => setHoveredCalendarId(calendar.id)}
+          onMouseEnter={() => setHoveredCalendarId(calendar.calendarId)}
           onMouseLeave={() => setHoveredCalendarId(-1)}
         >
           <span className="truncate text-grayscale-500 text-medium-m">{calendar.title}</span>
-          <div className={`${hoveredCalendarId === calendar.id ? "opacity-100" : "size-0 opacity-0"}`}>
-            <EditCalendar calendarId={calendar.id} />
+          <div className={`${hoveredCalendarId === calendar.calendarId ? "opacity-100" : "size-0 opacity-0"}`}>
+            <EditCalendar calendarId={calendar.calendarId} />
           </div>
         </div>
       ))}

@@ -7,7 +7,7 @@ export interface ScheduleCalendar {
 }
 
 export interface CalendarInfo {
-  id: number;
+  calendarId: number;
   title: string;
 }
 

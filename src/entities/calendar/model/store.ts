@@ -15,10 +15,10 @@ export const useCalendarStore = create<CalendarState>((set) => ({
   addCalendar: (calendar) => set((state) => ({ calendars: [...state.calendars, calendar] })),
   updateCalendar: (updatedCalendar) =>
     set((state) => ({
-      calendars: state.calendars.map((c) => (c.id === updatedCalendar.id ? updatedCalendar : c)),
+      calendars: state.calendars.map((c) => (c.calendarId === updatedCalendar.calendarId ? updatedCalendar : c)),
     })),
   deleteCalendar: (calendarId) =>
     set((state) => ({
-      calendars: state.calendars.filter((c) => c.id !== calendarId),
+      calendars: state.calendars.filter((c) => c.calendarId !== calendarId),
     })),
 }));

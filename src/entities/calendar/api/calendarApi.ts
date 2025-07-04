@@ -28,6 +28,10 @@ export const calendarApi = {
     return result.data.data;
   },
 
+  getCalendarById: async (calendarId: number) => {
+    return { id: calendarId, title: "수정 전 이름", participants: [], nickname: "수정 전 닉네임" };
+  },
+
   acceptInvite: async (calendarId: number) => {
     await axiosInstance.post(`/calendars/${calendarId}/invite/accept`);
   },
