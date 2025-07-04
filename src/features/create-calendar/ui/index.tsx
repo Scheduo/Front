@@ -3,7 +3,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
-import type { CalendarParticipant, CalendarRole, ScheduleCalendar } from "@/entities/calendar";
+import { type CalendarParticipant, type CalendarRole, type ScheduleCalendar, calendarApi } from "@/entities/calendar";
 import type { Member } from "@/entities/member/model";
 import { ROLE_OPTIONS } from "@/shared/const";
 import {
@@ -41,7 +41,7 @@ export const CreateCalendar = () => {
 
   const form = useForm<CreateCalendarFormData>({
     defaultValues: {
-      name: "",
+      title: "",
       participants: [],
     },
   });
@@ -78,8 +78,9 @@ export const CreateCalendar = () => {
   const handleSubmit = async (data: CreateCalendarFormData) => {
     setIsSubmitting(true);
     try {
-      form.reset();
+      const response = await calendarApi.createCalendar(data);
       devLogger.log("캘린더 생성:", data);
+      form.reset();
       setIsOpen(false);
     } catch (error) {
       devLogger.error("캘린더 생성 실패:", error);
@@ -116,7 +117,7 @@ export const CreateCalendar = () => {
           <form onSubmit={form.handleSubmit(handleSubmit)} className="flex min-w-0 flex-1 flex-col space-y-6">
             <FormField
               control={form.control}
-              name="name"
+              name="title"
               rules={{ required: "캘린더 이름을 입력해주세요" }}
               render={({ field }) => (
                 <FormItem>
@@ -126,7 +127,7 @@ export const CreateCalendar = () => {
                       placeholder="캘린더 이름을 입력하세요"
                       {...field}
                       className={cn(
-                        form.formState.errors.name &&
+                        form.formState.errors.title &&
                           "border-[2px] border-notification-strong focus:border-notification-strong focus:ring-notification-strong",
                       )}
                     />

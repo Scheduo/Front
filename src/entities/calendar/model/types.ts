@@ -2,8 +2,13 @@ import type { Member } from "@/entities/member";
 
 export interface ScheduleCalendar {
   id: number;
-  name: string;
+  title: string;
   participants: CalendarParticipant[];
+}
+
+export interface CalendarInfo {
+  id: number;
+  title: string;
 }
 
 export interface CalendarParticipant extends Member {
