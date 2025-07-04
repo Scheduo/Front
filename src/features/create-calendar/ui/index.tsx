@@ -3,7 +3,13 @@ import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
-import { type CalendarParticipant, type CalendarRole, type ScheduleCalendar, calendarApi } from "@/entities/calendar";
+import {
+  type CalendarParticipant,
+  type CalendarRole,
+  type ScheduleCalendar,
+  calendarApi,
+  useCalendarStore,
+} from "@/entities/calendar";
 import type { Member } from "@/entities/member/model";
 import { ROLE_OPTIONS } from "@/shared/const";
 import {
@@ -38,6 +44,8 @@ type CreateCalendarFormData = Omit<ScheduleCalendar, "id">;
 export const CreateCalendar = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  const { addCalendar } = useCalendarStore();
 
   const form = useForm<CreateCalendarFormData>({
     defaultValues: {
@@ -80,6 +88,7 @@ export const CreateCalendar = () => {
     try {
       const response = await calendarApi.createCalendar(data);
       devLogger.log("캘린더 생성:", data);
+      addCalendar({ id: response.calendarId, title: response.title });
       form.reset();
       setIsOpen(false);
     } catch (error) {
