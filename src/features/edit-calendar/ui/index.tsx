@@ -37,8 +37,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-interface EditableScheduleCalendar extends ScheduleCalendar {
+interface EditableScheduleCalendar extends Omit<ScheduleCalendar, "participants"> {
   nickname: string;
+  participants: (CalendarParticipant & { nickname: string; email: string })[];
 }
 
 interface EditCalendarFormData {
@@ -60,7 +61,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [participants, setParticipants] = useState<CalendarParticipant[]>([]);
+  const [participants, setParticipants] = useState<(CalendarParticipant & { nickname: string; email: string })[]>([]);
   const [showDeleteCalendar, setShowDeleteCalendar] = useState(false);
   const [showDeleteMember, setShowDeleteMember] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
@@ -86,7 +87,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
       return {
         id: response.id,
         title: response.title,
-        participants: response.participants,
+        participants: response.participants, // This needs to be fixed in the API
         nickname: response.nickname,
       };
     } catch (err) {
@@ -138,11 +139,11 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
       );
       await Promise.all(invitePromises);
 
-      const newParticipants: CalendarParticipant[] = selectedMembers.map((member) => ({
-        id: member.id,
+      const newParticipants = selectedMembers.map((member) => ({
+        memberId: member.id,
         email: member.email,
         nickname: member.nickname,
-        role: "VIEWER", // 초대 시 기본 역할은 VIEWER로 가정
+        role: "VIEW" as const,
       }));
 
       setParticipants((prev) => [...prev, ...newParticipants]);
@@ -156,12 +157,12 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     }
   };
 
-  const handleRoleChange = async (participantId: number, role: CalendarRole) => {
+  const handleRoleChange = async (memberId: number, role: CalendarRole) => {
     try {
       // TODO: 역할 변경 API 호출
 
       setParticipants((prev) =>
-        prev.map((participant) => (participant.id === participantId ? { ...participant, role } : participant)),
+        prev.map((participant) => (participant.memberId === memberId ? { ...participant, role } : participant)),
       );
     } catch (error) {
       console.error("역할 변경 실패:", error);
@@ -169,11 +170,11 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     }
   };
 
-  const handleRemoveParticipant = async (participantId: number) => {
+  const handleRemoveParticipant = async (memberId: number) => {
     try {
       // TODO: 삭제 API 호출
 
-      setParticipants((prev) => prev.filter((participant) => participant.id !== participantId));
+      setParticipants((prev) => prev.filter((participant) => participant.memberId !== memberId));
     } catch (error) {
       console.error("참가자 삭제 실패:", error);
       // TODO: 에러 토스트 표시
@@ -346,7 +347,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                   <ScrollArea className="max-h-80 rounded-lg border border-grayscale-400 p-3">
                     <div className="space-y-1 pr-1">
                       {participants.map((participant) => (
-                        <div key={participant.id} className="flex items-center gap-2 py-1">
+                        <div key={participant.memberId} className="flex items-center gap-2 py-1">
                           <div className="flex w-0 flex-1 flex-col">
                             <div
                               className="truncate text-grayscale-700 text-medium-r leading-7"
@@ -361,7 +362,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
 
                           <Select
                             value={participant.role}
-                            onValueChange={(value) => handleRoleChange(participant.id, value as CalendarRole)}
+                            onValueChange={(value) => handleRoleChange(participant.memberId, value as CalendarRole)}
                             disabled={participant.role === "OWNER"}
                           >
                             <SelectTrigger className="h-8 w-28">
@@ -381,7 +382,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                             onOpenChange={setShowDeleteMember}
                             title="멤버 삭제"
                             description="멤버를 삭제하시겠습니까?"
-                            onConfirm={() => handleRemoveParticipant(participant.id)}
+                            onConfirm={() => handleRemoveParticipant(participant.memberId)}
                             variant="destructive"
                           >
                             <Button

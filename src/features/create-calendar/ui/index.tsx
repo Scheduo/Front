@@ -3,13 +3,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
-import {
-  type CalendarParticipant,
-  type CalendarRole,
-  type ScheduleCalendar,
-  calendarApi,
-  useCalendarStore,
-} from "@/entities/calendar";
+import { type CalendarParticipant, type CalendarRole, calendarApi, useCalendarStore } from "@/entities/calendar";
 import type { Member } from "@/entities/member/model";
 import { ROLE_OPTIONS } from "@/shared/const";
 import {
@@ -35,7 +29,10 @@ import {
   SelectValue,
 } from "@/shared/ui";
 
-type CreateCalendarFormData = Omit<ScheduleCalendar, "id">;
+interface CreateCalendarFormData {
+  title: string;
+  participants: (CalendarParticipant & { nickname: string; email: string })[];
+}
 
 /**
  * 새로운 캘린더를 생성하는 다이얼로그 컴포넌트입니다.
@@ -60,17 +57,15 @@ export const CreateCalendar = () => {
   });
 
   const handleSelectMember = (member: Member) => {
-    const existingEmails = fields.map((field) => field.email);
+    const existingMembers = fields.map((field) => field.memberId);
 
-    if (!existingEmails.includes(member.email)) {
-      const newParticipant: CalendarParticipant = {
-        id: member.id,
-        email: member.email,
+    if (!existingMembers.includes(member.id)) {
+      append({
+        memberId: member.id,
+        role: "VIEW",
         nickname: member.nickname,
-        role: "VIEWER",
-      };
-
-      append(newParticipant);
+        email: member.email,
+      });
     }
   };
 
@@ -86,9 +81,16 @@ export const CreateCalendar = () => {
   const handleSubmit = async (data: CreateCalendarFormData) => {
     setIsSubmitting(true);
     try {
-      const response = await calendarApi.createCalendar(data);
-      devLogger.log("캘린더 생성:", data);
-      addCalendar({ id: response.calendarId, title: response.title });
+      const submissionData = {
+        title: data.title,
+        participants: data.participants.map(({ memberId, role }) => ({
+          memberId,
+          role,
+        })),
+      };
+      const response = await calendarApi.createCalendar(submissionData);
+      devLogger.log("캘린더 생성:", submissionData);
+      addCalendar({ calendarId: response.calendarId, title: response.title });
       form.reset();
       setIsOpen(false);
     } catch (error) {

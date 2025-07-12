@@ -1,5 +1,3 @@
-import type { Member } from "@/entities/member";
-
 export interface ScheduleCalendar {
   id: number;
   title: string;
@@ -11,8 +9,9 @@ export interface CalendarInfo {
   title: string;
 }
 
-export interface CalendarParticipant extends Member {
+export interface CalendarParticipant {
+  memberId: number;
   role: CalendarRole;
 }
 
-export type CalendarRole = "OWNER" | "VIEWER" | "EDITOR";
+export type CalendarRole = "OWNER" | "VIEW" | "EDIT";
