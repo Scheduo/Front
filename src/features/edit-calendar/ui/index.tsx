@@ -3,6 +3,7 @@ import {
   type CalendarRole,
   type ScheduleCalendar,
   calendarApi,
+  participantApi,
   useCalendarStore,
 } from "@/entities/calendar";
 import type { Member } from "@/entities/member/model";
@@ -159,25 +160,25 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
 
   const handleRoleChange = async (memberId: number, role: CalendarRole) => {
     try {
-      // TODO: 역할 변경 API 호출
-
+      await participantApi.modifyRole(calendarId, memberId, role);
       setParticipants((prev) =>
         prev.map((participant) => (participant.memberId === memberId ? { ...participant, role } : participant)),
       );
+      toast("멤버 역할이 변경되었습니다.");
     } catch (error) {
-      console.error("역할 변경 실패:", error);
-      // TODO: 에러 토스트 표시
+      devLogger.error("역할 변경 실패:", error);
+      toast("멤버 역할 변경에 실패했습니다.");
     }
   };
 
   const handleRemoveParticipant = async (memberId: number) => {
     try {
-      // TODO: 삭제 API 호출
-
+      await participantApi.deleteParticipant(calendarId, memberId);
       setParticipants((prev) => prev.filter((participant) => participant.memberId !== memberId));
+      toast("멤버가 삭제되었습니다.");
     } catch (error) {
-      console.error("참가자 삭제 실패:", error);
-      // TODO: 에러 토스트 표시
+      devLogger.error("참가자 삭제 실패:", error);
+      toast("멤버 삭제에 실패했습니다.");
     }
   };
 
