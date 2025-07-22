@@ -1,11 +1,4 @@
-import {
-  type CalendarParticipant,
-  type CalendarRole,
-  type ScheduleCalendar,
-  calendarApi,
-  participantApi,
-  useCalendarStore,
-} from "@/entities/calendar";
+import { type CalendarRole, calendarApi, participantApi, useCalendarStore } from "@/entities/calendar";
 import type { Member } from "@/entities/member/model";
 import { ROLE_OPTIONS } from "@/shared/const";
 import { cn, devLogger } from "@/shared/lib";
@@ -38,9 +31,20 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-interface EditableScheduleCalendar extends Omit<ScheduleCalendar, "participants"> {
+interface EditableScheduleCalendar {
+  calenadarId: number;
+  title: string;
+  memberRole: CalendarRole;
+  memberNickname: string;
+  participants: EditCalendarScheduleCalendarParticipant[];
+}
+
+interface EditCalendarScheduleCalendarParticipant {
+  participantId: number;
   nickname: string;
-  participants: (CalendarParticipant & { nickname: string; email: string })[];
+  role: CalendarRole;
+  email: string;
+  me: boolean;
 }
 
 interface EditCalendarFormData {
@@ -62,7 +66,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [participants, setParticipants] = useState<(CalendarParticipant & { nickname: string; email: string })[]>([]);
+  const [participants, setParticipants] = useState<EditCalendarScheduleCalendarParticipant[]>([]);
   const [showDeleteCalendar, setShowDeleteCalendar] = useState(false);
   const [showDeleteMember, setShowDeleteMember] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
@@ -84,13 +88,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
 
   const fetchCalendarData = useCallback(async (id: number): Promise<EditableScheduleCalendar> => {
     try {
-      const response = await calendarApi.getCalendarById(id);
-      return {
-        id: response.id,
-        title: response.title,
-        participants: response.participants, // This needs to be fixed in the API
-        nickname: response.nickname,
-      };
+      return await calendarApi.getCalendarById(id);
     } catch (err) {
       throw new Error("캘린더 정보를 불러오는데 실패했습니다.");
     }
@@ -109,7 +107,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
         const data = await fetchCalendarData(calendarId);
         form.reset({
           title: data.title || "",
-          nickname: data.nickname || "",
+          nickname: data.memberNickname || "",
         });
         setParticipants(data.participants || []);
       } catch (err) {
@@ -140,11 +138,12 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
       );
       await Promise.all(invitePromises);
 
-      const newParticipants = selectedMembers.map((member) => ({
-        memberId: member.id,
-        email: member.email,
+      const newParticipants: EditCalendarScheduleCalendarParticipant[] = selectedMembers.map((member) => ({
+        participantId: member.id,
         nickname: member.nickname,
-        role: "VIEW" as const,
+        role: "VIEW" as CalendarRole,
+        email: member.email,
+        me: false,
       }));
 
       setParticipants((prev) => [...prev, ...newParticipants]);
@@ -162,7 +161,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     try {
       await participantApi.modifyRole(calendarId, memberId, role);
       setParticipants((prev) =>
-        prev.map((participant) => (participant.memberId === memberId ? { ...participant, role } : participant)),
+        prev.map((participant) => (participant.participantId === memberId ? { ...participant, role } : participant)),
       );
       toast("멤버 역할이 변경되었습니다.");
     } catch (error) {
@@ -174,7 +173,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   const handleRemoveParticipant = async (memberId: number) => {
     try {
       await participantApi.deleteParticipant(calendarId, memberId);
-      setParticipants((prev) => prev.filter((participant) => participant.memberId !== memberId));
+      setParticipants((prev) => prev.filter((participant) => participant.participantId !== memberId));
       toast("멤버가 삭제되었습니다.");
     } catch (error) {
       devLogger.error("참가자 삭제 실패:", error);
@@ -348,7 +347,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                   <ScrollArea className="max-h-80 rounded-lg border border-grayscale-400 p-3">
                     <div className="space-y-1 pr-1">
                       {participants.map((participant) => (
-                        <div key={participant.memberId} className="flex items-center gap-2 py-1">
+                        <div key={participant.participantId} className="flex items-center gap-2 py-1">
                           <div className="flex w-0 flex-1 flex-col">
                             <div
                               className="truncate text-grayscale-700 text-medium-r leading-7"
@@ -363,7 +362,9 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
 
                           <Select
                             value={participant.role}
-                            onValueChange={(value) => handleRoleChange(participant.memberId, value as CalendarRole)}
+                            onValueChange={(value) =>
+                              handleRoleChange(participant.participantId, value as CalendarRole)
+                            }
                             disabled={participant.role === "OWNER"}
                           >
                             <SelectTrigger className="h-8 w-28">
@@ -383,7 +384,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                             onOpenChange={setShowDeleteMember}
                             title="멤버 삭제"
                             description="멤버를 삭제하시겠습니까?"
-                            onConfirm={() => handleRemoveParticipant(participant.memberId)}
+                            onConfirm={() => handleRemoveParticipant(participant.participantId)}
                             variant="destructive"
                           >
                             <Button
