@@ -1,5 +1,5 @@
 export interface ScheduleCalendar {
-  id: number;
+  calendarId: number;
   title: string;
   participants: CalendarParticipant[];
 }
