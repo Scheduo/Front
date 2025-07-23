@@ -157,11 +157,13 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     }
   };
 
-  const handleRoleChange = async (memberId: number, role: CalendarRole) => {
+  const handleRoleChange = async (participantId: number, role: CalendarRole) => {
     try {
-      await participantApi.modifyRole(calendarId, memberId, role);
+      await participantApi.modifyRole(calendarId, participantId, role);
       setParticipants((prev) =>
-        prev.map((participant) => (participant.participantId === memberId ? { ...participant, role } : participant)),
+        prev.map((participant) =>
+          participant.participantId === participantId ? { ...participant, role } : participant,
+        ),
       );
       toast("멤버 역할이 변경되었습니다.");
     } catch (error) {
@@ -170,10 +172,10 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     }
   };
 
-  const handleRemoveParticipant = async (memberId: number) => {
+  const handleRemoveParticipant = async (participantId: number) => {
     try {
-      await participantApi.deleteParticipant(calendarId, memberId);
-      setParticipants((prev) => prev.filter((participant) => participant.participantId !== memberId));
+      await participantApi.deleteParticipant(calendarId, participantId);
+      setParticipants((prev) => prev.filter((participant) => participant.participantId !== participantId));
       toast("멤버가 삭제되었습니다.");
     } catch (error) {
       devLogger.error("참가자 삭제 실패:", error);
