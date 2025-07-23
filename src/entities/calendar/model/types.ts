@@ -10,8 +10,11 @@ export interface CalendarInfo {
 }
 
 export interface CalendarParticipant {
-  memberId: number;
+  participantId: number;
+  nickname: string;
   role: CalendarRole;
+  email: string;
+  me: boolean;
 }
 
 export type CalendarRole = "OWNER" | "VIEW" | "EDIT";

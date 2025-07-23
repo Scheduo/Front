@@ -1,4 +1,10 @@
-import { type CalendarRole, calendarApi, participantApi, useCalendarStore } from "@/entities/calendar";
+import {
+  type CalendarParticipant,
+  type CalendarRole,
+  calendarApi,
+  participantApi,
+  useCalendarStore,
+} from "@/entities/calendar";
 import type { Member } from "@/entities/member/model";
 import { ROLE_OPTIONS } from "@/shared/const";
 import { cn, devLogger } from "@/shared/lib";
@@ -36,15 +42,7 @@ interface EditableScheduleCalendar {
   title: string;
   memberRole: CalendarRole;
   memberNickname: string;
-  participants: EditCalendarScheduleCalendarParticipant[];
-}
-
-interface EditCalendarScheduleCalendarParticipant {
-  participantId: number;
-  nickname: string;
-  role: CalendarRole;
-  email: string;
-  me: boolean;
+  participants: CalendarParticipant[];
 }
 
 interface EditCalendarFormData {
@@ -66,7 +64,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [participants, setParticipants] = useState<EditCalendarScheduleCalendarParticipant[]>([]);
+  const [participants, setParticipants] = useState<CalendarParticipant[]>([]);
   const [showDeleteCalendar, setShowDeleteCalendar] = useState(false);
   const [showDeleteMember, setShowDeleteMember] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
@@ -138,7 +136,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
       );
       await Promise.all(invitePromises);
 
-      const newParticipants: EditCalendarScheduleCalendarParticipant[] = selectedMembers.map((member) => ({
+      const newParticipants: CalendarParticipant[] = selectedMembers.map((member) => ({
         participantId: member.id,
         nickname: member.nickname,
         role: "VIEW" as CalendarRole,

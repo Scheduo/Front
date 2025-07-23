@@ -2,6 +2,7 @@ import { axiosInstance } from "@/shared/api";
 import type {
   CreateCalendarRequest,
   CreateCalendarResponse,
+  GetCalendarByIdResponse,
   GetCalendarListResponse,
   InviteToCalendarRequest,
   UpdateCalendarRequest,
@@ -28,7 +29,7 @@ export const calendarApi = {
     return result.data.data;
   },
 
-  getCalendarById: async (calendarId: number) => {
+  getCalendarById: async (calendarId: number): Promise<GetCalendarByIdResponse> => {
     const result = await axiosInstance.get(`/calendars/${calendarId}`);
     return result.data.data;
   },

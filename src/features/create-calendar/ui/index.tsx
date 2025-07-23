@@ -57,14 +57,15 @@ export const CreateCalendar = () => {
   });
 
   const handleSelectMember = (member: Member) => {
-    const existingMembers = fields.map((field) => field.memberId);
+    const existingMembers = fields.map((field) => field.participantId);
 
     if (!existingMembers.includes(member.id)) {
       append({
-        memberId: member.id,
+        participantId: member.id,
         role: "VIEW",
         nickname: member.nickname,
         email: member.email,
+        me: false,
       });
     }
   };
@@ -83,8 +84,8 @@ export const CreateCalendar = () => {
     try {
       const submissionData = {
         title: data.title,
-        participants: data.participants.map(({ memberId, role }) => ({
-          memberId,
+        participants: data.participants.map(({ participantId, role }) => ({
+          participantId,
           role,
         })),
       };
