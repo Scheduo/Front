@@ -5,19 +5,18 @@ import { getRelativeTime } from "../lib";
 
 interface NotificationItemProps {
   notification: Notification;
+  onDelete: (id: number) => void;
 }
 
-export const NotificationItem = ({ notification }: NotificationItemProps) => {
+export const NotificationItem = ({ notification, onDelete }: NotificationItemProps) => {
   const handleClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
 
     if (target.closest('[data-action="delete"]')) {
       e.stopPropagation();
-      console.log("알림 삭제");
+      onDelete(notification.id);
       return;
     }
-
-    console.log("알림 확인");
   };
 
   return (
@@ -39,7 +38,7 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
           </span>
         </div>
       </div>
-      <p className="text-grayscale-700 text-medium-s">{notification.title}</p>
+      <p className="text-grayscale-700 text-medium-s">{notification.message}</p>
     </button>
   );
 };

@@ -1,4 +1,5 @@
-import type { Notification } from "@/entities/notification";
+import { type Notification, notificationApi } from "@/entities/notification";
+import { devLogger } from "@/shared/lib";
 import { Badge } from "@/shared/ui/badge";
 import { useEffect, useState } from "react";
 import { NotificationItem } from "./NotificationItem";
@@ -9,30 +10,28 @@ import { NotificationItem } from "./NotificationItem";
  */
 export const NotificationList = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const unreadCount = notifications.filter((item) => !item.isRead).length;
+  const unreadCount = notifications.length;
+
+  const handleDelete = async (notificationId: number) => {
+    try {
+      await notificationApi.deleteNotification(notificationId);
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+    } catch (error) {
+      devLogger.error("Failed to delete notification", error);
+    }
+  };
 
   useEffect(() => {
-    // TODO: 알림 조회 API 호출
-    setNotifications([
-      {
-        id: 123,
-        type: "CALENDAR_INVITATION",
-        title: "뼝뼝 님이 뿅뿅 캘린더에 초대했습니다.",
-        data: {
-          calendarId: 3,
-        },
-        isRead: false,
-        createdAt: "2025-04-29T08:00:00Z",
-      },
-      {
-        id: 124,
-        type: "CALENDAR_INVITATION_ACCEPT",
-        title: "뿅뿅님이 뿅뿅캘린더 초대를 수락했습니다",
-        data: {},
-        isRead: false,
-        createdAt: "2025-04-28T12:30:00Z",
-      },
-    ]);
+    const fetchNotifications = async () => {
+      try {
+        const { notifications } = await notificationApi.getNotifications();
+        setNotifications(notifications);
+      } catch (error) {
+        devLogger.error("Failed to fetch notifications", error);
+      }
+    };
+
+    fetchNotifications();
   }, []);
 
   return (
@@ -47,9 +46,13 @@ export const NotificationList = () => {
       </div>
 
       <div className="space-y-3">
-        {notifications.map((notification) => (
-          <NotificationItem key={notification.id} notification={notification} />
-        ))}
+        {notifications.length === 0 ? (
+          <p className="text-center text-grayscale-500 text-medium-m">알림이 없습니다.</p>
+        ) : (
+          notifications.map((notification) => (
+            <NotificationItem key={notification.id} notification={notification} onDelete={handleDelete} />
+          ))
+        )}
       </div>
     </div>
   );
