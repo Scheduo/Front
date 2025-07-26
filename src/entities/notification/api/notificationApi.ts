@@ -7,6 +7,5 @@ export const notificationApi = {
     return response.data.data;
   },
 
-  deleteNotification: async (notificationId: number) =>
-    await axiosInstance.delete(`/notifications/${notificationId}/read`),
+  deleteNotification: (notificationId: number) => axiosInstance.delete(`/notifications/${notificationId}/read`),
 };
