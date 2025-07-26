@@ -1,4 +1,6 @@
 import type { Notification } from "@/entities/notification";
+import { devLogger } from "@/shared/lib";
+import { Button } from "@/shared/ui";
 import { X } from "lucide-react";
 import { NOTIFICATION_TYPE_LABELS } from "../consts";
 import { getRelativeTime } from "../lib";
@@ -16,6 +18,28 @@ export const NotificationItem = ({ notification, onDelete }: NotificationItemPro
       e.stopPropagation();
       onDelete(notification.id);
       return;
+    }
+  };
+
+  const handleAccept = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      // TODO: POST /calendars/{calendarId}/invite/accept API 연동
+      devLogger.log(`Accepted notification ${notification.id}`);
+      onDelete(notification.id);
+    } catch (error) {
+      devLogger.error("Failed to accept notification", error);
+    }
+  };
+
+  const handleDecline = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      // TODO: POST /calendars/{calendarId}/invite/decline API 연동
+      devLogger.log(`Declined notification ${notification.id}`);
+      onDelete(notification.id);
+    } catch (error) {
+      devLogger.error("Failed to decline notification", error);
     }
   };
 
@@ -39,6 +63,16 @@ export const NotificationItem = ({ notification, onDelete }: NotificationItemPro
         </div>
       </div>
       <p className="text-grayscale-700 text-medium-s">{notification.message}</p>
+      {notification.type === "CALENDAR_INVITATION" && (
+        <div className="flex w-full gap-2 pt-2">
+          <Button className="flex-1" variant="default" size="sm" onClick={handleAccept}>
+            수락
+          </Button>
+          <Button className="flex-1" variant="outline" size="sm" onClick={handleDecline}>
+            거절
+          </Button>
+        </div>
+      )}
     </button>
   );
 };
