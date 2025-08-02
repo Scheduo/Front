@@ -101,6 +101,10 @@ export const MemberSearchInput = ({
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (searchResults.length === 0) {
+      return;
+    }
+
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
@@ -113,7 +117,7 @@ export const MemberSearchInput = ({
       case "Enter": {
         e.preventDefault();
         const member = searchResults[highlightedIndex];
-        if (member && !excludeEmails.includes(member.email)) {
+        if (member) {
           handleSelectMember(member);
         }
         break;
