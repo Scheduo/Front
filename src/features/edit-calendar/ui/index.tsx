@@ -146,7 +146,6 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
       setSelectedMembers([]);
     } catch (error) {
       devLogger.error("참가자 초대 실패:", error);
-      toast("멤버 초대가 실패했습니다.");
     } finally {
       setIsInviting(false);
     }
@@ -163,7 +162,6 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
       toast("멤버 역할이 변경되었습니다.");
     } catch (error) {
       devLogger.error("역할 변경 실패:", error);
-      toast("멤버 역할 변경에 실패했습니다.");
     }
   };
 
