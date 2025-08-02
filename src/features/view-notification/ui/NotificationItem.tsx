@@ -24,7 +24,9 @@ export const NotificationItem = ({ notification, onDelete }: NotificationItemPro
   };
 
   const handleInviteAction = async (action: "accept" | "decline") => {
-    if (!notification.data?.calendarId || typeof notification.data.calendarId !== "number") {
+    const { calendarId } = notification.data ?? {};
+
+    if (typeof calendarId !== "number") {
       devLogger.error("Invalid calendarId in notification data", notification.data);
       toast.error("알림 처리 중 오류가 발생했습니다.");
       return;
@@ -36,7 +38,7 @@ export const NotificationItem = ({ notification, onDelete }: NotificationItemPro
     };
 
     try {
-      await actionApi[action](notification.data.calendarId as number);
+      await actionApi[action](calendarId);
       onDelete(notification.id);
     } catch (error) {
       devLogger.error(`Failed to ${action} notification`, error);
