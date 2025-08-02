@@ -43,7 +43,8 @@ export const MemberSearchInput = ({
         setIsSearching(true);
         try {
           const result: SearchResult = await memberApi.searchMember(searchQuery.trim());
-          setSearchResults(result.users || []);
+          const filteredUsers = (result.users || []).filter((user) => !excludeEmails.includes(user.email));
+          setSearchResults(filteredUsers);
           setShowSearchResults(true);
           setHighlightedIndex(0);
         } catch (error) {
@@ -59,7 +60,7 @@ export const MemberSearchInput = ({
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
+  }, [searchQuery, excludeEmails]);
 
   // 외부 클릭 시 닫기
   useEffect(() => {
@@ -145,7 +146,6 @@ export const MemberSearchInput = ({
       {showSearchResults && searchResults.length > 0 && (
         <div className="absolute top-full z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-grayscale-300 bg-white shadow-lg">
           {searchResults.map((member, index) => {
-            const isExcluded = excludeEmails.includes(member.email);
             const isHighlighted = index === highlightedIndex;
 
             return (
@@ -153,13 +153,11 @@ export const MemberSearchInput = ({
                 ref={isHighlighted ? highlightedItemRef : null}
                 key={member.id}
                 type="button"
-                onClick={() => !isExcluded && handleSelectMember(member)}
+                onClick={() => handleSelectMember(member)}
                 onMouseEnter={() => setHighlightedIndex(index)}
-                disabled={isExcluded}
                 className={cn(
                   "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors",
-                  isExcluded ? "cursor-not-allowed bg-grayscale-50 text-grayscale-400" : "cursor-pointer",
-                  isHighlighted && !isExcluded ? "bg-grayscale-100" : "hover:bg-grayscale-50",
+                  isHighlighted ? "bg-grayscale-100" : "hover:bg-grayscale-50",
                 )}
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-grayscale-100">
@@ -169,7 +167,6 @@ export const MemberSearchInput = ({
                   <div className="truncate text-grayscale-700 text-medium-r">{member.nickname}</div>
                   <div className="truncate text-grayscale-400 text-medium-s">{member.email}</div>
                 </div>
-                {isExcluded && <span className="text-grayscale-400 text-small">이미 추가됨</span>}
               </button>
             );
           })}
