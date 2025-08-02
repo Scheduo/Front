@@ -75,12 +75,17 @@ export const MemberSearchInput = ({
 
   // 하이라이트된 항목으로 스크롤
   useEffect(() => {
-    if (showSearchResults && highlightedItemRef.current) {
+    if (
+      showSearchResults &&
+      highlightedItemRef.current &&
+      highlightedIndex >= 0 &&
+      highlightedIndex < searchResults?.length
+    ) {
       highlightedItemRef.current.scrollIntoView({
         block: "nearest",
       });
     }
-  }, [showSearchResults]);
+  }, [highlightedIndex, showSearchResults, searchResults]);
 
   const handleSearchInputChange = (value: string) => {
     setSearchQuery(value);
