@@ -100,13 +100,6 @@ export const MemberSearchInput = ({
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (!showSearchResults || searchResults.length === 0) {
-      if (e.key === "Escape") {
-        setShowSearchResults(false);
-      }
-      return;
-    }
-
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
