@@ -27,7 +27,7 @@ export const useCreateCalendar = () => {
   return useMutation({
     mutationFn: calendarApi.createCalendar,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: calendarKeys.list() });
     },
   });
 };
@@ -39,7 +39,7 @@ export const useUpdateCalendar = () => {
     mutationFn: ({ calendarId, data }: { calendarId: number; data: UpdateCalendarRequest }) =>
       calendarApi.updateCalendar(calendarId, data),
     onSuccess: (_, { calendarId }) => {
-      queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: calendarKeys.list() });
       queryClient.invalidateQueries({ queryKey: calendarKeys.detail(calendarId) });
     },
   });
@@ -51,7 +51,7 @@ export const useDeleteCalendar = () => {
   return useMutation({
     mutationFn: calendarApi.deleteCalendar,
     onSuccess: (_, calendarId) => {
-      queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: calendarKeys.list() });
       queryClient.removeQueries({ queryKey: calendarKeys.detail(calendarId) });
     },
   });
@@ -63,7 +63,7 @@ export const useAcceptInvite = () => {
   return useMutation({
     mutationFn: calendarApi.acceptInvite,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: calendarKeys.list() });
       queryClient.invalidateQueries({ queryKey: notificationKeys.list() });
     },
   });
@@ -75,7 +75,7 @@ export const useRejectInvite = () => {
   return useMutation({
     mutationFn: calendarApi.rejectInvite,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: calendarKeys.list() });
       queryClient.invalidateQueries({ queryKey: notificationKeys.list() });
     },
   });
