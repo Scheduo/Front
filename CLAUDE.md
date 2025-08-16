@@ -87,3 +87,17 @@ Uses Korean conventional commits via `.cz-config.cjs`:
 
 ## Testing
 No test framework is currently configured. Check with the team before adding tests to determine the preferred testing approach.
+
+## Development Guidelines
+
+### YAGNI Principle (You Aren't Gonna Need It)
+- **Don't implement features or abstractions until they are actually needed**
+- Avoid premature optimization and over-engineering
+- Write simple, direct code that solves the current problem
+- Add complexity only when requirements explicitly demand it
+
+### TanStack Query Implementation
+- Only implement query hooks that are currently being used
+- Don't create speculative query keys for future use cases
+- Keep query key structures simple - add hierarchy only when multiple related queries exist
+- Example: Use `["notifications", "list"]` instead of complex nested structures until pagination/filtering is actually needed
