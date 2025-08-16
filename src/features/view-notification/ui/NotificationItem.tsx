@@ -1,18 +1,18 @@
 import { X } from "lucide-react";
 import { toast } from "sonner";
 import { calendarApi, useAcceptInvite } from "@/entities/calendar";
-import type { Notification } from "@/entities/notification";
+import { type Notification, useDeleteNotification } from "@/entities/notification";
 import { Button } from "@/shared/ui";
 import { NOTIFICATION_TYPE_LABELS } from "../consts";
 import { getRelativeTime } from "../lib";
 
 interface NotificationItemProps {
   notification: Notification;
-  onDelete: (id: number) => void;
 }
 
-export const NotificationItem = ({ notification, onDelete }: NotificationItemProps) => {
+export const NotificationItem = ({ notification }: NotificationItemProps) => {
   const acceptInviteMutation = useAcceptInvite();
+  const deleteNotificationMutation = useDeleteNotification();
 
   const handleAccept = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -26,7 +26,7 @@ export const NotificationItem = ({ notification, onDelete }: NotificationItemPro
 
     acceptInviteMutation.mutate(calendarId, {
       onSuccess: () => {
-        onDelete(notification.id);
+        deleteNotificationMutation.mutate(notification.id);
         toast.success("초대를 수락했습니다.");
       },
     });
@@ -42,13 +42,9 @@ export const NotificationItem = ({ notification, onDelete }: NotificationItemPro
       return;
     }
 
-    try {
-      await calendarApi.rejectInvite(calendarId);
-      onDelete(notification.id);
-      toast.success("초대를 거절했습니다.");
-    } catch (error) {
-      // 에러는 Axios 인터셉터에서 처리
-    }
+    await calendarApi.rejectInvite(calendarId);
+    deleteNotificationMutation.mutate(notification.id);
+    toast.success("초대를 거절했습니다.");
   };
 
   return (
@@ -59,7 +55,7 @@ export const NotificationItem = ({ notification, onDelete }: NotificationItemPro
           <span className="text-grayscale-500 text-medium-s">{getRelativeTime(notification.createdAt)}</span>
           <button
             type="button"
-            onClick={() => onDelete(notification.id)}
+            onClick={() => deleteNotificationMutation.mutate(notification.id)}
             className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded text-grayscale-500 hover:text-grayscale-black"
             aria-label="알림 삭제"
           >
