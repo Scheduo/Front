@@ -6,8 +6,6 @@ import { participantApi } from "./participantApi";
 import { calendarKeys } from "./queryKeys";
 import type { UpdateCalendarRequest } from "./types";
 
-export { calendarApi };
-
 export const useGetCalendarList = () => {
   return useQuery({
     queryKey: calendarKeys.list(),
