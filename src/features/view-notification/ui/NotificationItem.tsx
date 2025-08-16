@@ -15,28 +15,27 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
   const rejectInviteMutation = useRejectInvite();
   const deleteNotificationMutation = useDeleteNotification();
 
-  const handleAccept = (e: React.MouseEvent) => {
-    e.stopPropagation();
-
+  const getValidCalendarId = () => {
     const { calendarId } = notification.data ?? {};
-
     if (typeof calendarId !== "number") {
       toast.error("알림 처리 중 오류가 발생했습니다.");
-      return;
+      return null;
     }
+    return calendarId;
+  };
+
+  const handleAccept = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const calendarId = getValidCalendarId();
+    if (!calendarId) return;
 
     acceptInviteMutation.mutate(calendarId);
   };
 
   const handleDecline = (e: React.MouseEvent) => {
     e.stopPropagation();
-
-    const { calendarId } = notification.data ?? {};
-
-    if (typeof calendarId !== "number") {
-      toast.error("알림 처리 중 오류가 발생했습니다.");
-      return;
-    }
+    const calendarId = getValidCalendarId();
+    if (!calendarId) return;
 
     rejectInviteMutation.mutate(calendarId);
   };
