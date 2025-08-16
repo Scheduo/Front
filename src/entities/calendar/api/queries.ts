@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { notificationKeys } from "@/entities/notification/api/queryKeys";
 import type { CalendarRole } from "../model";
 import { calendarApi } from "./calendarApi";
 import { participantApi } from "./participantApi";
@@ -69,6 +70,19 @@ export const useAcceptInvite = () => {
     mutationFn: calendarApi.acceptInvite,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.list() });
+    },
+  });
+};
+
+export const useRejectInvite = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: calendarApi.rejectInvite,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.list() });
     },
   });
 };

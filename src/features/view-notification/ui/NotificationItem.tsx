@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { toast } from "sonner";
-import { calendarApi, useAcceptInvite } from "@/entities/calendar";
+import { useAcceptInvite, useRejectInvite } from "@/entities/calendar";
 import { type Notification, useDeleteNotification } from "@/entities/notification";
 import { Button } from "@/shared/ui";
 import { NOTIFICATION_TYPE_LABELS } from "../consts";
@@ -12,6 +12,7 @@ interface NotificationItemProps {
 
 export const NotificationItem = ({ notification }: NotificationItemProps) => {
   const acceptInviteMutation = useAcceptInvite();
+  const rejectInviteMutation = useRejectInvite();
   const deleteNotificationMutation = useDeleteNotification();
 
   const handleAccept = (e: React.MouseEvent) => {
@@ -24,15 +25,10 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
       return;
     }
 
-    acceptInviteMutation.mutate(calendarId, {
-      onSuccess: () => {
-        deleteNotificationMutation.mutate(notification.id);
-        toast.success("초대를 수락했습니다.");
-      },
-    });
+    acceptInviteMutation.mutate(calendarId);
   };
 
-  const handleDecline = async (e: React.MouseEvent) => {
+  const handleDecline = (e: React.MouseEvent) => {
     e.stopPropagation();
 
     const { calendarId } = notification.data ?? {};
@@ -42,9 +38,7 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
       return;
     }
 
-    await calendarApi.rejectInvite(calendarId);
-    deleteNotificationMutation.mutate(notification.id);
-    toast.success("초대를 거절했습니다.");
+    rejectInviteMutation.mutate(calendarId);
   };
 
   return (
@@ -75,8 +69,14 @@ export const NotificationItem = ({ notification }: NotificationItemProps) => {
           >
             {acceptInviteMutation.isPending ? "수락 중..." : "수락"}
           </Button>
-          <Button className="flex-1" variant="outline" size="sm" onClick={handleDecline}>
-            거절
+          <Button
+            className="flex-1"
+            variant="outline"
+            size="sm"
+            onClick={handleDecline}
+            disabled={rejectInviteMutation.isPending}
+          >
+            {rejectInviteMutation.isPending ? "거절 중..." : "거절"}
           </Button>
         </div>
       )}
