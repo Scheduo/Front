@@ -1,0 +1,117 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { CalendarRole } from "../model";
+import { calendarApi } from "./calendarApi";
+import { participantApi } from "./participantApi";
+import { calendarKeys } from "./queryKeys";
+import type { UpdateCalendarRequest } from "./types";
+
+export { calendarApi };
+
+export const useGetCalendarList = () => {
+  return useQuery({
+    queryKey: calendarKeys.list(),
+    queryFn: calendarApi.getCalendarList,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+};
+
+export const useGetCalendar = (calendarId: number, enabled: boolean) => {
+  return useQuery({
+    queryKey: calendarKeys.detail(calendarId),
+    queryFn: () => calendarApi.getCalendarById(calendarId),
+    enabled,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+};
+
+export const useCreateCalendar = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: calendarApi.createCalendar,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+    },
+  });
+};
+
+export const useUpdateCalendar = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ calendarId, data }: { calendarId: number; data: UpdateCalendarRequest }) =>
+      calendarApi.updateCalendar(calendarId, data),
+    onSuccess: (_, { calendarId }) => {
+      queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: calendarKeys.detail(calendarId) });
+    },
+  });
+};
+
+export const useDeleteCalendar = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: calendarApi.deleteCalendar,
+    onSuccess: (_, calendarId) => {
+      queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+      queryClient.removeQueries({ queryKey: calendarKeys.detail(calendarId) });
+    },
+  });
+};
+
+export const useAcceptInvite = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: calendarApi.acceptInvite,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: calendarKeys.lists() });
+    },
+  });
+};
+
+export const useDeleteParticipant = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ calendarId, participantId }: { calendarId: number; participantId: number }) =>
+      participantApi.deleteParticipant(calendarId, participantId),
+    onSuccess: (_, { calendarId }) => {
+      queryClient.invalidateQueries({ queryKey: calendarKeys.detail(calendarId) });
+    },
+  });
+};
+
+export const useUpdateParticipantRole = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      calendarId,
+      participantId,
+      role,
+    }: {
+      calendarId: number;
+      participantId: number;
+      role: CalendarRole;
+    }) => participantApi.modifyRole(calendarId, participantId, role),
+    onSuccess: (_, { calendarId }) => {
+      queryClient.invalidateQueries({ queryKey: calendarKeys.detail(calendarId) });
+    },
+  });
+};
+
+export const useInviteToCalendar = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ calendarId, memberIds }: { calendarId: number; memberIds: number[] }) =>
+      calendarApi.inviteToCalendar(calendarId, { memberIds }),
+    onSuccess: (_, { calendarId }) => {
+      queryClient.invalidateQueries({ queryKey: calendarKeys.detail(calendarId) });
+    },
+  });
+};

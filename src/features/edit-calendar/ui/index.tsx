@@ -1,17 +1,20 @@
 import { PenSquare, Trash2, User, X } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
   type CalendarParticipant,
   type CalendarRole,
-  calendarApi,
-  participantApi,
-  useCalendarStore,
+  useDeleteCalendar,
+  useDeleteParticipant,
+  useGetCalendar,
+  useInviteToCalendar,
+  useUpdateCalendar,
+  useUpdateParticipantRole,
 } from "@/entities/calendar";
 import type { Member } from "@/entities/member/model";
 import { ROLE_OPTIONS } from "@/shared/const";
-import { cn, devLogger } from "@/shared/lib";
+import { cn } from "@/shared/lib";
 import {
   Button,
   ConfirmDialog,
@@ -37,14 +40,6 @@ import {
   TextConfirmDialog,
 } from "@/shared/ui";
 
-interface EditableScheduleCalendar {
-  calendarId: number;
-  title: string;
-  memberRole: CalendarRole;
-  memberNickname: string;
-  participants: CalendarParticipant[];
-}
-
 interface EditCalendarFormData {
   title: string;
   nickname: string;
@@ -54,22 +49,19 @@ interface EditCalendarProps {
   calendarId: number;
 }
 
-/**
- * 기존 캘린더를 수정하는 다이얼로그 컴포넌트입니다.
- * 캘린더 이름, 닉네임 수정과 실시간 참가자 초대/권한 변경/삭제 기능을 제공합니다.
- */
 export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isInviting, setIsInviting] = useState(false);
-  const [error, setError] = useState<string | undefined>(undefined);
   const [participants, setParticipants] = useState<CalendarParticipant[]>([]);
   const [showDeleteCalendar, setShowDeleteCalendar] = useState(false);
   const [showDeleteMember, setShowDeleteMember] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
 
-  const { updateCalendar, deleteCalendar } = useCalendarStore();
+  const { data: calendarData, isLoading, error, refetch } = useGetCalendar(calendarId, isOpen);
+  const updateMutation = useUpdateCalendar();
+  const deleteMutation = useDeleteCalendar();
+  const deleteParticipantMutation = useDeleteParticipant();
+  const updateParticipantRoleMutation = useUpdateParticipantRole();
+  const inviteToCalendarMutation = useInviteToCalendar();
 
   const form = useForm<EditCalendarFormData>({
     defaultValues: {
@@ -84,39 +76,15 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     return [...participantEmails, ...selectedEmails];
   }, [participants, selectedMembers]);
 
-  const fetchCalendarData = useCallback(async (id: number): Promise<EditableScheduleCalendar> => {
-    try {
-      return await calendarApi.getCalendarById(id);
-    } catch {
-      throw new Error("캘린더 정보를 불러오는데 실패했습니다.");
-    }
-  }, []);
-
   useEffect(() => {
-    if (!isOpen || !calendarId) {
-      return;
+    if (calendarData && isOpen) {
+      form.reset({
+        title: calendarData.title || "",
+        nickname: calendarData.memberNickname || "",
+      });
+      setParticipants(calendarData.participants || []);
     }
-
-    const loadCalendarData = async () => {
-      setIsLoading(true);
-      setError(undefined);
-
-      try {
-        const data = await fetchCalendarData(calendarId);
-        form.reset({
-          title: data.title || "",
-          nickname: data.memberNickname || "",
-        });
-        setParticipants(data.participants || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadCalendarData();
-  }, [calendarId, isOpen, fetchCalendarData, form]);
+  }, [calendarData, isOpen, form]);
 
   const handleSelectMember = (member: Member) => {
     setSelectedMembers((prev) => [...prev, member]);
@@ -126,76 +94,84 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     setSelectedMembers((prev) => prev.filter((m) => m.id !== memberId));
   };
 
-  const handleInviteAll = async () => {
+  const handleInviteAll = () => {
     if (selectedMembers.length === 0) return;
 
-    setIsInviting(true);
-    try {
-      const memberIds = selectedMembers.map((member) => member.id);
-      await calendarApi.inviteToCalendar(calendarId, { memberIds });
+    const memberIds = selectedMembers.map((member) => member.id);
 
-      const newParticipants: CalendarParticipant[] = selectedMembers.map((member) => ({
-        participantId: member.id,
-        nickname: member.nickname,
-        role: "VIEW" as CalendarRole,
-        email: member.email,
-        me: false,
-      }));
+    inviteToCalendarMutation.mutate(
+      { calendarId, memberIds },
+      {
+        onSuccess: () => {
+          const newParticipants: CalendarParticipant[] = selectedMembers.map((member) => ({
+            participantId: member.id,
+            nickname: member.nickname,
+            role: "VIEW" as CalendarRole,
+            email: member.email,
+            me: false,
+          }));
 
-      setParticipants((prev) => [...prev, ...newParticipants]);
-      setSelectedMembers([]);
-    } catch (error) {
-      devLogger.error("참가자 초대 실패:", error);
-    } finally {
-      setIsInviting(false);
-    }
+          setParticipants((prev) => [...prev, ...newParticipants]);
+          setSelectedMembers([]);
+          toast("멤버를 성공적으로 초대했습니다.");
+        },
+      },
+    );
   };
 
-  const handleRoleChange = async (participantId: number, role: CalendarRole) => {
-    try {
-      await participantApi.modifyRole(calendarId, participantId, role);
-      setParticipants((prev) =>
-        prev.map((participant) =>
-          participant.participantId === participantId ? { ...participant, role } : participant,
-        ),
-      );
-      toast("멤버 역할이 변경되었습니다.");
-    } catch (error) {
-      devLogger.error("역할 변경 실패:", error);
-    }
+  const handleRoleChange = (participantId: number, role: CalendarRole) => {
+    updateParticipantRoleMutation.mutate(
+      {
+        calendarId,
+        participantId,
+        role,
+      },
+      {
+        onSuccess: () => {
+          setParticipants((prev) =>
+            prev.map((participant) =>
+              participant.participantId === participantId ? { ...participant, role } : participant,
+            ),
+          );
+          toast("멤버 역할이 변경되었습니다.");
+        },
+      },
+    );
   };
 
-  const handleRemoveParticipant = async (participantId: number) => {
-    try {
-      await participantApi.deleteParticipant(calendarId, participantId);
-      setParticipants((prev) => prev.filter((participant) => participant.participantId !== participantId));
-      toast("멤버가 삭제되었습니다.");
-    } catch (error) {
-      devLogger.error("참가자 삭제 실패:", error);
-      toast("멤버 삭제에 실패했습니다.");
-    }
+  const handleRemoveParticipant = (participantId: number) => {
+    deleteParticipantMutation.mutate(
+      {
+        calendarId,
+        participantId,
+      },
+      {
+        onSuccess: () => {
+          setParticipants((prev) => prev.filter((participant) => participant.participantId !== participantId));
+          toast("멤버가 삭제되었습니다.");
+        },
+      },
+    );
   };
 
-  const handleSubmit = async (data: EditCalendarFormData) => {
-    setIsSubmitting(true);
-    try {
-      if (!calendarId) return;
+  const handleSubmit = (data: EditCalendarFormData) => {
+    if (!calendarId) return;
 
-      const updateData = {
-        title: data.title,
-        nickname: data.nickname,
-      };
-
-      await calendarApi.updateCalendar(calendarId, updateData);
-      updateCalendar({ calendarId, title: data.title });
-
-      setIsOpen(false);
-      toast("캘린더가 성공적으로 수정되었습니다.");
-    } catch (error) {
-      devLogger.error("캘린더 수정 실패:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    updateMutation.mutate(
+      {
+        calendarId,
+        data: {
+          title: data.title,
+          nickname: data.nickname,
+        },
+      },
+      {
+        onSuccess: () => {
+          setIsOpen(false);
+          toast("캘린더가 성공적으로 수정되었습니다.");
+        },
+      },
+    );
   };
 
   const handleCancel = () => {
@@ -203,18 +179,15 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     setIsOpen(false);
   };
 
-  const handleDelete = async () => {
-    try {
-      if (!calendarId) return;
+  const handleDelete = () => {
+    if (!calendarId) return;
 
-      await calendarApi.deleteCalendar(calendarId);
-      deleteCalendar(calendarId);
-
-      setIsOpen(false);
-      toast("캘린더가 성공적으로 삭제되었습니다.");
-    } catch (error) {
-      devLogger.error("캘린더 삭제 실패:", error);
-    }
+    deleteMutation.mutate(calendarId, {
+      onSuccess: () => {
+        setIsOpen(false);
+        toast("캘린더가 성공적으로 삭제되었습니다.");
+      },
+    });
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -242,9 +215,9 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
           </div>
         ) : error ? (
           <div className="flex flex-col items-center justify-center space-y-4 py-8">
-            <div className="text-medium-m text-notification-strong">{error}</div>
-            <Button variant="outline" onClick={() => setIsOpen(false)}>
-              닫기
+            <div className="text-medium-m text-notification-strong">{error.message}</div>
+            <Button variant="outline" onClick={() => refetch()}>
+              다시 시도
             </Button>
           </div>
         ) : (
@@ -302,8 +275,12 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                     onSelectMember={handleSelectMember}
                     className="flex-1"
                   />
-                  <Button type="button" onClick={handleInviteAll} disabled={isInviting || selectedMembers.length === 0}>
-                    {isInviting ? "초대 중..." : `초대 (${selectedMembers.length})`}
+                  <Button
+                    type="button"
+                    onClick={handleInviteAll}
+                    disabled={inviteToCalendarMutation.isPending || selectedMembers.length === 0}
+                  >
+                    {inviteToCalendarMutation.isPending ? "초대 중..." : `초대 (${selectedMembers.length})`}
                   </Button>
                 </div>
 
@@ -421,8 +398,8 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
               </div>
 
               <DialogFooter>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "저장 중..." : "저장"}
+                <Button type="submit" disabled={updateMutation.isPending}>
+                  {updateMutation.isPending ? "저장 중..." : "저장"}
                 </Button>
                 <Button type="button" variant="outline" onClick={handleCancel}>
                   취소
