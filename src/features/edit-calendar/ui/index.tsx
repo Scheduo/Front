@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
-  type CalendarParticipant,
   type CalendarRole,
   useDeleteCalendar,
   useDeleteParticipant,
@@ -51,7 +50,6 @@ interface EditCalendarProps {
 
 export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [participants, setParticipants] = useState<CalendarParticipant[]>([]);
   const [showDeleteCalendar, setShowDeleteCalendar] = useState(false);
   const [showDeleteMember, setShowDeleteMember] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
@@ -71,10 +69,10 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   });
 
   const excludeEmails = useMemo(() => {
-    const participantEmails = participants.map((p) => p.email);
+    const participantEmails = calendarData?.participants?.map((p) => p.email) || [];
     const selectedEmails = selectedMembers.map((m) => m.email);
     return [...participantEmails, ...selectedEmails];
-  }, [participants, selectedMembers]);
+  }, [calendarData?.participants, selectedMembers]);
 
   useEffect(() => {
     if (calendarData && isOpen) {
@@ -82,7 +80,6 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
         title: calendarData.title || "",
         nickname: calendarData.memberNickname || "",
       });
-      setParticipants(calendarData.participants || []);
     }
   }, [calendarData, isOpen, form]);
 
@@ -103,55 +100,25 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
       { calendarId, memberIds },
       {
         onSuccess: () => {
-          const newParticipants: CalendarParticipant[] = selectedMembers.map((member) => ({
-            participantId: member.id,
-            nickname: member.nickname,
-            role: "VIEW" as CalendarRole,
-            email: member.email,
-            me: false,
-          }));
-
-          setParticipants((prev) => [...prev, ...newParticipants]);
           setSelectedMembers([]);
-          toast("멤버를 성공적으로 초대했습니다.");
         },
       },
     );
   };
 
   const handleRoleChange = (participantId: number, role: CalendarRole) => {
-    updateParticipantRoleMutation.mutate(
-      {
-        calendarId,
-        participantId,
-        role,
-      },
-      {
-        onSuccess: () => {
-          setParticipants((prev) =>
-            prev.map((participant) =>
-              participant.participantId === participantId ? { ...participant, role } : participant,
-            ),
-          );
-          toast("멤버 역할이 변경되었습니다.");
-        },
-      },
-    );
+    updateParticipantRoleMutation.mutate({
+      calendarId,
+      participantId,
+      role,
+    });
   };
 
   const handleRemoveParticipant = (participantId: number) => {
-    deleteParticipantMutation.mutate(
-      {
-        calendarId,
-        participantId,
-      },
-      {
-        onSuccess: () => {
-          setParticipants((prev) => prev.filter((participant) => participant.participantId !== participantId));
-          toast("멤버가 삭제되었습니다.");
-        },
-      },
-    );
+    deleteParticipantMutation.mutate({
+      calendarId,
+      participantId,
+    });
   };
 
   const handleSubmit = (data: EditCalendarFormData) => {
@@ -315,10 +282,10 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                   </div>
                 )}
 
-                {participants.length > 0 && (
+                {calendarData?.participants && calendarData.participants.length > 0 && (
                   <ScrollArea className="max-h-80 rounded-lg border border-grayscale-400 p-3">
                     <div className="space-y-1 pr-1">
-                      {participants.map((participant) => (
+                      {calendarData.participants.map((participant) => (
                         <div key={participant.participantId} className="flex items-center gap-2 py-1">
                           <div className="flex w-0 flex-1 flex-col">
                             <div
