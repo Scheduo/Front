@@ -12,8 +12,6 @@ export const useGetCalendarList = () => {
   return useQuery({
     queryKey: calendarKeys.list(),
     queryFn: calendarApi.getCalendarList,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
   });
 };
 
@@ -22,8 +20,6 @@ export const useGetCalendar = (calendarId: number, enabled: boolean) => {
     queryKey: calendarKeys.detail(calendarId),
     queryFn: () => calendarApi.getCalendarById(calendarId),
     enabled,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
   });
 };
 
