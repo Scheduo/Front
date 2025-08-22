@@ -1,66 +1,116 @@
 import { useEffect, useState } from "react";
 import type { InputScheduleRequest } from "@/entities/schedule";
-import { devLogger } from "@/shared/lib";
+import { useScheduleDetail, useUpdateSchedule } from "@/entities/schedule";
+import { useCurrentCalendarId } from "@/shared/lib";
 import { ScheduleForm } from "./ScheduleForm";
 
 interface EditScheduleProps {
+  scheduleId?: number;
   onCancel: () => void;
 }
 
 /**
  * 일정을 수정하는 사이드바 컴포넌트입니다.
  */
-export const EditSchedule = ({ onCancel }: EditScheduleProps) => {
+export const EditSchedule = ({ scheduleId, onCancel }: EditScheduleProps) => {
   const [initialData, setInitialData] = useState<InputScheduleRequest | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const calendarId = useCurrentCalendarId();
+  const updateSchedule = useUpdateSchedule();
 
+  // 일정 상세 정보 조회
+  const {
+    data: scheduleDetail,
+    isLoading,
+    error,
+  } = useScheduleDetail(calendarId ?? 0, scheduleId ?? 0, {
+    enabled: !!calendarId && !!scheduleId,
+  });
+
+  // API 응답을 InputScheduleRequest 형태로 변환
   useEffect(() => {
-    const loadInitialData = async () => {
-      try {
-        setIsLoading(true);
-        const data: InputScheduleRequest = {
-          title: "테스트 제목",
-          isAllDay: false,
-          startDate: "2025-06-03",
-          startTime: "12:30",
-          endDate: "2025-06-06",
-          endTime: "14:22",
-          location: "강남역",
-          category: "",
-          memo: "메모",
-          notificationTime: "FIVE_MINUTES_BEFORE",
-          recurrence: {
-            recurrenceRule: "WEEKLY",
-            recurrenceEndDate: "2025-06-28",
-          },
-        };
-        setInitialData(data);
-      } catch {
-        throw new Error("일정 데이터를 가져오던 중 에러가 발생했습니다.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadInitialData();
-  }, []);
+    if (scheduleDetail) {
+      const data: InputScheduleRequest = {
+        title: scheduleDetail.title,
+        isAllDay: scheduleDetail.allDay,
+        startDate: scheduleDetail.allDay ? scheduleDetail.startDate! : scheduleDetail.startDateTime!.split("T")[0],
+        startTime: scheduleDetail.allDay ? "00:00" : scheduleDetail.startDateTime!.split("T")[1].slice(0, 5),
+        endDate: scheduleDetail.allDay ? scheduleDetail.endDate! : scheduleDetail.endDateTime!.split("T")[0],
+        endTime: scheduleDetail.allDay ? "01:00" : scheduleDetail.endDateTime!.split("T")[1].slice(0, 5),
+        location: scheduleDetail.location || "",
+        category: scheduleDetail.category.name,
+        memo: scheduleDetail.memo || "",
+        notificationTime: scheduleDetail.notificationTime || "FIVE_MINUTES_BEFORE",
+        recurrence: scheduleDetail.recurrence
+          ? {
+              recurrenceRule: scheduleDetail.recurrence.frequency,
+              recurrenceEndDate: scheduleDetail.recurrence.recurrenceEndDate,
+            }
+          : undefined,
+      };
+      setInitialData(data);
+    }
+  }, [scheduleDetail]);
 
   const handleSubmit = async (data: InputScheduleRequest) => {
-    try {
-      setIsSubmitting(true);
-      devLogger.log("일정 수정:", data);
-    } catch (error) {
-      devLogger.error("일정 수정 실패:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    if (!calendarId || !scheduleId) return;
+
+    const requestData = {
+      title: data.title,
+      allDay: data.isAllDay,
+      ...(data.isAllDay
+        ? {
+            startDate: data.startDate,
+            endDate: data.endDate,
+          }
+        : {
+            startDateTime: `${data.startDate}T${data.startTime}:00`,
+            endDateTime: `${data.endDate}T${data.endTime}:00`,
+          }),
+      location: data.location || undefined,
+      memo: data.memo || undefined,
+      category: {
+        name: data.category,
+        color: "BLUE" as const,
+      },
+      ...(data.notificationTime && { notificationTime: data.notificationTime }),
+      ...(data.recurrence && {
+        recurrence: {
+          frequency: data.recurrence.recurrenceRule,
+          recurrenceEndDate: data.recurrence.recurrenceEndDate,
+        },
+      }),
+    };
+
+    updateSchedule.mutate(
+      { calendarId, scheduleId, request: requestData },
+      {
+        onSuccess: () => {
+          onCancel();
+        },
+      },
+    );
   };
+
+  if (!calendarId || !scheduleId) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-grayscale-400 text-medium-m">일정을 선택해주세요.</div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-grayscale-400 text-medium-m">로딩 중...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-grayscale-400 text-medium-m">일정을 불러올 수 없습니다.</div>
       </div>
     );
   }
@@ -76,7 +126,7 @@ export const EditSchedule = ({ onCancel }: EditScheduleProps) => {
           initialData={initialData}
           onSubmit={handleSubmit}
           onCancel={onCancel}
-          isSubmitting={isSubmitting}
+          isSubmitting={updateSchedule.isPending}
         />
       </div>
     </div>

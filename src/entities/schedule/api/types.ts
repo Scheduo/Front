@@ -53,6 +53,28 @@ export interface CreateScheduleRequest {
   }>;
 }
 
+// 일정 수정 요청 (생성과 동일한 구조)
+export type UpdateScheduleRequest = CreateScheduleRequest;
+
+// 일정 상세 조회 응답
+export interface ScheduleDetailResponse {
+  id: number;
+  title: string;
+  startDateTime?: string;
+  endDateTime?: string;
+  startDate?: string;
+  endDate?: string;
+  allDay: boolean;
+  location?: string;
+  memo?: string;
+  category: ScheduleCategory;
+  notificationTime?: "ONE_DAY_BEFORE" | "ONE_HOUR_BEFORE" | "THIRTY_MINUTES_BEFORE" | "FIVE_MINUTES_BEFORE";
+  recurrence?: {
+    frequency: string;
+    recurrenceEndDate: string;
+  };
+}
+
 // API 응답 래퍼
 export interface ApiResponse<T> {
   code: number;

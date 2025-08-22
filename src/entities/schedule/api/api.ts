@@ -1,5 +1,12 @@
 import { axiosInstance } from "@/shared/api/axios";
-import type { ApiResponse, CreateScheduleRequest, DailyScheduleResponse, MonthlyScheduleResponse } from "./types";
+import type {
+  ApiResponse,
+  CreateScheduleRequest,
+  DailyScheduleResponse,
+  MonthlyScheduleResponse,
+  ScheduleDetailResponse,
+  UpdateScheduleRequest,
+} from "./types";
 
 export const scheduleApi = {
   // 일정 생성
@@ -33,13 +40,32 @@ export const scheduleApi = {
     return response.data;
   },
 
+  // 일정 상세 조회
+  getScheduleById: async (calendarId: number, scheduleId: number): Promise<ApiResponse<ScheduleDetailResponse>> => {
+    const response = await axiosInstance.get<ApiResponse<ScheduleDetailResponse>>(
+      `/calendars/${calendarId}/schedules/${scheduleId}`,
+    );
+    return response.data;
+  },
+
+  // 일정 수정
+  updateSchedule: async (
+    calendarId: number,
+    scheduleId: number,
+    request: UpdateScheduleRequest,
+  ): Promise<ApiResponse<void>> => {
+    const response = await axiosInstance.put<ApiResponse<void>>(
+      `/calendars/${calendarId}/schedules/${scheduleId}`,
+      request,
+    );
+    return response.data;
+  },
+
   // 기존 함수들 (향후 구현 예정)
   getTodaySchedules: async () => {},
   getUpcomingSchedules: async () => {},
   getSchedulesByPeriod: async () => {},
   getSchedulesByPeriodAndCalendar: async () => {},
-  getScheduleById: async () => {},
-  updateSchedule: async () => {},
   deleteSchedule: async () => {},
   shareSchedule: async () => {},
   searchSchedules: async () => {},
