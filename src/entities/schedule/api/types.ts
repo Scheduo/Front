@@ -42,6 +42,11 @@ export interface CreateScheduleRequest {
     name: string;
     color: "RED" | "BLUE" | "GREEN" | "YELLOW" | "PURPLE" | "ORANGE" | "PINK" | "GRAY";
   };
+  notificationTime?: "ONE_DAY_BEFORE" | "ONE_HOUR_BEFORE" | "THIRTY_MINUTES_BEFORE" | "FIVE_MINUTES_BEFORE";
+  recurrence?: {
+    frequency: string;
+    recurrenceEndDate: string;
+  };
   participants?: Array<{
     memberId: number;
     role: CalendarRole;

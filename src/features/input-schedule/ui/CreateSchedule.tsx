@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { InputScheduleRequest } from "@/entities/schedule";
 import { useCreateSchedule } from "@/entities/schedule";
-import { devLogger, useCurrentCalendarId } from "@/shared/lib";
+import { useCurrentCalendarId } from "@/shared/lib";
 import { ScheduleForm } from "./ScheduleForm";
 
 interface CreateScheduleProps {
@@ -45,9 +45,18 @@ export const CreateSchedule = ({ onCancel }: CreateScheduleProps) => {
           name: data.category || "기본",
           color: "BLUE" as const,
         },
+        // 알림 설정 추가
+        ...(data.notificationTime !== "NONE" && {
+          notificationTime: data.notificationTime,
+        }),
+        // 반복 설정 추가
+        ...(data.recurrence && {
+          recurrence: {
+            frequency: data.recurrence.recurrenceRule,
+            recurrenceEndDate: data.recurrence.recurrenceEndDate,
+          },
+        }),
       };
-
-      devLogger.log("일정 생성 요청:", requestData);
 
       await createScheduleMutation.mutateAsync({
         calendarId,
@@ -57,7 +66,6 @@ export const CreateSchedule = ({ onCancel }: CreateScheduleProps) => {
       toast.success("일정이 생성되었습니다.");
       onCancel(); // 성공 시 사이드바 닫기
     } catch (error) {
-      devLogger.error("일정 생성 실패:", error);
       // 에러는 이미 axios interceptor에서 처리됨
     } finally {
       setIsSubmitting(false);
