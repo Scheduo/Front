@@ -3,7 +3,6 @@ import { scheduleApi } from "./api";
 import type {
   ApiResponse,
   CreateScheduleRequest,
-  DailyScheduleResponse,
   MonthlyScheduleResponse,
   ScheduleDetailResponse,
   UpdateScheduleRequest,
@@ -28,13 +27,18 @@ export const useDailySchedules = (calendarId: number, date: string) => {
 };
 
 // 월별 일정 조회
-export const useMonthlySchedules = (calendarId: number, date: string) => {
+export const useMonthlySchedules = (
+  calendarId: number,
+  date: string,
+  options?: Partial<UseQueryOptions<ApiResponse<MonthlyScheduleResponse[]>, Error, MonthlyScheduleResponse[]>>,
+) => {
   return useQuery({
     queryKey: scheduleKeys.monthly(calendarId, date),
     queryFn: () => scheduleApi.getSchedulesByMonth(calendarId, date),
     select: (response) => response.data,
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
+    ...options,
   });
 };
 
