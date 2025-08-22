@@ -153,17 +153,25 @@ const scheduleKeys = {
   - Schedule 도메인 타입 정의
   - InputScheduleRequest 타입 정의
 
-### 🚧 다음 구현 단계
+### ✅ 추가 완료된 단계 (2024-08-22 업데이트)
 
-1. **1단계**: API 응답 타입 정의 및 API 함수 구현 (미완료)
-   - [ ] API 응답 전용 타입들을 `api/types.ts`에 추가
-   - [ ] `api/api.ts`의 빈 함수들에 실제 API 호출 로직 구현
-   
-2. **2단계**: TanStack Query 훅 구현 (미완료)
-   - [ ] `api/hooks.ts` 파일 생성
-   - [ ] useCreateSchedule, useDailySchedules, useMonthlySchedules 훅 구현
-   
+- **1단계**: API 응답 타입 정의 및 API 함수 구현 (커밋: cb56de9, 24d171f)
+  - [x] API 응답 전용 타입들을 `api/types.ts`에 추가
+    - ScheduleCategory, DailyScheduleResponse, MonthlyScheduleResponse, CreateScheduleRequest, ApiResponse
+  - [x] `api/api.ts`의 핵심 함수들에 실제 API 호출 로직 구현
+    - createSchedule, getSchedulesByDate, getSchedulesByMonth
+
+- **2단계**: TanStack Query 훅 구현 (커밋: 24d171f)
+  - [x] `api/hooks.ts` 파일 생성
+  - [x] useCreateSchedule, useDailySchedules, useMonthlySchedules 훅 구현
+  - [x] scheduleKeys 쿼리 키 팩토리 구현
+  - [x] 자동 캐시 무효화 로직 구현
+
+### 🚧 남은 구현 단계
+
 3. **3단계**: 기존 컴포넌트와 연동 테스트 (미완료)
+   - [ ] 기존 컴포넌트에서 새로운 API 훅 사용
+   - [ ] 실제 API 연동 테스트 및 오류 수정
 
 ## 4. 주의사항
 
@@ -187,9 +195,9 @@ const scheduleKeys = {
 ```
 src/entities/schedule/
 ├── api/
-│   ├── api.ts          ✅ 빈 함수 골격 (구현 필요)
-│   ├── hooks.ts        ❌ 미생성 (TanStack Query 훅들)
-│   ├── types.ts        ✅ InputScheduleRequest (API 응답 타입 추가 필요)
+│   ├── api.ts          ✅ 핵심 API 함수 3개 구현 완료
+│   ├── hooks.ts        ✅ TanStack Query 훅들 구현 완료
+│   ├── types.ts        ✅ 모든 API 응답 타입 정의 완료
 │   └── index.ts        ✅ 완료
 ├── model/
 │   ├── types.ts        ✅ Schedule 타입 완료
@@ -197,12 +205,26 @@ src/entities/schedule/
 └── index.ts            ✅ 완료
 ```
 
-## 6. 다음 단계 요약
+## 6. 구현 완료 요약
 
-현재 Schedule 엔티티의 기본 구조는 완성되었고, 다음 작업이 필요합니다:
+**✅ 완료된 작업 (2024-08-22 기준)**
 
-1. **API 응답 타입 추가**: `api/types.ts`에 DailyScheduleResponse, MonthlyScheduleResponse 등 추가
-2. **API 함수 구현**: `api/api.ts`의 빈 함수들에 실제 HTTP 요청 로직 구현  
-3. **TanStack Query 훅**: `api/hooks.ts` 파일 생성 및 쿼리/뮤테이션 훅 구현
+Schedule 엔티티의 핵심 API 연동이 완료되었습니다:
 
-이 계획에 따라 단계적으로 구현을 진행하여 안정적이고 유지보수 가능한 일정 관리 API 연동을 완성합니다.
+1. **API 응답 타입**: 모든 필수 타입 정의 완료
+   - ScheduleCategory, DailyScheduleResponse, MonthlyScheduleResponse, CreateScheduleRequest, ApiResponse
+
+2. **API 함수**: 핵심 3개 함수 구현 완료
+   - `createSchedule(calendarId, request)` - 일정 생성
+   - `getSchedulesByDate(calendarId, date)` - 특정 날짜 일정 조회
+   - `getSchedulesByMonth(calendarId, date)` - 월별 일정 조회
+
+3. **TanStack Query 훅**: 모든 필수 훅 구현 완료
+   - `useCreateSchedule()` - 일정 생성 뮤테이션 (자동 캐시 무효화)
+   - `useDailySchedules(calendarId, date)` - 특정 날짜 일정 조회 쿼리
+   - `useMonthlySchedules(calendarId, date)` - 월별 일정 조회 쿼리
+   - `scheduleKeys` - 쿼리 키 팩토리
+
+**🚧 다음 단계**: 기존 컴포넌트에서 새로운 API 훅을 사용하여 실제 연동 테스트
+
+안정적이고 유지보수 가능한 일정 관리 API 연동의 기반이 완성되었습니다.
