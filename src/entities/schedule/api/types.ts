@@ -28,10 +28,21 @@ export interface MonthlyScheduleResponse {
   category: ScheduleCategory;
 }
 
-// 일정 생성 요청
+// 일정 생성 요청 (실제 API 스펙에 맞게 수정)
 export interface CreateScheduleRequest {
   title: string;
-  participants: Array<{
+  startDateTime?: string; // allDay가 false일 때 필수
+  endDateTime?: string; // allDay가 false일 때 필수
+  startDate?: string; // allDay가 true일 때 사용
+  endDate?: string; // allDay가 true일 때 사용
+  allDay: boolean;
+  location?: string;
+  memo?: string;
+  category: {
+    name: string;
+    color: "RED" | "BLUE" | "GREEN" | "YELLOW" | "PURPLE" | "ORANGE" | "PINK" | "GRAY";
+  };
+  participants?: Array<{
     memberId: number;
     role: CalendarRole;
   }>;
