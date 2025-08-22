@@ -7,6 +7,7 @@ interface DailyScheduleProps {
   selectedDate?: Date;
   schedules?: ScheduleItem[];
   onSetView: (viewType: RightSidebarViewType) => void;
+  onScheduleEdit?: (scheduleId: number) => void;
 }
 
 /**
@@ -19,7 +20,12 @@ interface DailyScheduleProps {
  * @param schedules - 해당 날짜의 일정 목록 (기본값: 빈 배열)
  * @param onSetView - 뷰 변경을 위한 콜백 함수
  */
-export const DailySchedule = ({ selectedDate = new Date(), schedules = [], onSetView }: DailyScheduleProps) => {
+export const DailySchedule = ({
+  selectedDate = new Date(),
+  schedules = [],
+  onSetView,
+  onScheduleEdit,
+}: DailyScheduleProps) => {
   const formatDate = (date: Date): string => {
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -40,6 +46,7 @@ export const DailySchedule = ({ selectedDate = new Date(), schedules = [], onSet
                 type="button"
                 aria-label={`일정: ${schedule.title}`}
                 key={schedule.id}
+                onClick={() => onScheduleEdit?.(schedule.id)}
                 className="group w-full cursor-pointer rounded-lg border border-grayscale-100 p-4 shadow transition-colors hover:bg-grayscale-100"
               >
                 <div className="flex w-full flex-col items-start justify-between">

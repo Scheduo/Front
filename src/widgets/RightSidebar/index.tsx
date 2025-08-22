@@ -18,23 +18,34 @@ import { Button } from "@/shared/ui";
 
 export const RightSidebar = () => {
   const [currentView, setCurrentView] = useState<RightSidebarViewType>("daily");
+  const [selectedScheduleId, setSelectedScheduleId] = useState<number | undefined>(undefined);
+
+  const handleScheduleEdit = (scheduleId: number) => {
+    setSelectedScheduleId(scheduleId);
+    setCurrentView("edit");
+  };
+
+  const handleCancelEdit = () => {
+    setSelectedScheduleId(undefined);
+    setCurrentView("daily");
+  };
 
   const renderContent = () => {
     switch (currentView) {
       case "daily":
-        return <DailySchedule onSetView={setCurrentView} />;
+        return <DailySchedule onSetView={setCurrentView} onScheduleEdit={handleScheduleEdit} />;
       case "share":
         return <ShareSchedule onSetView={setCurrentView} />;
       case "create":
         return <CreateSchedule onCancel={() => setCurrentView("daily")} />;
       case "edit":
-        return <EditSchedule onCancel={() => setCurrentView("daily")} />;
+        return <EditSchedule scheduleId={selectedScheduleId} onCancel={handleCancelEdit} />;
       case "search":
         return <SearchSchedule />;
       case "notification":
         return <NotificationList />;
       default:
-        return <DailySchedule onSetView={setCurrentView} />;
+        return <DailySchedule onSetView={setCurrentView} onScheduleEdit={handleScheduleEdit} />;
     }
   };
 
