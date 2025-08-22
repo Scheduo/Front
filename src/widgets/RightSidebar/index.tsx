@@ -5,6 +5,7 @@ import { SearchSchedule } from "@/features/search-schedule";
 import { ShareSchedule } from "@/features/share-schedule";
 import { DailySchedule } from "@/features/view-daily-schedule";
 import { NotificationList } from "@/features/view-notification";
+import { ScheduleDetail } from "@/features/view-schedule-detail";
 import type { RightSidebarViewType } from "@/shared/model";
 import { Button } from "@/shared/ui";
 
@@ -19,33 +20,46 @@ import { Button } from "@/shared/ui";
 export const RightSidebar = () => {
   const [currentView, setCurrentView] = useState<RightSidebarViewType>("daily");
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | undefined>(undefined);
+  const [scheduleData, setScheduleData] = useState<any>(undefined);
 
-  const handleScheduleEdit = (scheduleId: number) => {
+  const handleScheduleDetail = (scheduleId: number) => {
     setSelectedScheduleId(scheduleId);
+    setCurrentView("detail");
+  };
+
+  const handleScheduleEdit = (data?: any) => {
+    if (data) {
+      setScheduleData(data);
+    }
     setCurrentView("edit");
   };
 
-  const handleCancelEdit = () => {
+  const handleCancel = () => {
     setSelectedScheduleId(undefined);
+    setScheduleData(undefined);
     setCurrentView("daily");
   };
 
   const renderContent = () => {
     switch (currentView) {
       case "daily":
-        return <DailySchedule onSetView={setCurrentView} onScheduleEdit={handleScheduleEdit} />;
+        return <DailySchedule onSetView={setCurrentView} onScheduleEdit={handleScheduleDetail} />;
       case "share":
         return <ShareSchedule onSetView={setCurrentView} />;
       case "create":
         return <CreateSchedule onCancel={() => setCurrentView("daily")} />;
+      case "detail":
+        return <ScheduleDetail scheduleId={selectedScheduleId} onEdit={handleScheduleEdit} onCancel={handleCancel} />;
       case "edit":
-        return <EditSchedule scheduleId={selectedScheduleId} onCancel={handleCancelEdit} />;
+        return (
+          <EditSchedule scheduleId={selectedScheduleId} initialScheduleData={scheduleData} onCancel={handleCancel} />
+        );
       case "search":
         return <SearchSchedule />;
       case "notification":
         return <NotificationList />;
       default:
-        return <DailySchedule onSetView={setCurrentView} onScheduleEdit={handleScheduleEdit} />;
+        return <DailySchedule onSetView={setCurrentView} onScheduleEdit={handleScheduleDetail} />;
     }
   };
 

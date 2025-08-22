@@ -6,50 +6,52 @@ import { ScheduleForm } from "./ScheduleForm";
 
 interface EditScheduleProps {
   scheduleId?: number;
+  initialScheduleData?: any;
   onCancel: () => void;
 }
 
 /**
  * 일정을 수정하는 사이드바 컴포넌트입니다.
  */
-export const EditSchedule = ({ scheduleId, onCancel }: EditScheduleProps) => {
+export const EditSchedule = ({ scheduleId, initialScheduleData, onCancel }: EditScheduleProps) => {
   const [initialData, setInitialData] = useState<InputScheduleRequest | undefined>(undefined);
   const calendarId = useCurrentCalendarId();
   const updateSchedule = useUpdateSchedule();
 
-  // 일정 상세 정보 조회
+  // 전달받은 데이터가 있으면 사용, 없으면 API 호출
   const {
     data: scheduleDetail,
     isLoading,
     error,
   } = useScheduleDetail(calendarId ?? 0, scheduleId ?? 0, {
-    enabled: !!calendarId && !!scheduleId,
+    enabled: !!calendarId && !!scheduleId && !initialScheduleData,
   });
 
-  // API 응답을 InputScheduleRequest 형태로 변환
+  // 전달받은 데이터 또는 API 응답을 InputScheduleRequest 형태로 변환
   useEffect(() => {
-    if (scheduleDetail) {
+    const dataToUse = initialScheduleData || scheduleDetail;
+    if (dataToUse) {
       const data: InputScheduleRequest = {
-        title: scheduleDetail.title,
-        isAllDay: scheduleDetail.allDay,
-        startDate: scheduleDetail.allDay ? scheduleDetail.startDate! : scheduleDetail.startDateTime!.split("T")[0],
-        startTime: scheduleDetail.allDay ? "00:00" : scheduleDetail.startDateTime!.split("T")[1].slice(0, 5),
-        endDate: scheduleDetail.allDay ? scheduleDetail.endDate! : scheduleDetail.endDateTime!.split("T")[0],
-        endTime: scheduleDetail.allDay ? "01:00" : scheduleDetail.endDateTime!.split("T")[1].slice(0, 5),
-        location: scheduleDetail.location || "",
-        category: scheduleDetail.category.name,
-        memo: scheduleDetail.memo || "",
-        notificationTime: scheduleDetail.notificationTime || "FIVE_MINUTES_BEFORE",
-        recurrence: scheduleDetail.recurrence
+        title: dataToUse.title,
+        isAllDay: dataToUse.allDay,
+        startDate: dataToUse.allDay ? dataToUse.startDate! : dataToUse.startDateTime!.split("T")[0],
+        startTime: dataToUse.allDay ? "00:00" : dataToUse.startDateTime!.split("T")[1].slice(0, 5),
+        endDate: dataToUse.allDay ? dataToUse.endDate! : dataToUse.endDateTime!.split("T")[0],
+        endTime: dataToUse.allDay ? "01:00" : dataToUse.endDateTime!.split("T")[1].slice(0, 5),
+        location: dataToUse.location || "",
+        category: dataToUse.category.name,
+        memo: dataToUse.memo || "",
+        notificationTime: dataToUse.notificationTime || "FIVE_MINUTES_BEFORE",
+        recurrence: dataToUse.recurrence
           ? {
-              recurrenceRule: scheduleDetail.recurrence.frequency,
-              recurrenceEndDate: scheduleDetail.recurrence.recurrenceEndDate,
+              recurrenceRule: dataToUse.recurrence.frequency,
+              recurrenceEndDate: dataToUse.recurrence.recurrenceEndDate,
             }
           : undefined,
       };
       setInitialData(data);
     }
-  }, [scheduleDetail]);
+  }, [initialScheduleData, scheduleDetail]);
 
   const handleSubmit = async (data: InputScheduleRequest) => {
     if (!calendarId || !scheduleId) return;
@@ -99,7 +101,7 @@ export const EditSchedule = ({ scheduleId, onCancel }: EditScheduleProps) => {
     );
   }
 
-  if (isLoading) {
+  if (!initialScheduleData && isLoading) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-grayscale-400 text-medium-m">로딩 중...</div>
@@ -107,7 +109,7 @@ export const EditSchedule = ({ scheduleId, onCancel }: EditScheduleProps) => {
     );
   }
 
-  if (error) {
+  if (!initialScheduleData && error) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-grayscale-400 text-medium-m">일정을 불러올 수 없습니다.</div>
