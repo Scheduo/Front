@@ -1,13 +1,7 @@
 import type { CalendarRole } from "@/entities/calendar";
-import type { Schedule } from "../model";
+import type { NotificationTime, Schedule, ScheduleRecurrence } from "../model";
 
 export type InputScheduleRequest = Omit<Schedule, "id" | "calendar">;
-
-// 카테고리 타입
-export interface ScheduleCategory {
-  name: string;
-  color: "RED" | "BLUE" | "GREEN" | "YELLOW" | "PURPLE" | "ORANGE" | "PINK" | "GRAY";
-}
 
 // 특정 날짜 일정 조회 응답
 export interface DailyScheduleResponse {
@@ -15,7 +9,11 @@ export interface DailyScheduleResponse {
   title: string;
   startDateTime: string; // "2025-05-21T10:00:00"
   endDateTime: string; // "2025-05-21T11:00:00"
-  category: ScheduleCategory;
+  location: string;
+  category: string;
+  memo: string;
+  notificationTime: NotificationTime;
+  recurrence: ScheduleRecurrence;
   allDay: boolean;
 }
 
@@ -25,7 +23,7 @@ export interface MonthlyScheduleResponse {
   title: string;
   startDate: string; // yyyy-mm-dd
   endDate: string;
-  category: ScheduleCategory;
+  category: string;
 }
 
 // 일정 생성 요청 (실제 API 스펙에 맞게 수정)
@@ -38,15 +36,9 @@ export interface CreateScheduleRequest {
   allDay: boolean;
   location?: string;
   memo?: string;
-  category: {
-    name: string;
-    color: "RED" | "BLUE" | "GREEN" | "YELLOW" | "PURPLE" | "ORANGE" | "PINK" | "GRAY";
-  };
-  notificationTime?: "ONE_DAY_BEFORE" | "ONE_HOUR_BEFORE" | "THIRTY_MINUTES_BEFORE" | "FIVE_MINUTES_BEFORE";
-  recurrence?: {
-    frequency: string;
-    recurrenceEndDate: string;
-  };
+  category: string;
+  notificationTime?: NotificationTime;
+  recurrence?: ScheduleRecurrence;
   participants?: Array<{
     memberId: number;
     role: CalendarRole;
@@ -67,18 +59,7 @@ export interface ScheduleDetailResponse {
   allDay: boolean;
   location?: string;
   memo?: string;
-  category: ScheduleCategory;
-  notificationTime?: "ONE_DAY_BEFORE" | "ONE_HOUR_BEFORE" | "THIRTY_MINUTES_BEFORE" | "FIVE_MINUTES_BEFORE";
-  recurrence?: {
-    frequency: string;
-    recurrenceEndDate: string;
-  };
-}
-
-// API 응답 래퍼
-export interface ApiResponse<T> {
-  code: number;
-  success: boolean;
-  message: string;
-  data: T;
+  category: string;
+  notificationTime?: NotificationTime;
+  recurrence?: ScheduleRecurrence;
 }

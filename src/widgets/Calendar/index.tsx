@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useMonthlySchedules } from "@/entities/schedule";
-import { useCurrentCalendarId } from "@/shared/lib";
+import { getCategoryColorClass, useCurrentCalendarId } from "@/shared/lib";
 import { Button } from "@/shared/ui";
 import { DAY_NAMES } from "./consts";
 
@@ -75,20 +75,6 @@ export const Calendar = ({ onDateSelect }: CalendarProps = {}) => {
     return days;
   }, [currentDate]);
 
-  const getCategoryColorClass = useCallback((color: string) => {
-    const colorMap = {
-      RED: "bg-red-500",
-      BLUE: "bg-blue-500",
-      GREEN: "bg-green-500",
-      YELLOW: "bg-yellow-500",
-      PURPLE: "bg-purple-500",
-      ORANGE: "bg-orange-500",
-      PINK: "bg-pink-500",
-      GRAY: "bg-gray-500",
-    };
-    return colorMap[color as keyof typeof colorMap] || "bg-gray-500";
-  }, []);
-
   // API 응답을 Calendar Event 형태로 변환
   const events = useMemo(() => {
     if (!monthlySchedules) return [];
@@ -98,9 +84,9 @@ export const Calendar = ({ onDateSelect }: CalendarProps = {}) => {
       title: schedule.title,
       startDate: new Date(schedule.startDate),
       endDate: new Date(schedule.endDate),
-      color: getCategoryColorClass(schedule.category.color),
+      color: getCategoryColorClass(schedule.category),
     }));
-  }, [monthlySchedules, getCategoryColorClass]);
+  }, [monthlySchedules]);
 
   const eventMatrix = useMemo(() => {
     const matrix: EventMatrix = {};

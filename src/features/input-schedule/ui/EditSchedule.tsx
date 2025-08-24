@@ -39,12 +39,12 @@ export const EditSchedule = ({ scheduleId, initialScheduleData, onCancel }: Edit
         endDate: dataToUse.allDay ? dataToUse.endDate! : dataToUse.endDateTime!.split("T")[0],
         endTime: dataToUse.allDay ? "01:00" : dataToUse.endDateTime!.split("T")[1].slice(0, 5),
         location: dataToUse.location || "",
-        category: dataToUse.category.name,
+        category: dataToUse.category,
         memo: dataToUse.memo || "",
         notificationTime: dataToUse.notificationTime || "FIVE_MINUTES_BEFORE",
         recurrence: dataToUse.recurrence
           ? {
-              recurrenceRule: dataToUse.recurrence.frequency,
+              frequency: dataToUse.recurrence.frequency,
               recurrenceEndDate: dataToUse.recurrence.recurrenceEndDate,
             }
           : undefined,
@@ -70,14 +70,11 @@ export const EditSchedule = ({ scheduleId, initialScheduleData, onCancel }: Edit
           }),
       location: data.location || undefined,
       memo: data.memo || undefined,
-      category: {
-        name: data.category,
-        color: "BLUE" as const,
-      },
+      category: data.category,
       ...(data.notificationTime && { notificationTime: data.notificationTime }),
       ...(data.recurrence && {
         recurrence: {
-          frequency: data.recurrence.recurrenceRule,
+          frequency: data.recurrence.recurrency,
           recurrenceEndDate: data.recurrence.recurrenceEndDate,
         },
       }),

@@ -17,8 +17,8 @@ export interface Schedule {
 }
 
 export interface ScheduleRecurrence {
-  recurrenceRule: RecurrenceRule;
-  recurrenceEndDate: string; // yyyy-mm-dd
+  frequency: RecurrenceRule;
+  recurrenceEndDate: string;
 }
 
 export type NotificationTime =

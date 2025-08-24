@@ -1,7 +1,6 @@
 import { type UseQueryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { scheduleApi } from "./api";
 import type {
-  ApiResponse,
   CreateScheduleRequest,
   MonthlyScheduleResponse,
   ScheduleDetailResponse,
@@ -20,7 +19,6 @@ export const useDailySchedules = (calendarId: number, date: string) => {
   return useQuery({
     queryKey: scheduleKeys.daily(calendarId, date),
     queryFn: () => scheduleApi.getSchedulesByDate(calendarId, date),
-    select: (response) => response.data,
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
   });
@@ -30,12 +28,11 @@ export const useDailySchedules = (calendarId: number, date: string) => {
 export const useMonthlySchedules = (
   calendarId: number,
   date: string,
-  options?: Partial<UseQueryOptions<ApiResponse<MonthlyScheduleResponse[]>, Error, MonthlyScheduleResponse[]>>,
+  options?: Partial<UseQueryOptions<MonthlyScheduleResponse[], Error, MonthlyScheduleResponse[]>>,
 ) => {
   return useQuery({
     queryKey: scheduleKeys.monthly(calendarId, date),
     queryFn: () => scheduleApi.getSchedulesByMonth(calendarId, date),
-    select: (response) => response.data,
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
     ...options,
@@ -46,12 +43,11 @@ export const useMonthlySchedules = (
 export const useScheduleDetail = (
   calendarId: number,
   scheduleId: number,
-  options?: Partial<UseQueryOptions<ApiResponse<ScheduleDetailResponse>, Error, ScheduleDetailResponse>>,
+  options?: Partial<UseQueryOptions<ScheduleDetailResponse, Error, ScheduleDetailResponse>>,
 ) => {
   return useQuery({
     queryKey: scheduleKeys.detail(calendarId, scheduleId),
     queryFn: () => scheduleApi.getScheduleById(calendarId, scheduleId),
-    select: (response) => response.data,
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
     ...options,

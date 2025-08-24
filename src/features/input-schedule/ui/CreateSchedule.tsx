@@ -41,10 +41,7 @@ export const CreateSchedule = ({ onCancel }: CreateScheduleProps) => {
             }),
         location: data.location || undefined,
         memo: data.memo || undefined,
-        category: {
-          name: data.category || "기본",
-          color: "BLUE" as const,
-        },
+        category: data.category || "기본",
         // 알림 설정 추가
         ...(data.notificationTime !== "NONE" && {
           notificationTime: data.notificationTime,
@@ -52,7 +49,7 @@ export const CreateSchedule = ({ onCancel }: CreateScheduleProps) => {
         // 반복 설정 추가
         ...(data.recurrence && {
           recurrence: {
-            frequency: data.recurrence.recurrenceRule,
+            frequency: data.recurrence.frequency,
             recurrenceEndDate: data.recurrence.recurrenceEndDate,
           },
         }),

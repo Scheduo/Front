@@ -162,8 +162,8 @@ export const ScheduleDetail = ({ scheduleId, onEdit, onCancel }: ScheduleDetailP
             <div>
               <div className="text-grayscale-black text-medium-m">카테고리</div>
               <div className="mt-1 flex items-center gap-2">
-                <div className={`h-3 w-3 rounded-full ${getCategoryColor(scheduleDetail.category.color)}`} />
-                <span className="text-grayscale-600 text-regular-s">{scheduleDetail.category.name}</span>
+                <div className={`h-3 w-3 rounded-full ${getCategoryColor(scheduleDetail.category)}`} />
+                <span className="text-grayscale-600 text-regular-s">{scheduleDetail.category}</span>
               </div>
             </div>
           </div>
