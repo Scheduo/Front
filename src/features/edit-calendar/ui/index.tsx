@@ -11,6 +11,7 @@ import {
   useUpdateCalendar,
   useUpdateParticipantRole,
 } from "@/entities/calendar";
+import type { UpdateCalendarRequest } from "@/entities/calendar/api/types";
 import type { Member } from "@/entities/member/model";
 import { ROLE_OPTIONS } from "@/shared/const";
 import { cn } from "@/shared/lib";
@@ -124,15 +125,27 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
   };
 
   const handleSubmit = (data: EditCalendarFormData) => {
-    if (!calendarId) return;
+    if (!calendarId || !calendarData) return;
+
+    const requestData: UpdateCalendarRequest = {};
+
+    if (data.nickname !== calendarData.memberNickname) {
+      requestData.nickname = data.nickname;
+    }
+
+    if (isOwner && data.title !== calendarData.title) {
+      requestData.title = data.title;
+    }
+
+    if (Object.keys(requestData).length === 0) {
+      setIsOpen(false);
+      return;
+    }
 
     updateMutation.mutate(
       {
         calendarId,
-        data: {
-          title: data.title,
-          nickname: data.nickname,
-        },
+        data: requestData,
       },
       {
         onSuccess: () => {
