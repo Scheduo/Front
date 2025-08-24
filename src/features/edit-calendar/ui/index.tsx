@@ -68,6 +68,8 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
     },
   });
 
+  const isOwner = calendarData?.memberRole === "OWNER";
+
   const excludeEmails = useMemo(() => {
     const participantEmails = calendarData?.participants?.map((p) => p.email) || [];
     const selectedEmails = selectedMembers.map((m) => m.email);
@@ -201,6 +203,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                       <Input
                         placeholder="캘린더 이름을 입력하세요"
                         {...field}
+                        disabled={!isOwner}
                         className={cn(
                           form.formState.errors.title &&
                             "border-[2px] border-notification-strong focus:border-notification-strong focus:ring-notification-strong",
@@ -241,11 +244,12 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                     excludeEmails={excludeEmails}
                     onSelectMember={handleSelectMember}
                     className="flex-1"
+                    disabled={!isOwner}
                   />
                   <Button
                     type="button"
                     onClick={handleInviteAll}
-                    disabled={inviteToCalendarMutation.isPending || selectedMembers.length === 0}
+                    disabled={!isOwner || inviteToCalendarMutation.isPending || selectedMembers.length === 0}
                   >
                     {inviteToCalendarMutation.isPending ? "초대 중..." : `초대 (${selectedMembers.length})`}
                   </Button>
@@ -304,7 +308,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                             onValueChange={(value) =>
                               handleRoleChange(participant.participantId, value as CalendarRole)
                             }
-                            disabled={participant.role === "OWNER"}
+                            disabled={!isOwner || participant.role === "OWNER"}
                           >
                             <SelectTrigger className="h-8 w-28">
                               <SelectValue />
@@ -332,7 +336,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                               size="sm"
                               onClick={() => setShowDeleteMember(true)}
                               className="text-grayscale-400 hover:bg-transparent"
-                              disabled={participant.role === "OWNER"}
+                              disabled={!isOwner || participant.role === "OWNER"}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -344,25 +348,27 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
                 )}
               </div>
 
-              <div className="flex justify-end">
-                <TextConfirmDialog
-                  isOpen={showDeleteCalendar}
-                  onOpenChange={setShowDeleteCalendar}
-                  title="캘린더 삭제"
-                  description="캘린더를 삭제하면 모든 일정이 영구적으로 삭제됩니다. 캘린더를 삭제하려면 아래에 캘린더 이름을 똑같이 입력하세요."
-                  expectedText={form.watch("title") || ""}
-                  onConfirm={handleDelete}
-                >
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="text-grayscale-400 underline"
-                    onClick={() => setShowDeleteCalendar(true)}
+              {isOwner && (
+                <div className="flex justify-end">
+                  <TextConfirmDialog
+                    isOpen={showDeleteCalendar}
+                    onOpenChange={setShowDeleteCalendar}
+                    title="캘린더 삭제"
+                    description="캘린더를 삭제하면 모든 일정이 영구적으로 삭제됩니다. 캘린더를 삭제하려면 아래에 캘린더 이름을 똑같이 입력하세요."
+                    expectedText={form.watch("title") || ""}
+                    onConfirm={handleDelete}
                   >
-                    캘린더 삭제
-                  </Button>
-                </TextConfirmDialog>
-              </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="text-grayscale-400 underline"
+                      onClick={() => setShowDeleteCalendar(true)}
+                    >
+                      캘린더 삭제
+                    </Button>
+                  </TextConfirmDialog>
+                </div>
+              )}
 
               <DialogFooter>
                 <Button type="submit" disabled={updateMutation.isPending}>
