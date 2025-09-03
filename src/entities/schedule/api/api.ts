@@ -27,7 +27,7 @@ export const scheduleApi = {
     const response = await axiosInstance.get(`/calendars/${calendarId}/schedules/monthly`, {
       params: { date }, // yyyy-mm 형식
     });
-    return response.data;
+    return response.data.data;
   },
 
   // 일정 상세 조회

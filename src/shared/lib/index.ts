@@ -1,3 +1,3 @@
 export { devLogger } from "./devLogger";
 export { useCurrentCalendarId } from "./useCurrentCalendarId";
-export { cn } from "./utils";
+export { cn, getCategoryColorClass } from "./utils";

@@ -32,7 +32,7 @@ export const Calendar = ({ onDateSelect }: CalendarProps = {}) => {
   const calendarId = useCurrentCalendarId();
 
   // 월별 일정 조회
-  const currentMonthString = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
+  const currentMonthString = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-01`;
   const { data: monthlySchedules, isLoading } = useMonthlySchedules(calendarId ?? 0, currentMonthString, {
     enabled: !!calendarId,
   });
@@ -77,7 +77,7 @@ export const Calendar = ({ onDateSelect }: CalendarProps = {}) => {
 
   // API 응답을 Calendar Event 형태로 변환
   const events = useMemo(() => {
-    if (!monthlySchedules) return [];
+    if (!monthlySchedules || !Array.isArray(monthlySchedules)) return [];
 
     return monthlySchedules.map((schedule) => ({
       id: schedule.id.toString(),
