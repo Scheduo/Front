@@ -1,4 +1,4 @@
-import type { CalendarCategory, NotificationTime, Schedule, ScheduleRecurrence } from "../model";
+import type { CalendarCategory, CalendarCategoryColor, NotificationTime, Schedule, ScheduleRecurrence } from "../model";
 
 export type InputScheduleRequest = Omit<Schedule, "id" | "calendar">;
 
@@ -18,11 +18,19 @@ export interface DailyScheduleResponse {
 
 // 월별 일정 조회 응답
 export interface MonthlyScheduleResponse {
+  calendarId: number;
+  schedules: MonthlyScheduleItem[];
+}
+
+export interface MonthlyScheduleItem {
   id: number;
   title: string;
-  startDate: string; // yyyy-mm-dd
-  endDate: string;
-  category: string;
+  startDate: string; // "2025-05-21"
+  endDate: string; // "2025-05-21"
+  category: {
+    name: CalendarCategory;
+    color: CalendarCategoryColor;
+  };
 }
 
 // 일정 생성 요청 (실제 API 스펙에 맞게 수정)

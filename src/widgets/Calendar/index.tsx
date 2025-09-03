@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useMonthlySchedules } from "@/entities/schedule";
-import { getCategoryColorClass, useCurrentCalendarId } from "@/shared/lib";
+import { getCategoryColorClass, useMonthlySchedules } from "@/entities/schedule";
+import { useCurrentCalendarId } from "@/shared/lib";
 import { Button } from "@/shared/ui";
 import { DAY_NAMES } from "./consts";
 
@@ -33,7 +33,7 @@ export const Calendar = ({ onDateSelect }: CalendarProps = {}) => {
 
   // 월별 일정 조회
   const currentMonthString = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-01`;
-  const { data: monthlySchedules, isLoading } = useMonthlySchedules(calendarId ?? 0, currentMonthString, {
+  const { data: monthlySchedule, isLoading } = useMonthlySchedules(calendarId ?? 0, currentMonthString, {
     enabled: !!calendarId,
   });
 
@@ -77,16 +77,16 @@ export const Calendar = ({ onDateSelect }: CalendarProps = {}) => {
 
   // API 응답을 Calendar Event 형태로 변환
   const events = useMemo(() => {
-    if (!monthlySchedules || !Array.isArray(monthlySchedules)) return [];
+    if (!monthlySchedule || !Array.isArray(monthlySchedule.schedules)) return [];
 
-    return monthlySchedules.map((schedule) => ({
+    return monthlySchedule.schedules.map((schedule) => ({
       id: schedule.id.toString(),
       title: schedule.title,
       startDate: new Date(schedule.startDate),
       endDate: new Date(schedule.endDate),
-      color: getCategoryColorClass(schedule.category),
+      color: getCategoryColorClass(schedule.category.color),
     }));
-  }, [monthlySchedules]);
+  }, [monthlySchedule]);
 
   const eventMatrix = useMemo(() => {
     const matrix: EventMatrix = {};

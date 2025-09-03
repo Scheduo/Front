@@ -26,3 +26,5 @@ export type NotificationTime = "ONE_DAY_BEFORE" | "ONE_HOUR_BEFORE" | "THIRTY_MI
 export type RecurrenceRule = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
 
 export type CalendarCategory = "할 일" | "취미" | "학교" | "회사" | "기타";
+
+export type CalendarCategoryColor = "CYAN" | "PURPLE" | "TEAL" | "PINK" | "GRAY";

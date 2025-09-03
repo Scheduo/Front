@@ -28,7 +28,7 @@ export const useDailySchedules = (calendarId: number, date: string) => {
 export const useMonthlySchedules = (
   calendarId: number,
   date: string,
-  options?: Partial<UseQueryOptions<MonthlyScheduleResponse[], Error, MonthlyScheduleResponse[]>>,
+  options?: Partial<UseQueryOptions<MonthlyScheduleResponse, Error, MonthlyScheduleResponse>>,
 ) => {
   return useQuery({
     queryKey: scheduleKeys.monthly(calendarId, date),

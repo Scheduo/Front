@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
+import { CalendarCategoryColor } from "@/entities/schedule";
 
 const customTwMerge = extendTailwindMerge({
   extend: {
@@ -106,18 +107,4 @@ const customTwMerge = extendTailwindMerge({
 
 export function cn(...inputs: ClassValue[]) {
   return customTwMerge(clsx(inputs));
-}
-
-export function getCategoryColorClass(color: string) {
-  const colorMap = {
-    RED: "bg-red-500",
-    BLUE: "bg-blue-500",
-    GREEN: "bg-green-500",
-    YELLOW: "bg-yellow-500",
-    PURPLE: "bg-purple-500",
-    ORANGE: "bg-orange-500",
-    PINK: "bg-pink-500",
-    GRAY: "bg-gray-500",
-  };
-  return colorMap[color as keyof typeof colorMap] || "bg-gray-500";
 }

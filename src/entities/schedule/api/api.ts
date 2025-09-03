@@ -23,7 +23,7 @@ export const scheduleApi = {
   },
 
   // 월별 일정 조회
-  getSchedulesByMonth: async (calendarId: number, date: string): Promise<MonthlyScheduleResponse[]> => {
+  getSchedulesByMonth: async (calendarId: number, date: string): Promise<MonthlyScheduleResponse> => {
     const response = await axiosInstance.get(`/calendars/${calendarId}/schedules/monthly`, {
       params: { date }, // yyyy-mm 형식
     });
