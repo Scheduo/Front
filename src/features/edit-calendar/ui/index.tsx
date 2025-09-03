@@ -384,7 +384,7 @@ export const EditCalendar = ({ calendarId }: EditCalendarProps) => {
               )}
 
               <DialogFooter>
-                <Button type="submit" disabled={updateMutation.isPending}>
+                <Button type="submit" disabled={updateMutation.isPending || !form.formState.isDirty}>
                   {updateMutation.isPending ? "저장 중..." : "저장"}
                 </Button>
                 <Button type="button" variant="outline" onClick={handleCancel}>
