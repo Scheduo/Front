@@ -1,5 +1,4 @@
-import type { CalendarRole } from "@/entities/calendar";
-import type { NotificationTime, Schedule, ScheduleRecurrence } from "../model";
+import type { CalendarCategory, NotificationTime, Schedule, ScheduleRecurrence } from "../model";
 
 export type InputScheduleRequest = Omit<Schedule, "id" | "calendar">;
 
@@ -29,20 +28,14 @@ export interface MonthlyScheduleResponse {
 // 일정 생성 요청 (실제 API 스펙에 맞게 수정)
 export interface CreateScheduleRequest {
   title: string;
-  startDateTime?: string; // allDay가 false일 때 필수
-  endDateTime?: string; // allDay가 false일 때 필수
-  startDate?: string; // allDay가 true일 때 사용
-  endDate?: string; // allDay가 true일 때 사용
+  startDateTime?: string;
+  endDateTime?: string;
   allDay: boolean;
   location?: string;
   memo?: string;
-  category: string;
+  category: CalendarCategory;
   notificationTime?: NotificationTime;
   recurrence?: ScheduleRecurrence;
-  participants?: Array<{
-    memberId: number;
-    role: CalendarRole;
-  }>;
 }
 
 // 일정 수정 요청 (생성과 동일한 구조)

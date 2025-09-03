@@ -59,12 +59,12 @@ export const ScheduleForm = ({
       endDate: initialData?.endDate ?? "",
       endTime: initialData?.endTime ?? "01:00",
       location: initialData?.location ?? "",
-      category: initialData?.category ?? "",
+      category: initialData?.category ?? "기타",
       memo: initialData?.memo ?? "",
-      hasNotification: initialData?.notificationTime !== "NONE" && initialData?.notificationTime !== undefined,
+      hasNotification: initialData?.notificationTime !== undefined,
       notificationTime: initialData?.notificationTime ?? "FIVE_MINUTES_BEFORE",
       hasRecurrence: initialData?.recurrence !== null && initialData?.recurrence !== undefined,
-      recurrenceRule: initialData?.recurrence?.recurrenceRule ?? "DAILY",
+      recurrenceRule: initialData?.recurrence?.frequency ?? "DAILY",
       recurrenceEndDate: initialData?.recurrence?.recurrenceEndDate ?? "",
     },
   });
@@ -84,10 +84,10 @@ export const ScheduleForm = ({
       location: data.location,
       category: data.category,
       memo: data.memo,
-      notificationTime: data.hasNotification ? data.notificationTime : "NONE",
+      notificationTime: data.hasNotification ? data.notificationTime : undefined,
       recurrence: data.hasRecurrence
         ? {
-            recurrenceRule: data.recurrenceRule,
+            frequency: data.recurrenceRule,
             recurrenceEndDate: data.recurrenceEndDate,
           }
         : null,
@@ -345,7 +345,18 @@ export const ScheduleForm = ({
                 <FormItem className="mx-3">
                   <FormLabel className="text-grayscale-700 text-medium-m">카테고리</FormLabel>
                   <FormControl>
-                    <Input placeholder="업무, 취미, 약속 등" {...field} />
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="카테고리를 선택하세요" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="할 일">할 일</SelectItem>
+                        <SelectItem value="취미">취미</SelectItem>
+                        <SelectItem value="학교">학교</SelectItem>
+                        <SelectItem value="회사">회사</SelectItem>
+                        <SelectItem value="기타">기타</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                 </FormItem>
               )}
@@ -392,7 +403,7 @@ export const ScheduleForm = ({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {NOTIFICATION_OPTIONS.filter((option) => option.value !== "NONE").map((option) => (
+                          {NOTIFICATION_OPTIONS.map((option) => (
                             <SelectItem key={option.value} value={option.value}>
                               {option.label}
                             </SelectItem>

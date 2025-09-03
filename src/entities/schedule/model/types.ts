@@ -9,9 +9,9 @@ export interface Schedule {
   startTime: string; // hh:mm
   endTime: string;
   location: string;
-  category: string;
+  category: CalendarCategory;
   memo: string;
-  notificationTime: NotificationTime;
+  notificationTime?: NotificationTime;
   recurrence: ScheduleRecurrence | null;
   calendar: ScheduleCalendar;
 }
@@ -21,11 +21,8 @@ export interface ScheduleRecurrence {
   recurrenceEndDate: string;
 }
 
-export type NotificationTime =
-  | "NONE"
-  | "ONE_DAY_BEFORE"
-  | "ONE_HOUR_BEFORE"
-  | "THIRTY_MINUTES_BEFORE"
-  | "FIVE_MINUTES_BEFORE";
+export type NotificationTime = "ONE_DAY_BEFORE" | "ONE_HOUR_BEFORE" | "THIRTY_MINUTES_BEFORE" | "FIVE_MINUTES_BEFORE";
 
 export type RecurrenceRule = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
+
+export type CalendarCategory = "할 일" | "취미" | "학교" | "회사" | "기타";

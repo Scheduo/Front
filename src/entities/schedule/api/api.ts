@@ -11,7 +11,7 @@ export const scheduleApi = {
   // 일정 생성
   createSchedule: async (calendarId: number, request: CreateScheduleRequest): Promise<{ id: number }> => {
     const response = await axiosInstance.post(`/calendars/${calendarId}/schedules`, request);
-    return response.data;
+    return response.data.data;
   },
 
   // 특정 날짜 일정 조회
@@ -19,7 +19,7 @@ export const scheduleApi = {
     const response = await axiosInstance.get(`/calendars/${calendarId}/schedules/daily`, {
       params: { date }, // yyyy-mm-dd 형식
     });
-    return response.data;
+    return response.data.data;
   },
 
   // 월별 일정 조회
@@ -33,13 +33,13 @@ export const scheduleApi = {
   // 일정 상세 조회
   getScheduleById: async (calendarId: number, scheduleId: number): Promise<ScheduleDetailResponse> => {
     const response = await axiosInstance.get(`/calendars/${calendarId}/schedules/${scheduleId}`);
-    return response.data;
+    return response.data.data;
   },
 
   // 일정 수정
   updateSchedule: async (calendarId: number, scheduleId: number, request: UpdateScheduleRequest): Promise<void> => {
     const response = await axiosInstance.put(`/calendars/${calendarId}/schedules/${scheduleId}`, request);
-    return response.data;
+    return response.data.data;
   },
 
   // 기존 함수들 (향후 구현 예정)

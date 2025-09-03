@@ -26,27 +26,21 @@ export const CreateSchedule = ({ onCancel }: CreateScheduleProps) => {
     try {
       setIsSubmitting(true);
 
-      // InputScheduleRequest를 CreateScheduleRequest로 변환
       const requestData = {
         title: data.title,
         allDay: data.isAllDay,
-        ...(data.isAllDay
-          ? {
-              startDate: data.startDate,
-              endDate: data.endDate,
-            }
-          : {
-              startDateTime: `${data.startDate}T${data.startTime}:00`,
-              endDateTime: `${data.endDate}T${data.endTime}:00`,
-            }),
+        startDateTime: data.isAllDay
+          ? new Date(`${data.startDate}T00:00:00`).toISOString()
+          : new Date(`${data.startDate}T${data.startTime}:00`).toISOString(),
+        endDateTime: data.isAllDay
+          ? new Date(`${data.endDate}T23:59:59`).toISOString()
+          : new Date(`${data.endDate}T${data.endTime}:00`).toISOString(),
         location: data.location || undefined,
         memo: data.memo || undefined,
-        category: data.category || "기본",
-        // 알림 설정 추가
-        ...(data.notificationTime !== "NONE" && {
+        category: data.category,
+        ...(data.notificationTime && {
           notificationTime: data.notificationTime,
         }),
-        // 반복 설정 추가
         ...(data.recurrence && {
           recurrence: {
             frequency: data.recurrence.frequency,
