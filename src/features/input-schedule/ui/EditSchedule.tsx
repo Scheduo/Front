@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { InputScheduleRequest, UpdateScheduleRequest } from "@/entities/schedule";
-import { useScheduleById, useUpdateSchedule } from "@/entities/schedule";
+import { useScheduleDetail, useUpdateSchedule } from "@/entities/schedule";
 import { useCurrentCalendarId } from "@/shared/lib";
 import { ScheduleForm } from "./ScheduleForm";
 
@@ -25,7 +25,7 @@ export const EditSchedule = ({ scheduleId, selectedDate, onCancel }: EditSchedul
     return `${year}-${month}-${day}`;
   }, [selectedDate]);
 
-  const { data: dailyScheduleData, isLoading } = useScheduleById(calendarId ?? 0, scheduleId ?? 0, dateString);
+  const { data: dailyScheduleData, isLoading } = useScheduleDetail(calendarId ?? 0, scheduleId ?? 0, dateString);
   const handleSubmit = async (data: InputScheduleRequest) => {
     if (!calendarId || !scheduleId || !selectedDate) return;
 

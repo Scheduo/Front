@@ -4,7 +4,7 @@ import {
   type CalendarCategory,
   getCategoryColorClass,
   getNotificationText,
-  useScheduleById,
+  useScheduleDetail,
 } from "@/entities/schedule";
 import { useCurrentCalendarId } from "@/shared/lib";
 import { Button, ScrollArea } from "@/shared/ui";
@@ -30,7 +30,7 @@ export const ScheduleDetail = ({ scheduleId, selectedDate, onEdit, onCancel }: S
     return `${year}-${month}-${day}`;
   }, [selectedDate]);
 
-  const { data: scheduleDetail, isLoading } = useScheduleById(calendarId ?? 0, scheduleId ?? 0, dateString);
+  const { data: scheduleDetail, isLoading } = useScheduleDetail(calendarId ?? 0, scheduleId ?? 0, dateString);
 
   if (!calendarId || !scheduleId || !selectedDate) {
     return (

@@ -111,11 +111,3 @@ export const useUpdateSchedule = () => {
     },
   });
 };
-
-export const useScheduleById = (calendarId: number, scheduleId: number, date: string) => {
-  return useQuery({
-    queryKey: scheduleKeys.detail(calendarId, scheduleId),
-    queryFn: () => scheduleApi.getScheduleById(calendarId, scheduleId, date),
-    enabled: !!calendarId && !!scheduleId,
-  });
-};
