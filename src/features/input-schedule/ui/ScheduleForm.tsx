@@ -3,7 +3,13 @@ import { ko } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import type { InputScheduleRequest, Schedule } from "@/entities/schedule";
+import type {
+  CalendarCategory,
+  InputScheduleRequest,
+  Schedule,
+  ScheduleDetailResponse,
+  ScheduleItem,
+} from "@/entities/schedule";
 import { cn } from "@/shared/lib";
 import {
   Button,
@@ -32,12 +38,31 @@ import type { ScheduleFormData } from "../lib";
 import { TimePicker } from "./TimePicker";
 
 interface ScheduleFormProps {
-  initialData?: Partial<Schedule>;
+  initialData?: ScheduleDetailResponse;
   onSubmit: (data: InputScheduleRequest) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
   submitButtonText?: string;
 }
+
+/**
+ * ISO 문자열이나 날짜 문자열에서 날짜 부분만 추출
+ */
+const extractDate = (dateString?: string): string => {
+  if (!dateString) return "";
+  // ISO 문자열 (YYYY-MM-DDTHH:mm:ss) 또는 날짜 문자열 (YYYY-MM-DD)
+  return dateString.split("T")[0];
+};
+
+/**
+ * ISO 문자열에서 시간 부분만 추출
+ */
+const extractTime = (dateTimeString?: string): string => {
+  if (!dateTimeString) return "";
+  if (!dateTimeString.includes("T")) return "00:00"; // 날짜만 있는 경우
+  const timePart = dateTimeString.split("T")[1];
+  return timePart ? timePart.slice(0, 5) : "00:00"; // HH:mm 형태로
+};
 
 /**
  * 일정 생성/수정을 위한 폼 컴포넌트입니다.
@@ -53,13 +78,15 @@ export const ScheduleForm = ({
   const form = useForm<ScheduleFormData>({
     defaultValues: {
       title: initialData?.title ?? "",
-      isAllDay: initialData?.isAllDay ?? false,
-      startDate: initialData?.startDate ?? "",
-      startTime: initialData?.startTime ?? "00:00",
-      endDate: initialData?.endDate ?? "",
-      endTime: initialData?.endTime ?? "01:00",
+      isAllDay: initialData?.allDay ?? false,
+      // startDate, endDate: 다양한 형태 처리
+      startDate: extractDate((initialData as any)?.startDateTime || (initialData as any)?.startDate) || "",
+      endDate: extractDate((initialData as any)?.endDateTime || (initialData as any)?.endDate) || "",
+      // startTime, endTime: ISO 문자열에서 시간 추출 또는 기본값
+      startTime: extractTime((initialData as any)?.startDateTime) || initialData?.startDateTime || "00:00",
+      endTime: extractTime((initialData as any)?.endDateTime) || initialData?.endDateTime || "01:00",
       location: initialData?.location ?? "",
-      category: initialData?.category ?? "기타",
+      category: initialData?.category as CalendarCategory,
       memo: initialData?.memo ?? "",
       hasNotification: initialData?.notificationTime !== undefined,
       notificationTime: initialData?.notificationTime ?? "FIVE_MINUTES_BEFORE",
@@ -77,10 +104,8 @@ export const ScheduleForm = ({
     const requestData: InputScheduleRequest = {
       title: data.title,
       isAllDay: data.isAllDay,
-      startDate: data.startDate,
-      endDate: data.endDate,
-      startTime: data.startTime,
-      endTime: data.endTime,
+      startDateTime: data.isAllDay ? `${data.startDate}T00:00:00` : `${data.startDate}T${data.startTime}:00`,
+      endDateTime: data.isAllDay ? `${data.endDate}T23:59:59` : `${data.endDate}T${data.endTime}:00`,
       location: data.location,
       category: data.category,
       memo: data.memo,

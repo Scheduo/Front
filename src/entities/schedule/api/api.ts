@@ -39,8 +39,14 @@ export const scheduleApi = {
   },
 
   // 일정 수정
-  updateSchedule: async (calendarId: number, scheduleId: number, request: UpdateScheduleRequest): Promise<void> => {
-    const response = await axiosInstance.put(`/calendars/${calendarId}/schedules/${scheduleId}`, request);
+  updateSchedule: async (
+    calendarId: number,
+    scheduleId: number,
+    date: string,
+    request: UpdateScheduleRequest,
+  ): Promise<void> => {
+    const url = `/calendars/${calendarId}/schedules/${scheduleId}`;
+    const response = await axiosInstance.patch(url, request, { params: { date } });
     return response.data.data;
   },
 

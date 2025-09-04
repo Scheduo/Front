@@ -24,24 +24,21 @@ interface RightSidebarProps {
 export const RightSidebar = ({ selectedDate }: RightSidebarProps) => {
   const [currentView, setCurrentView] = useState<RightSidebarViewType>("daily");
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | undefined>(undefined);
-  const [scheduleData, setScheduleData] = useState<any>(undefined);
 
   const handleScheduleDetail = (scheduleData: any) => {
     setSelectedScheduleId(scheduleData.id);
-    setScheduleData(scheduleData);
     setCurrentView("detail");
   };
 
   const handleScheduleEdit = (scheduleData?: any) => {
     if (scheduleData) {
-      setScheduleData(scheduleData);
+      setSelectedScheduleId(scheduleData.id);
     }
     setCurrentView("edit");
   };
 
   const handleCancel = () => {
     setSelectedScheduleId(undefined);
-    setScheduleData(undefined);
     setCurrentView("daily");
   };
 
@@ -59,15 +56,13 @@ export const RightSidebar = ({ selectedDate }: RightSidebarProps) => {
         return (
           <ScheduleDetail
             scheduleId={selectedScheduleId}
-            scheduleData={scheduleData}
+            selectedDate={selectedDate}
             onEdit={handleScheduleEdit}
             onCancel={handleCancel}
           />
         );
       case "edit":
-        return (
-          <EditSchedule scheduleId={selectedScheduleId} initialScheduleData={scheduleData} onCancel={handleCancel} />
-        );
+        return <EditSchedule scheduleId={selectedScheduleId} selectedDate={selectedDate} onCancel={handleCancel} />;
       case "search":
         return <SearchSchedule />;
       case "notification":

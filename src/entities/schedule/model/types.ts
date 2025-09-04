@@ -4,10 +4,8 @@ export interface Schedule {
   id: number;
   title: string;
   isAllDay: boolean;
-  startDate: string; // yyyy-mm-dd
-  endDate: string;
-  startTime: string; // hh:mm
-  endTime: string;
+  startDateTime: string;
+  endDateTime: string;
   location: string;
   category: CalendarCategory;
   memo: string;
@@ -28,3 +26,5 @@ export type RecurrenceRule = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
 export type CalendarCategory = "할 일" | "취미" | "학교" | "회사" | "기타";
 
 export type CalendarCategoryColor = "CYAN" | "PURPLE" | "TEAL" | "PINK" | "GRAY";
+
+export type ScheduleEditScope = "ALL" | "ONLY_THIS" | "THIS_AND_FUTURE";

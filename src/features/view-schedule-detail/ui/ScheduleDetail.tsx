@@ -1,9 +1,12 @@
 import { Bell, Clock, Edit2, MapPin, Repeat, User } from "lucide-react";
+import { useMemo } from "react";
+import { useDailySchedules } from "@/entities/schedule";
+import { useCurrentCalendarId } from "@/shared/lib";
 import { Button, ScrollArea } from "@/shared/ui";
 
 interface ScheduleDetailProps {
   scheduleId?: number;
-  scheduleData?: any;
+  selectedDate?: Date;
   onEdit: (scheduleData?: any) => void;
   onCancel: () => void;
 }
@@ -11,11 +14,46 @@ interface ScheduleDetailProps {
 /**
  * 일정 상세 정보를 보여주는 컴포넌트입니다.
  */
-export const ScheduleDetail = ({ scheduleId, scheduleData, onEdit, onCancel }: ScheduleDetailProps) => {
-  if (!scheduleId || !scheduleData) {
+export const ScheduleDetail = ({ scheduleId, selectedDate, onEdit, onCancel }: ScheduleDetailProps) => {
+  const calendarId = useCurrentCalendarId();
+
+  const dateString = useMemo(() => {
+    if (!selectedDate) return "";
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }, [selectedDate]);
+
+  const { data: dailyScheduleData, isLoading } = useDailySchedules(calendarId ?? 0, dateString, {
+    enabled: !!calendarId && !!scheduleId && !!selectedDate,
+  });
+
+  const scheduleData = useMemo(() => {
+    if (!dailyScheduleData?.schedules || !scheduleId) return null;
+    return dailyScheduleData.schedules.find((s) => s.id === scheduleId);
+  }, [dailyScheduleData, scheduleId]);
+
+  if (!calendarId || !scheduleId || !selectedDate) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-grayscale-400 text-medium-m">일정을 선택해주세요.</div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-grayscale-400 text-medium-m">로딩 중...</div>
+      </div>
+    );
+  }
+
+  if (!scheduleData) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-grayscale-400 text-medium-m">일정을 찾을 수 없습니다.</div>
       </div>
     );
   }

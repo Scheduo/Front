@@ -1,4 +1,11 @@
-import type { CalendarCategory, CalendarCategoryColor, NotificationTime, Schedule, ScheduleRecurrence } from "../model";
+import type {
+  CalendarCategory,
+  CalendarCategoryColor,
+  NotificationTime,
+  Schedule,
+  ScheduleEditScope,
+  ScheduleRecurrence,
+} from "../model";
 
 export type InputScheduleRequest = Omit<Schedule, "id" | "calendar">;
 
@@ -37,8 +44,10 @@ export interface CreateScheduleRequest {
   recurrence?: ScheduleRecurrence;
 }
 
-// 일정 수정 요청 (생성과 동일한 구조)
-export type UpdateScheduleRequest = CreateScheduleRequest;
+// 일정 수정 요청
+export interface UpdateScheduleRequest extends CreateScheduleRequest {
+  scope?: ScheduleEditScope;
+}
 
 // 일정 상세 조회 응답
 export interface ScheduleDetailResponse {
@@ -46,8 +55,6 @@ export interface ScheduleDetailResponse {
   title: string;
   startDateTime?: string;
   endDateTime?: string;
-  startDate?: string;
-  endDate?: string;
   allDay: boolean;
   location?: string;
   memo?: string;

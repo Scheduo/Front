@@ -88,12 +88,14 @@ export const useUpdateSchedule = () => {
     mutationFn: ({
       calendarId,
       scheduleId,
+      date,
       request,
     }: {
       calendarId: number;
       scheduleId: number;
+      date: string;
       request: UpdateScheduleRequest;
-    }) => scheduleApi.updateSchedule(calendarId, scheduleId, request),
+    }) => scheduleApi.updateSchedule(calendarId, scheduleId, date, request),
     onSuccess: (_, { calendarId, scheduleId }) => {
       // 해당 일정 상세 캐시 무효화
       queryClient.invalidateQueries({
@@ -107,5 +109,13 @@ export const useUpdateSchedule = () => {
         queryKey: ["schedules", "monthly", calendarId],
       });
     },
+  });
+};
+
+export const useScheduleById = (calendarId: number, scheduleId: number, date: string) => {
+  return useQuery({
+    queryKey: scheduleKeys.detail(calendarId, scheduleId),
+    queryFn: () => scheduleApi.getScheduleById(calendarId, scheduleId, date),
+    enabled: !!calendarId && !!scheduleId,
   });
 };
