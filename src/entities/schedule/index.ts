@@ -1,3 +1,3 @@
 export * from "./api";
-export * from "./lib";
+export * from "./consts";
 export * from "./model";
