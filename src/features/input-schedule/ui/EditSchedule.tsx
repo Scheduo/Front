@@ -25,7 +25,7 @@ export const EditSchedule = ({ scheduleId, selectedDate, onCancel }: EditSchedul
     return `${year}-${month}-${day}`;
   }, [selectedDate]);
 
-  const { data: dailyScheduleData, isLoading } = useScheduleDetail(calendarId ?? 0, scheduleId ?? 0, dateString);
+  const { data: dailyScheduleData, isLoading } = useScheduleDetail(calendarId!, scheduleId!, dateString);
   const handleSubmit = async (data: InputScheduleRequest) => {
     if (!calendarId || !scheduleId || !selectedDate) return;
 
