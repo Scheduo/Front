@@ -1,5 +1,6 @@
 import { type UseQueryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { scheduleApi } from "./api";
+import { scheduleKeys } from "./queryKeys";
 import type {
   CreateScheduleRequest,
   DailyScheduleResponse,
@@ -8,13 +9,6 @@ import type {
   UpdateScheduleRequest,
 } from "./types";
 
-// 쿼리 키 팩토리
-export const scheduleKeys = {
-  daily: (calendarId: number, date: string) => ["schedules", "daily", calendarId, date] as const,
-  monthly: (calendarId: number, date: string) => ["schedules", "monthly", calendarId, date] as const,
-  detail: (calendarId: number, scheduleId: number) => ["schedules", "detail", calendarId, scheduleId] as const,
-};
-
 // 특정 날짜 일정 조회
 export const useDailySchedules = (
   calendarId: number,
@@ -22,7 +16,7 @@ export const useDailySchedules = (
   options?: Partial<UseQueryOptions<DailyScheduleResponse, Error, DailyScheduleResponse>>,
 ) => {
   return useQuery({
-    queryKey: scheduleKeys.daily(calendarId, date),
+    queryKey: scheduleKeys.byDate(calendarId, date),
     queryFn: () => scheduleApi.getSchedulesByDate(calendarId, date),
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
@@ -37,7 +31,7 @@ export const useMonthlySchedules = (
   options?: Partial<UseQueryOptions<MonthlyScheduleResponse, Error, MonthlyScheduleResponse>>,
 ) => {
   return useQuery({
-    queryKey: scheduleKeys.monthly(calendarId, date),
+    queryKey: scheduleKeys.byMonth(calendarId, date),
     queryFn: () => scheduleApi.getSchedulesByMonth(calendarId, date),
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
@@ -53,7 +47,7 @@ export const useScheduleDetail = (
   options?: Partial<UseQueryOptions<ScheduleDetailResponse, Error, ScheduleDetailResponse>>,
 ) => {
   return useQuery({
-    queryKey: scheduleKeys.detail(calendarId, scheduleId),
+    queryKey: scheduleKeys.detail(calendarId, scheduleId, date),
     queryFn: () => scheduleApi.getScheduleById(calendarId, scheduleId, date),
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
@@ -71,10 +65,10 @@ export const useCreateSchedule = () => {
     onSuccess: (_, { calendarId }) => {
       // 해당 캘린더의 모든 일정 캐시 무효화
       queryClient.invalidateQueries({
-        queryKey: ["schedules", "daily", calendarId],
+        queryKey: ["schedules", "byDate", calendarId],
       });
       queryClient.invalidateQueries({
-        queryKey: ["schedules", "monthly", calendarId],
+        queryKey: ["schedules", "byMonth", calendarId],
       });
     },
   });
@@ -96,17 +90,17 @@ export const useUpdateSchedule = () => {
       date: string;
       request: UpdateScheduleRequest;
     }) => scheduleApi.updateSchedule(calendarId, scheduleId, date, request),
-    onSuccess: (_, { calendarId, scheduleId }) => {
+    onSuccess: (_, { calendarId, scheduleId, date }) => {
       // 해당 일정 상세 캐시 무효화
       queryClient.invalidateQueries({
-        queryKey: scheduleKeys.detail(calendarId, scheduleId),
+        queryKey: scheduleKeys.detail(calendarId, scheduleId, date),
       });
       // 해당 캘린더의 모든 일정 캐시 무효화
       queryClient.invalidateQueries({
-        queryKey: ["schedules", "daily", calendarId],
+        queryKey: ["schedules", "byDate", calendarId],
       });
       queryClient.invalidateQueries({
-        queryKey: ["schedules", "monthly", calendarId],
+        queryKey: ["schedules", "byMonth", calendarId],
       });
     },
   });
