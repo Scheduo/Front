@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
-import { CalendarCategoryColor } from "@/entities/schedule";
 
 const customTwMerge = extendTailwindMerge({
   extend: {

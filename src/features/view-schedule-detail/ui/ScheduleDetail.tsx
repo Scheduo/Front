@@ -1,6 +1,6 @@
 import { Bell, Clock, Edit2, MapPin, Repeat, User } from "lucide-react";
 import { useMemo } from "react";
-import { useDailySchedules } from "@/entities/schedule";
+import { type ScheduleDetailResponse, useDailySchedules } from "@/entities/schedule";
 import { useCurrentCalendarId } from "@/shared/lib";
 import { Button, ScrollArea } from "@/shared/ui";
 
@@ -59,12 +59,10 @@ export const ScheduleDetail = ({ scheduleId, selectedDate, onEdit, onCancel }: S
   }
 
   // API 응답을 ScheduleDetailResponse 형태로 변환 (기본 값들로)
-  const scheduleDetail = {
+  const scheduleDetail: ScheduleDetailResponse = {
     id: scheduleData.id,
     title: scheduleData.title,
     allDay: scheduleData.startDate === scheduleData.endDate,
-    startDate: scheduleData.startDate,
-    endDate: scheduleData.endDate,
     startDateTime: undefined,
     endDateTime: undefined,
     location: "", // API에서 제공하지 않음
@@ -155,9 +153,9 @@ export const ScheduleDetail = ({ scheduleId, selectedDate, onEdit, onCancel }: S
               <div className="mt-1 text-grayscale-600 text-regular-s">
                 {scheduleDetail.allDay ? (
                   <>
-                    {formatDateTime(undefined, scheduleDetail.startDate, true)}
-                    {scheduleDetail.startDate !== scheduleDetail.endDate && (
-                      <> ~ {formatDateTime(undefined, scheduleDetail.endDate, true)}</>
+                    {formatDateTime(scheduleDetail.startDateTime, undefined, true)}
+                    {scheduleDetail.startDateTime !== scheduleDetail.endDateTime && (
+                      <> ~ {formatDateTime(scheduleDetail.endDateTime, undefined, true)}</>
                     )}
                   </>
                 ) : (

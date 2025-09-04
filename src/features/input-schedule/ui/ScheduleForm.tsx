@@ -3,13 +3,7 @@ import { ko } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import type {
-  CalendarCategory,
-  InputScheduleRequest,
-  Schedule,
-  ScheduleDetailResponse,
-  ScheduleItem,
-} from "@/entities/schedule";
+import type { CalendarCategory, InputScheduleRequest, ScheduleDetailResponse } from "@/entities/schedule";
 import { cn } from "@/shared/lib";
 import {
   Button,

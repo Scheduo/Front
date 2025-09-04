@@ -29,12 +29,8 @@ export const CreateSchedule = ({ onCancel }: CreateScheduleProps) => {
       const requestData = {
         title: data.title,
         allDay: data.isAllDay,
-        startDateTime: data.isAllDay
-          ? new Date(`${data.startDate}T00:00:00`).toISOString()
-          : new Date(`${data.startDate}T${data.startTime}:00`).toISOString(),
-        endDateTime: data.isAllDay
-          ? new Date(`${data.endDate}T23:59:59`).toISOString()
-          : new Date(`${data.endDate}T${data.endTime}:00`).toISOString(),
+        startDateTime: data.startDateTime,
+        endDateTime: data.endDateTime,
         location: data.location || undefined,
         memo: data.memo || undefined,
         category: data.category,
