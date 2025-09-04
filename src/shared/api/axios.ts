@@ -95,7 +95,6 @@ const errorHandler = async (error: AxiosError<ErrorResponse>) => {
             );
 
             const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data.data;
-            console.log("Token refreshed:", newAccessToken, newRefreshToken);
             setAuth(newAccessToken, newRefreshToken);
 
             processQueue(null, newAccessToken);
