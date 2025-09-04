@@ -1,5 +1,6 @@
 import { Bell, Search } from "lucide-react";
 import { useState } from "react";
+import type { ScheduleItem } from "@/entities/schedule";
 import { CreateSchedule, EditSchedule } from "@/features/input-schedule";
 import { SearchSchedule } from "@/features/search-schedule";
 import { ShareSchedule } from "@/features/share-schedule";
@@ -25,12 +26,12 @@ export const RightSidebar = ({ selectedDate }: RightSidebarProps) => {
   const [currentView, setCurrentView] = useState<RightSidebarViewType>("daily");
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | undefined>(undefined);
 
-  const handleScheduleDetail = (scheduleData: any) => {
+  const handleScheduleDetail = (scheduleData: ScheduleItem) => {
     setSelectedScheduleId(scheduleData.id);
     setCurrentView("detail");
   };
 
-  const handleScheduleEdit = (scheduleData?: any) => {
+  const handleScheduleEdit = (scheduleData?: ScheduleItem) => {
     if (scheduleData) {
       setSelectedScheduleId(scheduleData.id);
     }
