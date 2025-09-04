@@ -26,14 +26,15 @@ export const RightSidebar = ({ selectedDate }: RightSidebarProps) => {
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | undefined>(undefined);
   const [scheduleData, setScheduleData] = useState<any>(undefined);
 
-  const handleScheduleDetail = (scheduleId: number) => {
-    setSelectedScheduleId(scheduleId);
+  const handleScheduleDetail = (scheduleData: any) => {
+    setSelectedScheduleId(scheduleData.id);
+    setScheduleData(scheduleData);
     setCurrentView("detail");
   };
 
-  const handleScheduleEdit = (data?: any) => {
-    if (data) {
-      setScheduleData(data);
+  const handleScheduleEdit = (scheduleData?: any) => {
+    if (scheduleData) {
+      setScheduleData(scheduleData);
     }
     setCurrentView("edit");
   };
@@ -55,7 +56,14 @@ export const RightSidebar = ({ selectedDate }: RightSidebarProps) => {
       case "create":
         return <CreateSchedule onCancel={() => setCurrentView("daily")} />;
       case "detail":
-        return <ScheduleDetail scheduleId={selectedScheduleId} onEdit={handleScheduleEdit} onCancel={handleCancel} />;
+        return (
+          <ScheduleDetail
+            scheduleId={selectedScheduleId}
+            scheduleData={scheduleData}
+            onEdit={handleScheduleEdit}
+            onCancel={handleCancel}
+          />
+        );
       case "edit":
         return (
           <EditSchedule scheduleId={selectedScheduleId} initialScheduleData={scheduleData} onCancel={handleCancel} />

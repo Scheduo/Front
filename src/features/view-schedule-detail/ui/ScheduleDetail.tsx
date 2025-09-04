@@ -1,10 +1,9 @@
 import { Bell, Clock, Edit2, MapPin, Repeat, User } from "lucide-react";
-import { useScheduleDetail } from "@/entities/schedule";
-import { useCurrentCalendarId } from "@/shared/lib";
 import { Button, ScrollArea } from "@/shared/ui";
 
 interface ScheduleDetailProps {
   scheduleId?: number;
+  scheduleData?: any;
   onEdit: (scheduleData?: any) => void;
   onCancel: () => void;
 }
@@ -12,19 +11,8 @@ interface ScheduleDetailProps {
 /**
  * 일정 상세 정보를 보여주는 컴포넌트입니다.
  */
-export const ScheduleDetail = ({ scheduleId, onEdit, onCancel }: ScheduleDetailProps) => {
-  const calendarId = useCurrentCalendarId();
-
-  // 일정 상세 정보 조회
-  const {
-    data: scheduleDetail,
-    isLoading,
-    error,
-  } = useScheduleDetail(calendarId ?? 0, scheduleId ?? 0, {
-    enabled: !!calendarId && !!scheduleId,
-  });
-
-  if (!calendarId || !scheduleId) {
+export const ScheduleDetail = ({ scheduleId, scheduleData, onEdit, onCancel }: ScheduleDetailProps) => {
+  if (!scheduleId || !scheduleData) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-grayscale-400 text-medium-m">일정을 선택해주세요.</div>
@@ -32,21 +20,21 @@ export const ScheduleDetail = ({ scheduleId, onEdit, onCancel }: ScheduleDetailP
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="text-grayscale-400 text-medium-m">로딩 중...</div>
-      </div>
-    );
-  }
-
-  if (error || !scheduleDetail) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="text-grayscale-400 text-medium-m">일정을 불러올 수 없습니다.</div>
-      </div>
-    );
-  }
+  // API 응답을 ScheduleDetailResponse 형태로 변환 (기본 값들로)
+  const scheduleDetail = {
+    id: scheduleData.id,
+    title: scheduleData.title,
+    allDay: scheduleData.startDate === scheduleData.endDate,
+    startDate: scheduleData.startDate,
+    endDate: scheduleData.endDate,
+    startDateTime: undefined,
+    endDateTime: undefined,
+    location: "", // API에서 제공하지 않음
+    category: scheduleData.category.name,
+    memo: "", // API에서 제공하지 않음
+    notificationTime: undefined, // API에서 제공하지 않음
+    recurrence: undefined, // API에서 제공하지 않음
+  };
 
   const formatDateTime = (dateTime?: string, date?: string, isAllDay?: boolean) => {
     if (isAllDay && date) {

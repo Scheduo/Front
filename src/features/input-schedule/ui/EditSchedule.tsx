@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { InputScheduleRequest } from "@/entities/schedule";
-import { useScheduleDetail, useUpdateSchedule } from "@/entities/schedule";
+import type { CalendarCategory, InputScheduleRequest } from "@/entities/schedule";
+import { useUpdateSchedule } from "@/entities/schedule";
 import { useCurrentCalendarId } from "@/shared/lib";
 import { ScheduleForm } from "./ScheduleForm";
 
@@ -18,40 +18,25 @@ export const EditSchedule = ({ scheduleId, initialScheduleData, onCancel }: Edit
   const calendarId = useCurrentCalendarId();
   const updateSchedule = useUpdateSchedule();
 
-  // 전달받은 데이터가 있으면 사용, 없으면 API 호출
-  const {
-    data: scheduleDetail,
-    isLoading,
-    error,
-  } = useScheduleDetail(calendarId ?? 0, scheduleId ?? 0, {
-    enabled: !!calendarId && !!scheduleId && !initialScheduleData,
-  });
-
-  // 전달받은 데이터 또는 API 응답을 InputScheduleRequest 형태로 변환
+  // initialScheduleData를 InputScheduleRequest 형태로 변환
   useEffect(() => {
-    const dataToUse = initialScheduleData || scheduleDetail;
-    if (dataToUse) {
+    if (initialScheduleData) {
       const data: InputScheduleRequest = {
-        title: dataToUse.title,
-        isAllDay: dataToUse.allDay,
-        startDate: dataToUse.allDay ? dataToUse.startDate! : dataToUse.startDateTime!.split("T")[0],
-        startTime: dataToUse.allDay ? "00:00" : dataToUse.startDateTime!.split("T")[1].slice(0, 5),
-        endDate: dataToUse.allDay ? dataToUse.endDate! : dataToUse.endDateTime!.split("T")[0],
-        endTime: dataToUse.allDay ? "01:00" : dataToUse.endDateTime!.split("T")[1].slice(0, 5),
-        location: dataToUse.location || "",
-        category: dataToUse.category,
-        memo: dataToUse.memo || "",
-        notificationTime: dataToUse.notificationTime || "FIVE_MINUTES_BEFORE",
-        recurrence: dataToUse.recurrence
-          ? {
-              frequency: dataToUse.recurrence.frequency,
-              recurrenceEndDate: dataToUse.recurrence.recurrenceEndDate,
-            }
-          : undefined,
+        title: initialScheduleData.title,
+        isAllDay: initialScheduleData.startDate === initialScheduleData.endDate,
+        startDate: initialScheduleData.startDate,
+        startTime: "00:00", // API에서 시간 정보가 없으므로 기본값
+        endDate: initialScheduleData.endDate,
+        endTime: "01:00", // API에서 시간 정보가 없으므로 기본값
+        location: "", // API에서 location 정보가 없음
+        category: initialScheduleData.category.name as CalendarCategory,
+        memo: "", // API에서 memo 정보가 없음
+        notificationTime: "FIVE_MINUTES_BEFORE", // 기본값
+        recurrence: null, // 기본값
       };
       setInitialData(data);
     }
-  }, [initialScheduleData, scheduleDetail]);
+  }, [initialScheduleData]);
 
   const handleSubmit = async (data: InputScheduleRequest) => {
     if (!calendarId || !scheduleId) return;
@@ -74,7 +59,7 @@ export const EditSchedule = ({ scheduleId, initialScheduleData, onCancel }: Edit
       ...(data.notificationTime && { notificationTime: data.notificationTime }),
       ...(data.recurrence && {
         recurrence: {
-          frequency: data.recurrence.recurrency,
+          frequency: data.recurrence.frequency,
           recurrenceEndDate: data.recurrence.recurrenceEndDate,
         },
       }),
@@ -90,26 +75,10 @@ export const EditSchedule = ({ scheduleId, initialScheduleData, onCancel }: Edit
     );
   };
 
-  if (!calendarId || !scheduleId) {
+  if (!calendarId || !scheduleId || !initialScheduleData) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-grayscale-400 text-medium-m">일정을 선택해주세요.</div>
-      </div>
-    );
-  }
-
-  if (!initialScheduleData && isLoading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="text-grayscale-400 text-medium-m">로딩 중...</div>
-      </div>
-    );
-  }
-
-  if (!initialScheduleData && error) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="text-grayscale-400 text-medium-m">일정을 불러올 수 없습니다.</div>
       </div>
     );
   }

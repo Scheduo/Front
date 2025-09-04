@@ -31,8 +31,10 @@ export const scheduleApi = {
   },
 
   // 일정 상세 조회
-  getScheduleById: async (calendarId: number, scheduleId: number): Promise<ScheduleDetailResponse> => {
-    const response = await axiosInstance.get(`/calendars/${calendarId}/schedules/${scheduleId}`);
+  getScheduleById: async (calendarId: number, scheduleId: number, date: string): Promise<ScheduleDetailResponse> => {
+    const response = await axiosInstance.get(`/calendars/${calendarId}/schedules/${scheduleId}`, {
+      params: { date }, // yyyy-mm-dd 형식
+    });
     return response.data.data;
   },
 

@@ -49,11 +49,12 @@ export const useMonthlySchedules = (
 export const useScheduleDetail = (
   calendarId: number,
   scheduleId: number,
+  date: string,
   options?: Partial<UseQueryOptions<ScheduleDetailResponse, Error, ScheduleDetailResponse>>,
 ) => {
   return useQuery({
     queryKey: scheduleKeys.detail(calendarId, scheduleId),
-    queryFn: () => scheduleApi.getScheduleById(calendarId, scheduleId),
+    queryFn: () => scheduleApi.getScheduleById(calendarId, scheduleId, date),
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
     ...options,

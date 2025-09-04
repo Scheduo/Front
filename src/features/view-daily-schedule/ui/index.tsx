@@ -8,7 +8,7 @@ import { ButtonGroup, ScrollArea } from "@/shared/ui";
 interface DailyScheduleProps {
   selectedDate?: Date;
   onSetView: (viewType: RightSidebarViewType) => void;
-  onScheduleEdit?: (scheduleId: number) => void;
+  onScheduleEdit: (scheduleData: any) => void;
 }
 
 /**
@@ -71,7 +71,7 @@ export const DailySchedule = ({ selectedDate = new Date(), onSetView, onSchedule
                 type="button"
                 aria-label={`일정: ${schedule.title}`}
                 key={schedule.id}
-                onClick={() => onScheduleEdit?.(schedule.id)}
+                onClick={() => onScheduleEdit(dailyScheduleData?.schedules.find((s) => s.id === schedule.id))}
                 className="group w-full cursor-pointer rounded-lg border border-grayscale-100 p-4 shadow transition-colors hover:bg-grayscale-100"
               >
                 <div className="flex w-full flex-col items-start justify-between">
