@@ -30,7 +30,9 @@ export const ScheduleDetail = ({ scheduleId, selectedDate, onEdit, onCancel }: S
     return `${year}-${month}-${day}`;
   }, [selectedDate]);
 
-  const { data: scheduleDetail, isLoading } = useScheduleDetail(calendarId ?? 0, scheduleId ?? 0, dateString);
+  const { data: scheduleDetail, isLoading } = useScheduleDetail(calendarId ?? 0, scheduleId ?? 0, dateString, {
+    enabled: !!calendarId && !!scheduleId,
+  });
 
   if (!calendarId || !scheduleId || !selectedDate) {
     return (
