@@ -74,11 +74,11 @@ export const ScheduleForm = ({
       title: initialData?.title ?? "",
       isAllDay: initialData?.allDay ?? false,
       // startDate, endDate: 다양한 형태 처리
-      startDate: extractDate((initialData as any)?.startDateTime || (initialData as any)?.startDate) || "",
-      endDate: extractDate((initialData as any)?.endDateTime || (initialData as any)?.endDate) || "",
+      startDate: extractDate(initialData?.startDateTime) || "",
+      endDate: extractDate(initialData?.endDateTime) || "",
       // startTime, endTime: ISO 문자열에서 시간 추출 또는 기본값
-      startTime: extractTime((initialData as any)?.startDateTime) || initialData?.startDateTime || "00:00",
-      endTime: extractTime((initialData as any)?.endDateTime) || initialData?.endDateTime || "01:00",
+      startTime: extractTime(initialData?.startDateTime) || "00:00",
+      endTime: extractTime(initialData?.endDateTime) || "01:00",
       location: initialData?.location ?? "",
       category: initialData?.category as CalendarCategory,
       memo: initialData?.memo ?? "",
