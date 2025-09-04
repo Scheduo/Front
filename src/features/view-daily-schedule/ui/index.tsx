@@ -41,10 +41,10 @@ export const DailySchedule = ({ selectedDate = new Date(), onSetView, onSchedule
     return dailyScheduleData.schedules.map((schedule) => ({
       id: schedule.id,
       title: schedule.title,
-      location: "", // API에서 location 필드가 없음
-      startTime: "", // API에서 시간 정보가 없고 startDate만 있음
-      endTime: "",
-      isAllDay: schedule.startDate === schedule.endDate, // 하루 종일 일정 여부 추론
+      // location: schedule.location || "장소 없음",
+      startTime: schedule.startTime,
+      endTime: schedule.endTime,
+      isAllDay: schedule.allDay, // 하루 종일 일정 여부 추론
       calendar: { title: schedule.category.name },
     }));
   }, [dailyScheduleData]);
@@ -89,10 +89,10 @@ export const DailySchedule = ({ selectedDate = new Date(), onSetView, onSchedule
                     </div>
                   </div>
 
-                  <div className="flex w-full items-center justify-between text-grayscale-500 text-medium-s">
+                  {/* <div className="flex w-full items-center justify-between text-grayscale-500 text-medium-s">
                     <div className="truncate">{schedule.location}</div>
                     <div>{schedule.calendar.title}</div>
-                  </div>
+                  </div> */}
                 </div>
               </button>
             ))

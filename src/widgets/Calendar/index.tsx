@@ -82,8 +82,8 @@ export const Calendar = ({ onDateSelect }: CalendarProps = {}) => {
     return monthlySchedule.schedules.map((schedule) => ({
       id: schedule.id.toString(),
       title: schedule.title,
-      startDate: new Date(schedule.startDate),
-      endDate: new Date(schedule.endDate),
+      startDate: new Date(schedule?.startDate || ""),
+      endDate: new Date(schedule?.endDate || ""),
       color: getCategoryColorClass(schedule.category.color),
     }));
   }, [monthlySchedule]);

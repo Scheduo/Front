@@ -23,12 +23,15 @@ export interface MonthlyScheduleResponse {
 export interface ScheduleItem {
   id: number;
   title: string;
-  startDate: string; // "2025-05-21"
-  endDate: string; // "2025-05-21"
+  startDate?: string;
+  startTime?: string;
+  endDate?: string;
+  endTime?: string;
   category: {
     name: CalendarCategory;
     color: CalendarCategoryColor;
   };
+  allDay: boolean;
 }
 
 // 일정 생성 요청 (실제 API 스펙에 맞게 수정)
