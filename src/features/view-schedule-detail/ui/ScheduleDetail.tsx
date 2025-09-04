@@ -1,6 +1,11 @@
 import { Bell, Clock, Edit2, MapPin, Repeat, User } from "lucide-react";
 import { useMemo } from "react";
-import { type ScheduleDetailResponse, useDailySchedules } from "@/entities/schedule";
+import {
+  type CalendarCategory,
+  getCategoryColorClass,
+  getNotificationText,
+  useScheduleById,
+} from "@/entities/schedule";
 import { useCurrentCalendarId } from "@/shared/lib";
 import { Button, ScrollArea } from "@/shared/ui";
 
@@ -25,14 +30,7 @@ export const ScheduleDetail = ({ scheduleId, selectedDate, onEdit, onCancel }: S
     return `${year}-${month}-${day}`;
   }, [selectedDate]);
 
-  const { data: dailyScheduleData, isLoading } = useDailySchedules(calendarId ?? 0, dateString, {
-    enabled: !!calendarId && !!scheduleId && !!selectedDate,
-  });
-
-  const scheduleData = useMemo(() => {
-    if (!dailyScheduleData?.schedules || !scheduleId) return null;
-    return dailyScheduleData.schedules.find((s) => s.id === scheduleId);
-  }, [dailyScheduleData, scheduleId]);
+  const { data: scheduleDetail, isLoading } = useScheduleById(calendarId ?? 0, scheduleId ?? 0, dateString);
 
   if (!calendarId || !scheduleId || !selectedDate) {
     return (
@@ -50,27 +48,13 @@ export const ScheduleDetail = ({ scheduleId, selectedDate, onEdit, onCancel }: S
     );
   }
 
-  if (!scheduleData) {
+  if (!scheduleDetail) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-grayscale-400 text-medium-m">일정을 찾을 수 없습니다.</div>
       </div>
     );
   }
-
-  // API 응답을 ScheduleDetailResponse 형태로 변환 (기본 값들로)
-  const scheduleDetail: ScheduleDetailResponse = {
-    id: scheduleData.id,
-    title: scheduleData.title,
-    allDay: scheduleData.startDate === scheduleData.endDate,
-    startDateTime: undefined,
-    endDateTime: undefined,
-    location: "", // API에서 제공하지 않음
-    category: scheduleData.category.name,
-    memo: "", // API에서 제공하지 않음
-    notificationTime: undefined, // API에서 제공하지 않음
-    recurrence: undefined, // API에서 제공하지 않음
-  };
 
   const formatDateTime = (dateTime?: string, date?: string, isAllDay?: boolean) => {
     if (isAllDay && date) {
@@ -90,35 +74,6 @@ export const ScheduleDetail = ({ scheduleId, selectedDate, onEdit, onCancel }: S
       });
     }
     return "";
-  };
-
-  const getNotificationText = (notificationTime?: string) => {
-    switch (notificationTime) {
-      case "ONE_DAY_BEFORE":
-        return "1일 전";
-      case "ONE_HOUR_BEFORE":
-        return "1시간 전";
-      case "THIRTY_MINUTES_BEFORE":
-        return "30분 전";
-      case "FIVE_MINUTES_BEFORE":
-        return "5분 전";
-      default:
-        return "없음";
-    }
-  };
-
-  const getCategoryColor = (color: string) => {
-    const colorMap = {
-      RED: "bg-red-500",
-      BLUE: "bg-blue-500",
-      GREEN: "bg-green-500",
-      YELLOW: "bg-yellow-500",
-      PURPLE: "bg-purple-500",
-      ORANGE: "bg-orange-500",
-      PINK: "bg-pink-500",
-      GRAY: "bg-gray-500",
-    };
-    return colorMap[color as keyof typeof colorMap] || "bg-gray-500";
   };
 
   return (
@@ -186,7 +141,9 @@ export const ScheduleDetail = ({ scheduleId, selectedDate, onEdit, onCancel }: S
             <div>
               <div className="text-grayscale-black text-medium-m">카테고리</div>
               <div className="mt-1 flex items-center gap-2">
-                <div className={`h-3 w-3 rounded-full ${getCategoryColor(scheduleDetail.category)}`} />
+                <div
+                  className={`h-3 w-3 rounded-full ${getCategoryColorClass(scheduleDetail.category as CalendarCategory)}`}
+                />
                 <span className="text-grayscale-600 text-regular-s">{scheduleDetail.category}</span>
               </div>
             </div>

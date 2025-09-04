@@ -58,7 +58,7 @@ export interface ScheduleDetailResponse {
   allDay: boolean;
   location?: string;
   memo?: string;
-  category: string;
+  category: CalendarCategory;
   notificationTime?: NotificationTime;
   recurrence?: ScheduleRecurrence;
 }
