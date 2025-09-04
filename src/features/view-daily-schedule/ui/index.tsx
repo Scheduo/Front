@@ -1,11 +1,12 @@
 import { Clock, Plus, Share2 } from "lucide-react";
+import { useMemo } from "react";
+import { useDailySchedules } from "@/entities/schedule";
+import { useCurrentCalendarId } from "@/shared/lib";
 import type { RightSidebarViewType } from "@/shared/model";
 import { ButtonGroup, ScrollArea } from "@/shared/ui";
-import type { ScheduleItem } from "../lib";
 
 interface DailyScheduleProps {
   selectedDate?: Date;
-  schedules?: ScheduleItem[];
   onSetView: (viewType: RightSidebarViewType) => void;
   onScheduleEdit?: (scheduleId: number) => void;
 }
@@ -20,12 +21,33 @@ interface DailyScheduleProps {
  * @param schedules - 해당 날짜의 일정 목록 (기본값: 빈 배열)
  * @param onSetView - 뷰 변경을 위한 콜백 함수
  */
-export const DailySchedule = ({
-  selectedDate = new Date(),
-  schedules = [],
-  onSetView,
-  onScheduleEdit,
-}: DailyScheduleProps) => {
+export const DailySchedule = ({ selectedDate = new Date(), onSetView, onScheduleEdit }: DailyScheduleProps) => {
+  const calendarId = useCurrentCalendarId();
+
+  const dateString = useMemo(() => {
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }, [selectedDate]);
+
+  const { data: dailyScheduleData, isLoading } = useDailySchedules(calendarId ?? 0, dateString, {
+    enabled: !!calendarId,
+  });
+
+  const schedules = useMemo(() => {
+    if (!dailyScheduleData?.schedules) return [];
+
+    return dailyScheduleData.schedules.map((schedule) => ({
+      id: schedule.id,
+      title: schedule.title,
+      location: "", // API에서 location 필드가 없음
+      startTime: "", // API에서 시간 정보가 없고 startDate만 있음
+      endTime: "",
+      isAllDay: schedule.startDate === schedule.endDate, // 하루 종일 일정 여부 추론
+      calendar: { title: schedule.category.name },
+    }));
+  }, [dailyScheduleData]);
   const formatDate = (date: Date): string => {
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -35,7 +57,10 @@ export const DailySchedule = ({
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-20 p-6">
-        <h2 className="mb-4 text-bold-l text-grayscale-black">{formatDate(selectedDate)}</h2>
+        <h2 className="mb-4 text-bold-l text-grayscale-black">
+          {formatDate(selectedDate)}
+          {isLoading && <span className="ml-2 text-grayscale-500 text-sm">로딩 중...</span>}
+        </h2>
       </div>
 
       <ScrollArea className="w-full flex-1 px-1">

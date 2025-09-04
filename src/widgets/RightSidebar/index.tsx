@@ -17,7 +17,11 @@ import { Button } from "@/shared/ui";
  * 메인 콘텐츠 영역에서는 일정 조회, 생성, 수정, 공유, 검색, 알림 등의 기능을 제공합니다.
  */
 
-export const RightSidebar = () => {
+interface RightSidebarProps {
+  selectedDate?: Date;
+}
+
+export const RightSidebar = ({ selectedDate }: RightSidebarProps) => {
   const [currentView, setCurrentView] = useState<RightSidebarViewType>("daily");
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | undefined>(undefined);
   const [scheduleData, setScheduleData] = useState<any>(undefined);
@@ -43,7 +47,9 @@ export const RightSidebar = () => {
   const renderContent = () => {
     switch (currentView) {
       case "daily":
-        return <DailySchedule onSetView={setCurrentView} onScheduleEdit={handleScheduleDetail} />;
+        return (
+          <DailySchedule selectedDate={selectedDate} onSetView={setCurrentView} onScheduleEdit={handleScheduleDetail} />
+        );
       case "share":
         return <ShareSchedule onSetView={setCurrentView} />;
       case "create":
@@ -59,7 +65,9 @@ export const RightSidebar = () => {
       case "notification":
         return <NotificationList />;
       default:
-        return <DailySchedule onSetView={setCurrentView} onScheduleEdit={handleScheduleDetail} />;
+        return (
+          <DailySchedule selectedDate={selectedDate} onSetView={setCurrentView} onScheduleEdit={handleScheduleDetail} />
+        );
     }
   };
 

@@ -2,6 +2,7 @@ import { type UseQueryOptions, useMutation, useQuery, useQueryClient } from "@ta
 import { scheduleApi } from "./api";
 import type {
   CreateScheduleRequest,
+  DailyScheduleResponse,
   MonthlyScheduleResponse,
   ScheduleDetailResponse,
   UpdateScheduleRequest,
@@ -15,12 +16,17 @@ export const scheduleKeys = {
 };
 
 // 특정 날짜 일정 조회
-export const useDailySchedules = (calendarId: number, date: string) => {
+export const useDailySchedules = (
+  calendarId: number,
+  date: string,
+  options?: Partial<UseQueryOptions<DailyScheduleResponse, Error, DailyScheduleResponse>>,
+) => {
   return useQuery({
     queryKey: scheduleKeys.daily(calendarId, date),
     queryFn: () => scheduleApi.getSchedulesByDate(calendarId, date),
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
+    ...options,
   });
 };
 

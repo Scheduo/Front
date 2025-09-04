@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Navigate } from "react-router";
 import { useGetCalendarList } from "@/entities/calendar";
 import { useCurrentCalendarId } from "@/shared/lib";
@@ -6,6 +7,7 @@ import { Calendar, LeftSidebar, RightSidebar } from "@/widgets";
 export const Main = () => {
   const currentCalendarId = useCurrentCalendarId();
   const { data, isLoading, error } = useGetCalendarList();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   // calendarId가 없고 캘린더 데이터가 있으면 첫 번째 캘린더로 리다이렉트
   if (!currentCalendarId && !isLoading && !error && data?.calendars?.length) {
@@ -44,8 +46,8 @@ export const Main = () => {
   return (
     <div className="flex h-screen w-screen flex-row">
       <LeftSidebar />
-      <Calendar />
-      <RightSidebar />
+      <Calendar onDateSelect={setSelectedDate} />
+      <RightSidebar selectedDate={selectedDate} />
     </div>
   );
 };

@@ -4,25 +4,16 @@ export type InputScheduleRequest = Omit<Schedule, "id" | "calendar">;
 
 // 특정 날짜 일정 조회 응답
 export interface DailyScheduleResponse {
-  id: number;
-  title: string;
-  startDateTime: string; // "2025-05-21T10:00:00"
-  endDateTime: string; // "2025-05-21T11:00:00"
-  location: string;
-  category: string;
-  memo: string;
-  notificationTime: NotificationTime;
-  recurrence: ScheduleRecurrence;
-  allDay: boolean;
+  schedules: ScheduleItem[];
 }
 
 // 월별 일정 조회 응답
 export interface MonthlyScheduleResponse {
   calendarId: number;
-  schedules: MonthlyScheduleItem[];
+  schedules: ScheduleItem[];
 }
 
-export interface MonthlyScheduleItem {
+export interface ScheduleItem {
   id: number;
   title: string;
   startDate: string; // "2025-05-21"

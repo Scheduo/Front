@@ -15,8 +15,8 @@ export const scheduleApi = {
   },
 
   // 특정 날짜 일정 조회
-  getSchedulesByDate: async (calendarId: number, date: string): Promise<DailyScheduleResponse[]> => {
-    const response = await axiosInstance.get(`/calendars/${calendarId}/schedules/daily`, {
+  getSchedulesByDate: async (calendarId: number, date: string): Promise<DailyScheduleResponse> => {
+    const response = await axiosInstance.get(`/calendars/${calendarId}/schedules`, {
       params: { date }, // yyyy-mm-dd 형식
     });
     return response.data.data;
